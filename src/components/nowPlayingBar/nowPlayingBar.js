@@ -80,7 +80,7 @@ function getNowPlayingBarHtml() {
     html += `<button is="paper-icon-button-light" class="muteButton mediaButton" title="${globalize.translate('Mute')}"><span class="material-icons volume_up" aria-hidden="true"></span></button>`;
 
     html += '<div class="sliderContainer nowPlayingBarVolumeSliderContainer hide" style="width:9em;vertical-align:middle;display:inline-flex;">';
-    html += '<input type="range" is="emby-slider" pin step="1" min="0" max="100" value="0" class="slider-medium-thumb nowPlayingBarVolumeSlider"/>';
+    html += '<input type="range" is="emby-slider" pin step="0.01" min="0" max="100" value="0" class="slider-medium-thumb nowPlayingBarVolumeSlider"/>';
     html += '</div>';
 
     html += `<button is="paper-icon-button-light" class="btnAirPlay mediaButton" title="${globalize.translate('AirPlay')}"><span class="material-icons airplay" aria-hidden="true"></span></button>`;
