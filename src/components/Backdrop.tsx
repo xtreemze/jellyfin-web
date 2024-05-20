@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 
 import layoutManager from './layoutManager';
 import { DRAWER_WIDTH } from './ResponsiveDrawer';
+import Visualizer from './visualizer/Visualizer';
 
 const styles = layoutManager.experimental ? {
     left: {
@@ -18,6 +19,7 @@ const Backdrop = () => {
 
     return (
         <>
+            <Visualizer />
             <Box
                 className='backdropContainer'
                 sx={styles}

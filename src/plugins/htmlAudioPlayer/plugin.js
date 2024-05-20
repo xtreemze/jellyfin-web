@@ -45,7 +45,7 @@ function cancelFadeTimeout() {
 function supportsFade() {
     // Not working on tizen.
     // We could possibly enable on other tv's, but all smart tv browsers tend to be pretty primitive
-    return !browser.tv;
+    return true;
 }
 
 function requireHlsPlayer(callback) {
@@ -285,6 +285,11 @@ class HtmlAudioPlayer {
                 gainNode.connect(audioCtx.destination);
 
                 self.gainNode = gainNode;
+
+                // For the visualizer
+                window.myAudioContext = audioCtx;
+                window.myMediaElement = elem;
+                window.mySourceNode = source;
             } catch (e) {
                 console.error('Web Audio API is not supported in this browser', e);
             }
@@ -547,11 +552,11 @@ class HtmlAudioPlayer {
         if (mediaElement) {
             if (document.AirPlayEnabled) {
                 if (isEnabled) {
-                    mediaElement.requestAirPlay().catch(function(err) {
+                    mediaElement.requestAirPlay().catch(function (err) {
                         console.error('Error requesting AirPlay', err);
                     });
                 } else {
-                    document.exitAirPLay().catch(function(err) {
+                    document.exitAirPLay().catch(function (err) {
                         console.error('Error exiting AirPlay', err);
                     });
                 }
