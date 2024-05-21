@@ -17,7 +17,7 @@ function fade(instance, elem, startingVolume) {
 
     // Need to record the starting volume on each pass rather than querying elem.volume
     // This is due to iOS safari not allowing volume changes and always returning the system volume value
-    const newVolume = Math.max(0, startingVolume - 0.15);
+    const newVolume = Math.max(0, startingVolume - 0.01);
     console.debug('fading volume to ' + newVolume);
     elem.volume = newVolume;
 
@@ -30,7 +30,7 @@ function fade(instance, elem, startingVolume) {
         cancelFadeTimeout();
         fadeTimeout = setTimeout(function () {
             fade(instance, elem, newVolume).then(resolve, reject);
-        }, 100);
+        }, 25);
     });
 }
 
