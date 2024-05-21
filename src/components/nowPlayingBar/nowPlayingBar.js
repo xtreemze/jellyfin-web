@@ -440,8 +440,8 @@ function updatePlayerVolumeState(isMuted, volumeLevel) {
     }
 
     if (currentPlayer.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {
-        showMuteButton = false;
-        showVolumeSlider = false;
+        showMuteButton = true;
+        showVolumeSlider = true;
     }
 
     muteButton.classList.toggle('hide', !showMuteButton);
