@@ -194,9 +194,9 @@ function updateNowPlayingInfo(context, state, serverId) {
         }
 
         const url = seriesImageUrl(item, {
-            maxHeight: 300
+            maxHeight: 1000
         }) || imageUrl(item, {
-            maxHeight: 300
+            maxHeight: 1000
         });
 
         let contextButton = context.querySelector('.btnToggleContextMenu');
