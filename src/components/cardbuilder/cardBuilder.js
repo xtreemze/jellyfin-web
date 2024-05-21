@@ -388,7 +388,7 @@ export function getCardImageUrl(item, apiClient, options, shape) {
             type: imgType,
             fillHeight: height,
             fillWidth: width,
-            quality: 96,
+            quality: 98,
             tag: imgTag
         });
     }
