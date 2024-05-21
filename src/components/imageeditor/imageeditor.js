@@ -211,7 +211,7 @@ function moveImage(context, apiClient, itemId, type, index, newIndex, focusConte
 function renderImages(page, item, apiClient, images, imageProviders, elem) {
     let html = '';
 
-    let imageSize = windowSize.innerWidth / 1.5;
+    let imageSize = 1000;
     const windowSize = dom.getWindowSize();
     if (windowSize.innerWidth >= 1280) {
         imageSize = Math.round(windowSize.innerWidth / 3);
