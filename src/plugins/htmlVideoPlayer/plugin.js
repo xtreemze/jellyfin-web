@@ -110,9 +110,9 @@ function enableNativeTrackSupport(mediaSource, track) {
 
 function requireHlsPlayer(callback) {
     import('hls.js/dist/hls.js').then(({ default: hls }) => {
-        hls.DefaultConfig.lowLatencyMode = false;
+        hls.DefaultConfig.lowLatencyMode = true;
         hls.DefaultConfig.backBufferLength = Infinity;
-        hls.DefaultConfig.liveBackBufferLength = 90;
+        hls.DefaultConfig.liveBackBufferLength = 1000 * 60 * 12;
         window.Hls = hls;
         callback();
     });
@@ -428,14 +428,14 @@ export class HtmlVideoPlayer {
     setSrcWithHlsJs(elem, options, url) {
         return new Promise((resolve, reject) => {
             requireHlsPlayer(async () => {
-                let maxBufferLength = 30;
+                let maxBufferLength = 1000 * 60 * 12;
 
                 // Some browsers cannot handle huge fragments in high bitrate.
                 // This issue usually happens when using HWA encoders with a high bitrate setting.
                 // Limit the BufferLength to 6s, it works fine when playing 4k 120Mbps over HLS on chrome.
                 // https://github.com/video-dev/hls.js/issues/876
                 if ((browser.chrome || browser.edgeChromium || browser.firefox) && playbackManager.getMaxStreamingBitrate(this) >= 25000000) {
-                    maxBufferLength = 6;
+                    maxBufferLength = 1000 * 60 * 12;
                 }
 
                 const includeCorsCredentials = await getIncludeCorsCredentials();
@@ -745,8 +745,8 @@ export class HtmlVideoPlayer {
 
         return profiles.some(function (p) {
             return p.Type === 'Video'
-                    && includesAny((p.Container || '').toLowerCase(), container)
-                    && includesAny((p.AudioCodec || '').toLowerCase(), codec);
+                && includesAny((p.Container || '').toLowerCase(), container)
+                && includesAny((p.AudioCodec || '').toLowerCase(), codec);
         });
     }
 
@@ -1841,11 +1841,11 @@ export class HtmlVideoPlayer {
         if (document.AirPlayEnabled) {
             if (video) {
                 if (isEnabled) {
-                    video.requestAirPlay().catch(function(err) {
+                    video.requestAirPlay().catch(function (err) {
                         console.error('Error requesting AirPlay', err);
                     });
                 } else {
-                    document.exitAirPLay().catch(function(err) {
+                    document.exitAirPLay().catch(function (err) {
                         console.error('Error exiting AirPlay', err);
                     });
                 }
