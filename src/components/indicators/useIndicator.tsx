@@ -115,8 +115,7 @@ const useIndicator = (item: ItemDto) => {
         if (item.SeriesTimerId) {
             return (
                 <FiberSmartRecordIcon
-                    className={`${indicatorIconClass} ${
-                        status === 'Cancelled' ? 'timerIndicator-inactive' : ''
+                    className={`${indicatorIconClass} ${status === 'Cancelled' ? 'timerIndicator-inactive' : ''
                     }`}
                 />
             );

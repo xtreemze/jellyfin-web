@@ -6,13 +6,13 @@ declare global {
     interface Window { myAudioContext: AudioContext; myMediaElement: HTMLMediaElement; mySourceNode: AudioNode }
 }
 
-window.myAudioContext = window.myAudioContext || new AudioContext();
-
 interface VisualizerProps {
     audioContext?: AudioContext;
     mediaElement?: HTMLMediaElement;
     mySourceNode?: AudioNode;
 }
+
+window.myAudioContext = window.myAudioContext || new AudioContext();
 
 const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioContext, mediaElement = window.myMediaElement, mySourceNode = window.mySourceNode }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);

@@ -1,6 +1,5 @@
 import datetime from '../../scripts/datetime';
 import Events from '../../utils/events.ts';
-import browser from '../../scripts/browser';
 import imageLoader from '../images/imageLoader';
 import layoutManager from '../layoutManager';
 import { playbackManager } from '../playback/playbackmanager';
@@ -17,6 +16,7 @@ import itemShortcuts from '../shortcuts';
 import './nowPlayingBar.scss';
 import '../../elements/emby-slider/emby-slider';
 import { appRouter } from '../router/appRouter';
+import WaveSurfer from 'wavesurfer.js';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];
@@ -51,7 +51,7 @@ function getNowPlayingBarHtml() {
     html += '<div class="nowPlayingBar hide nowPlayingBar-hidden">';
 
     html += '<div class="nowPlayingBarTop">';
-    html += '<div class="nowPlayingBarPositionContainer sliderContainer" dir="ltr">';
+    html += '<div id="wavesurfer" class="nowPlayingBarPositionContainer sliderContainer" dir="ltr">';
     html += '<input type="range" is="emby-slider" pin step=".01" min="0" max="100" value="0" class="slider-medium-thumb nowPlayingBarPositionSlider" data-slider-keep-progress="true"/>';
     html += '</div>';
 
@@ -179,7 +179,7 @@ function bindEvents(elem) {
         if (currentPlayer) {
             if (playbackManager.isPlayingAudio(currentPlayer)) {
                 // Cancel this event if doubleclick is fired. The actual previousTrack will be processed by the 'dblclick' event
-                if (e.detail > 1 ) {
+                if (e.detail > 1) {
                     return;
                 }
 
@@ -218,7 +218,7 @@ function bindEvents(elem) {
         }
     });
 
-    lyricButton.addEventListener('click', function() {
+    lyricButton.addEventListener('click', function () {
         if (isLyricPageActive) {
             appRouter.back();
         } else {
@@ -284,6 +284,8 @@ function showRemoteControl() {
 }
 
 let nowPlayingBarElement;
+let waveSurferVisualization;
+
 function getNowPlayingBar() {
     if (nowPlayingBarElement) {
         return nowPlayingBarElement;
@@ -304,11 +306,6 @@ function getNowPlayingBar() {
     if (layoutManager.mobile) {
         nowPlayingBarElement.querySelector('.btnShuffleQueue').classList.add('hide');
         nowPlayingBarElement.querySelector('.nowPlayingBarCenter').classList.add('hide');
-    }
-
-    if (browser.safari && browser.slow) {
-        // Not handled well here. The wrong elements receive events, bar doesn't update quickly enough, etc.
-        nowPlayingBarElement.classList.add('noMediaProgress');
     }
 
     itemShortcuts.on(nowPlayingBarElement);
@@ -611,9 +608,11 @@ function updateNowPlayingInfo(state) {
 
 function onPlaybackStart(e, state) {
     console.debug('nowplaying event: ' + e.type);
+
     const player = this;
 
     onStateChanged.call(player, e, state);
+    runVis();
 }
 
 function onRepeatModeChange() {
@@ -671,6 +670,10 @@ function onPlaybackStopped(e, state) {
 
     const player = this;
 
+    if (waveSurferVisualization) {
+        waveSurferVisualization.empty();
+    }
+
     if (player.isLocalPlayer) {
         if (state.NextMediaType !== 'Audio') {
             hideNowPlayingBar();
@@ -680,12 +683,45 @@ function onPlaybackStopped(e, state) {
     }
 }
 
+// See appFooter.scss for styling
+function runVis() {
+    if (waveSurferVisualization) waveSurferVisualization.destroy();
+
+    waveSurferVisualization = WaveSurfer.create({
+        container: '#reactRoot',
+        media: window.myMediaElement,
+        dragToSeek: { debounceTime: 400 },
+        interact: true,
+        barWidth: 4,
+        barGap: 2,
+        barRadius: 2,
+        autoplay: true,
+        width: '94%',
+        splitChannels: [
+            {
+                height: 24,
+                waveColor: 'rgb(200, 0, 200)',
+                progressColor: 'rgb(100, 0, 100)'
+            },
+            {
+                height: 24,
+                overlay: true,
+                waveColor: 'rgb(0, 200, 200)',
+                progressColor: 'rgb(0, 100, 100)'
+            }
+        ]
+    });
+
+    waveSurferVisualization.play();
+}
+
 function onPlayPauseStateChanged() {
     if (!isEnabled) {
         return;
     }
 
     const player = this;
+
     updatePlayPauseState(player.paused());
 }
 

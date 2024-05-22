@@ -18,3 +18,21 @@
 .appfooter.headroom--unpinned {
     transform: translateY(100%) !important;
 }
+
+#reactRoot ::part(wrapper) {
+    bottom: 0;
+    z-index: 2;
+    position: fixed;
+    mix-blend-mode: screen;
+    opacity: 98%;
+    margin-left: 3%;
+    margin-right: 3%;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 1600px) {
+    .sliderContainer.flex {
+        display: none;
+    }
+
+}
