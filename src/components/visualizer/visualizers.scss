@@ -40,10 +40,28 @@
 
 
 @media(min-width:1600px) {
-    body.mouseIdle .backgroundContainer.withBackdrop {
+    .backgroundContainer.withBackdrop {
+        opacity: 0.8;
+        transition: opacity 2s ease-in-out;
         background-color: rgb(0 0 0 / 12%);
         background-image: none;
+    }
+
+    .nowPlayingInfoControls>.infoContainer,
+    .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+        opacity: 1;
+        transition: opacity 2s ease-in-out;
+    }
+
+    body.mouseIdle .nowPlayingInfoControls>.infoContainer,
+    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+        opacity: 0;
+        transition: opacity 7s ease-out;
+    }
+
+    body.mouseIdle .backgroundContainer.withBackdrop {
         opacity: 0.2;
+        transition: opacity 2s ease-in-out;
     }
 
     .nowPlayingInfoContainer {
@@ -71,6 +89,7 @@
 
     body.mouseIdle .skinHeader {
         opacity: 0.001;
+        transition: opacity 2s ease-in-out;
     }
 
     .skinHeader:focus,
@@ -86,15 +105,19 @@
         animation: none;
     }
 
-    .playlistSection {
+    body.mouseIdle .playlistSection {
         width: 16rem;
+        opacity: 1;
+        direction: rtl;
+    }
+
+    .playlistSection {
+        width: 25rem;
         position: fixed;
         right: 0rem;
         bottom: 2rem;
         font-size: 0.6em;
-        opacity: 1;
         overflow: auto;
-        direction: rtl;
         padding: 1.5rem;
         padding-right: 2rem;
         padding-left: 2.5rem;
@@ -102,15 +125,15 @@
     }
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        width: 300px;
-        margin-right: 1.5rem;
+        width: 400px;
+        margin-right: 3rem;
     }
 
     .mediaInfoItem {
         min-width: 1.5rem;
     }
 
-    .listItem.listItem-border {
+    body.mouseIdle .listItem.listItem-border {
         border: none !important;
         border-style: none !important;
         border-color: rgb(255 255 255 / 0%) !important;
@@ -139,8 +162,8 @@
 
     .nowPlayingInfoContainer {
         position: fixed;
-        max-width: 66rem;
-        bottom: 3rem;
+        max-width: 70rem;
+        bottom: 4rem;
         left: 5rem;
     }
 
@@ -182,7 +205,7 @@
     }
 
     .playlistSection,
-    .sliderContainer.flex,
+    // .sliderContainer.flex,
     .infoContainer.flex {
         filter: drop-shadow(2px 2px 2px rgba(19, 19, 19, 0.822));
     }
