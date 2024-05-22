@@ -16,7 +16,7 @@ import itemShortcuts from '../shortcuts';
 import './nowPlayingBar.scss';
 import '../../elements/emby-slider/emby-slider';
 import { appRouter } from '../router/appRouter';
-import WaveSurfer from 'wavesurfer.js';
+import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];
@@ -284,7 +284,6 @@ function showRemoteControl() {
 }
 
 let nowPlayingBarElement;
-let waveSurferVisualization;
 
 function getNowPlayingBar() {
     if (nowPlayingBarElement) {
@@ -612,7 +611,7 @@ function onPlaybackStart(e, state) {
     const player = this;
 
     onStateChanged.call(player, e, state);
-    runVis();
+    waveSurferInitialization();
 }
 
 function onRepeatModeChange() {
@@ -670,10 +669,6 @@ function onPlaybackStopped(e, state) {
 
     const player = this;
 
-    if (waveSurferVisualization) {
-        waveSurferVisualization.empty();
-    }
-
     if (player.isLocalPlayer) {
         if (state.NextMediaType !== 'Audio') {
             hideNowPlayingBar();
@@ -681,38 +676,6 @@ function onPlaybackStopped(e, state) {
     } else if (!state.NextMediaType) {
         hideNowPlayingBar();
     }
-}
-
-// See appFooter.scss for styling
-function runVis() {
-    if (waveSurferVisualization) waveSurferVisualization.destroy();
-
-    waveSurferVisualization = WaveSurfer.create({
-        container: '#reactRoot',
-        media: window.myMediaElement,
-        dragToSeek: { debounceTime: 400 },
-        interact: true,
-        barWidth: 4,
-        barGap: 2,
-        barRadius: 2,
-        autoplay: true,
-        width: '94%',
-        splitChannels: [
-            {
-                height: 24,
-                waveColor: 'rgb(200, 0, 200)',
-                progressColor: 'rgb(100, 0, 100)'
-            },
-            {
-                height: 24,
-                overlay: true,
-                waveColor: 'rgb(0, 200, 200)',
-                progressColor: 'rgb(0, 100, 100)'
-            }
-        ]
-    });
-
-    waveSurferVisualization.play();
 }
 
 function onPlayPauseStateChanged() {
@@ -788,6 +751,8 @@ function releaseCurrentPlayer() {
         Events.off(player, 'timeupdate', onTimeUpdate);
 
         currentPlayer = null;
+
+        destroyWaveSurferInstance();
         hideNowPlayingBar();
     }
 }

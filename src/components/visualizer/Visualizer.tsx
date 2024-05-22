@@ -6,11 +6,11 @@ declare global {
     interface Window { myAudioContext: AudioContext; myMediaElement: HTMLMediaElement; mySourceNode: AudioNode }
 }
 
-interface VisualizerProps {
+type VisualizerProps = {
     audioContext?: AudioContext;
     mediaElement?: HTMLMediaElement;
     mySourceNode?: AudioNode;
-}
+};
 
 window.myAudioContext = window.myAudioContext || new AudioContext();
 
@@ -18,7 +18,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const draw = useCallback((analyser: AnalyserNode, ctx: CanvasRenderingContext2D) => {
-        const numBars = Math.floor(window.innerWidth / 64);
+        const numBars = Math.floor(window.innerWidth / 48);
         const data = new Uint8Array(analyser.frequencyBinCount);
         const binSize = Math.floor(data.length / numBars);
         analyser.getByteFrequencyData(data);
@@ -35,7 +35,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
             const average = sum / binSize;
             const barWidth = ctx.canvas.width / numBars;
             const scaledAverage = average / 256 * ctx.canvas.height;
-            ctx.fillRect(i * barWidth, ctx.canvas.height, barWidth / 1.4, -scaledAverage);
+            ctx.fillRect(i * barWidth, ctx.canvas.height, barWidth / 1.2, -scaledAverage);
         }
 
         requestAnimationFrame(() => draw(analyser, ctx));

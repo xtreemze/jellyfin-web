@@ -1,0 +1,189 @@
+#simpleSlider[hidden] {
+    display: none;
+}
+
+#inputSurfer[hidden] {
+    display: none;
+}
+
+#inputSurfer {
+    height: 23px;
+    margin-top: -1px;
+}
+
+@media (min-width: 1600px) {
+    #inputSurfer {
+        height: 23px;
+        margin-top: -6px;
+        width: 100%;
+    }
+}
+
+.nowPlayingVolumeSliderContainer {
+    flex: 1;
+    flex-wrap: nowrap;
+}
+
+.volumecontrol.hide {
+    display: flex;
+    flex: 1;
+    flex-wrap: nowrap;
+}
+
+.nowPlayingInfoContainer {
+    height: calc(98% - 4.2em);
+}
+
+#reactRoot>canvas {
+    position: fixed;
+}
+
+
+@media(min-width:1600px) {
+    body.mouseIdle .backgroundContainer.withBackdrop {
+        background-color: rgb(0 0 0 / 12%);
+        background-image: none;
+        opacity: 0.2;
+    }
+
+    .nowPlayingInfoContainer {
+        height: unset;
+    }
+
+    .volumecontrol.hide {
+        display: unset;
+        flex: unset;
+    }
+
+    .playlist.vertical-list.nowPlayingPlaylist.hide {
+        display: flex;
+    }
+
+    html,
+    .skinHeader {
+        color: rgb(248 248 248);
+    }
+
+    .itemsContainer-tv>.squareCard,
+    .itemsContainer>.squareCard {
+        width: calc(100%/5);
+    }
+
+    body.mouseIdle .skinHeader {
+        opacity: 0.001;
+    }
+
+    .skinHeader:focus,
+    .skinHeader:hover,
+    .listItemImage,
+    .alphaPicker.alphaPicker-fixed.alphaPicker-vertical.focusable.alphabetPicker-right.alphaPicker-fixed-right:focus,
+    .alphaPicker.alphaPicker-fixed.alphaPicker-vertical.focusable.alphabetPicker-right.alphaPicker-fixed-right:hover {
+        opacity: 0.8;
+    }
+
+    #playlist>div>div.listItemImage.itemAction.lazy.lazy-image-fadein {
+        opacity: 0;
+        animation: none;
+    }
+
+    .playlistSection {
+        width: 16rem;
+        position: fixed;
+        right: 0rem;
+        bottom: 2rem;
+        font-size: 0.6em;
+        opacity: 1;
+        overflow: auto;
+        direction: rtl;
+        padding: 1.5rem;
+        padding-right: 2rem;
+        padding-left: 2.5rem;
+        padding-top: 2.5rem;
+    }
+
+    .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+        width: 300px;
+        margin-right: 1.5rem;
+    }
+
+    .mediaInfoItem {
+        min-width: 1.5rem;
+    }
+
+    .listItem.listItem-border {
+        border: none !important;
+        border-style: none !important;
+        border-color: rgb(255 255 255 / 0%) !important;
+    }
+
+    .nowPlayingInfoContainer>.nowPlayingInfoControls {
+        justify-content: flex-end;
+    }
+
+    .nowPlayingInfoContainerMedia {
+        margin-bottom: 0;
+    }
+
+    body::-webkit-scrollbar,
+    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingInfoControls>.nowPlayingButtonsContainer,
+    body.mouseIdle .playlistSection>div.playlistSectionButton,
+    body.mouseIdle .listViewUserDataButtons,
+    body.mouseIdle .listViewDragHandle.material-icons.listItemIcon.drag_handle,
+    body.mouseIdle .remoteControlSection {
+        display: none;
+    }
+
+    html {
+        scrollbar-width: none;
+    }
+
+    .nowPlayingInfoContainer {
+        position: fixed;
+        max-width: 66rem;
+        bottom: 3rem;
+        left: 5rem;
+    }
+
+    .sliderContainer.flex {
+        position: fixed;
+        bottom: 1rem;
+        left: 2.8rem;
+        right: 2.8rem;
+        font-size: 0.6em;
+    }
+
+    .infoContainer.flex {
+        font-size: 1.2em;
+    }
+
+    #playlist>button {
+        height: 1.5rem;
+    }
+
+    .listItemImage.playlistIndexIndicatorImage {
+        background-size: 2em !important;
+        bottom: 0.3em;
+        opacity: unset;
+    }
+
+    .detailPageWrapperContainer {
+        background-color: #00000082;
+        margin-top: -5rem;
+        padding-top: 5rem;
+    }
+
+    .listItemBodyText {
+        margin: 0;
+        overflow: hidden;
+        padding: .1em 0;
+        text-overflow: ellipsis;
+        white-space: pre;
+        direction: ltr;
+    }
+
+    .playlistSection,
+    .sliderContainer.flex,
+    .infoContainer.flex {
+        filter: drop-shadow(2px 2px 2px rgba(19, 19, 19, 0.822));
+    }
+}
