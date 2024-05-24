@@ -19,7 +19,7 @@ export default function (view, params, tabContent) {
         if (!pageData) {
             pageData = data[key] = {
                 query: {
-                    SortBy: 'Album,SortName',
+                    SortBy: 'Random,SortName',
                     SortOrder: 'Ascending',
                     IncludeItemTypes: 'Audio',
                     Recursive: true,
