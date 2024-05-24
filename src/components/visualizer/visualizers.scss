@@ -6,16 +6,36 @@
     display: none;
 }
 
-#inputSurfer {
-    height: 23px;
-    margin-top: -1px;
+#inputSurfer,
+#simpleSlider {
+    height: 6rem;
+    margin-top: 1rem;
+    margin-bottom: 3.5rem;
+    max-width: 85vw;
+}
+
+@media (min-width: 690px) {
+
+    #inputSurfer,
+    #simpleSlider {
+        height: 3rem;
+        margin-top: 0rem;
+        margin-bottom: 3.5rem;
+        max-width: 75vw;
+    }
 }
 
 @media (min-width: 1600px) {
-    #inputSurfer {
-        height: 23px;
-        margin-top: -6px;
-        width: 100%;
+
+    #inputSurfer,
+    #simpleSlider {
+        height: 38px;
+        margin: 0;
+        position: fixed;
+        left: 0;
+        right: 0;
+        max-width: 100vw;
+        bottom: 12px;
     }
 }
 
@@ -92,14 +112,7 @@
         transition: opacity 2s ease-in-out;
     }
 
-    .skinHeader:focus,
-    .skinHeader:hover,
     .listItemImage,
-    .alphaPicker.alphaPicker-fixed.alphaPicker-vertical.focusable.alphabetPicker-right.alphaPicker-fixed-right:focus,
-    .alphaPicker.alphaPicker-fixed.alphaPicker-vertical.focusable.alphabetPicker-right.alphaPicker-fixed-right:hover {
-        opacity: 0.8;
-    }
-
     #playlist>div>div.listItemImage.itemAction.lazy.lazy-image-fadein {
         opacity: 0;
         animation: none;
@@ -133,7 +146,7 @@
         min-width: 1.5rem;
     }
 
-    body.mouseIdle .listItem.listItem-border {
+    .listItem.listItem-border {
         border: none !important;
         border-style: none !important;
         border-color: rgb(255 255 255 / 0%) !important;
@@ -205,7 +218,6 @@
     }
 
     .playlistSection,
-    // .sliderContainer.flex,
     .infoContainer.flex {
         filter: drop-shadow(2px 2px 2px rgba(19, 19, 19, 0.822));
     }

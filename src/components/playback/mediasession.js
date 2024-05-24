@@ -3,6 +3,7 @@ import nowPlayingHelper from '../playback/nowplayinghelper';
 import Events from '../../utils/events.ts';
 import ServerConnections from '../ServerConnections';
 import shell from '../../scripts/shell';
+import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 
 // Reports media playback to the device for lock screen control
 
@@ -156,6 +157,7 @@ function onStateChanged(e, state) {
 
 function onPlaybackStart(e, state) {
     updatePlayerState(this, state, e.type);
+    waveSurferInitialization();
 }
 
 function onPlaybackStopped() {
@@ -163,6 +165,7 @@ function onPlaybackStopped() {
 }
 
 function releaseCurrentPlayer() {
+    destroyWaveSurferInstance();
     if (currentPlayer) {
         Events.off(currentPlayer, 'playbackstart', onPlaybackStart);
         Events.off(currentPlayer, 'playbackstop', onPlaybackStopped);

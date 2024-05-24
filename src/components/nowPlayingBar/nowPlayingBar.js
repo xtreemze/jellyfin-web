@@ -16,7 +16,6 @@ import itemShortcuts from '../shortcuts';
 import './nowPlayingBar.scss';
 import '../../elements/emby-slider/emby-slider';
 import { appRouter } from '../router/appRouter';
-import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];
@@ -611,7 +610,6 @@ function onPlaybackStart(e, state) {
     const player = this;
 
     onStateChanged.call(player, e, state);
-    waveSurferInitialization();
 }
 
 function onRepeatModeChange() {
@@ -752,7 +750,6 @@ function releaseCurrentPlayer() {
 
         currentPlayer = null;
 
-        destroyWaveSurferInstance();
         hideNowPlayingBar();
     }
 }

@@ -19,15 +19,15 @@
 
                 </div>
 
-                <div class="sliderContainer flex" dir="ltr">
+                <div class="sliderContainer flex" dir="ltr" id="simpleSlider">
                     <div class="positionTime"></div>
-                    <div class="nowPlayingPositionSliderContainer" id="simpleSlider">
+                    <div class="nowPlayingPositionSliderContainer">
                         <input type="range" is="emby-slider" pin step="0.01" min="0" max="100" value="0"
                             class="nowPlayingPositionSlider" data-slider-keep-progress="true" />
                     </div>
-                    <div class="nowPlayingPositionSliderContainer" id="inputSurfer" hidden>
-                    </div>
                     <div class="runtime"></div>
+                </div>
+                <div class="sliderContainer" id="inputSurfer" hidden>
                 </div>
 
 
