@@ -6,6 +6,7 @@ import { getIncludeCorsCredentials } from '../../scripts/settings/webSettings';
 import { PluginType } from '../../types/plugin.ts';
 import Events from '../../utils/events.ts';
 import { MediaError } from 'types/mediaError';
+import { waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 
 function getDefaultProfile() {
     return profileBuilder({});
@@ -261,6 +262,8 @@ class HtmlAudioPlayer {
 
                 document.body.appendChild(elem);
             }
+            window.myMediaElement = elem;
+            waveSurferInitialization();
 
             elem.volume = htmlMediaHelper.getSavedVolume();
 

@@ -156,7 +156,7 @@ function onStateChanged(e, state) {
 }
 
 function onPlaybackStart(e, state) {
-    waveSurferInitialization(true);
+    waveSurferInitialization();
     updatePlayerState(this, state, e.type);
 }
 

@@ -6,7 +6,6 @@ let waveSurferInstance: WaveSurfer;
 
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
-let mediaElement: HTMLMediaElement | null;
 
 let currentZoom = 90;
 const maxZoom = 690;
@@ -17,7 +16,6 @@ let mobileTouch = false;
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
     simpleSlider = document.getElementById('simpleSlider');
-    mediaElement = document.querySelector('.mediaPlayerAudio') || null;
 }
 
 function waveSurferInitialization() {
@@ -25,13 +23,13 @@ function waveSurferInitialization() {
         destroyWaveSurferInstance();
     }
     findElements();
-    if (!inputSurfer && !simpleSlider && !mediaElement) {
+    if (!inputSurfer && !simpleSlider) {
         return;
     }
     resetVisibility();
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
-        media: mediaElement || undefined,
-        duration: mediaElement?.duration || undefined
+        media: window.myMediaElement,
+        duration: window.myMediaElement.duration
     });
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waveSurferInstance.play();
