@@ -1,5 +1,6 @@
 import datetime from '../../scripts/datetime';
 import Events from '../../utils/events.ts';
+import browser from 'scripts/browser';
 import imageLoader from '../images/imageLoader';
 import layoutManager from '../layoutManager';
 import { playbackManager } from '../playback/playbackmanager';
@@ -306,6 +307,11 @@ function getNowPlayingBar() {
         nowPlayingBarElement.querySelector('.nowPlayingBarCenter').classList.add('hide');
     }
 
+    if (browser.safari && browser.slow) {
+        // Not handled well here. The wrong elements receive events, bar doesn't update quickly enough, etc.
+        nowPlayingBarElement.classList.add('noMediaProgress');
+    }
+
     itemShortcuts.on(nowPlayingBarElement);
 
     bindEvents(nowPlayingBarElement);
@@ -435,8 +441,8 @@ function updatePlayerVolumeState(isMuted, volumeLevel) {
     }
 
     if (currentPlayer.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {
-        showMuteButton = true;
-        showVolumeSlider = true;
+        showMuteButton = false;
+        showVolumeSlider = false;
     }
 
     muteButton.classList.toggle('hide', !showMuteButton);
@@ -606,7 +612,6 @@ function updateNowPlayingInfo(state) {
 
 function onPlaybackStart(e, state) {
     console.debug('nowplaying event: ' + e.type);
-
     const player = this;
 
     onStateChanged.call(player, e, state);
@@ -682,7 +687,6 @@ function onPlayPauseStateChanged() {
     }
 
     const player = this;
-
     updatePlayPauseState(player.paused());
 }
 
@@ -749,7 +753,6 @@ function releaseCurrentPlayer() {
         Events.off(player, 'timeupdate', onTimeUpdate);
 
         currentPlayer = null;
-
         hideNowPlayingBar();
     }
 }

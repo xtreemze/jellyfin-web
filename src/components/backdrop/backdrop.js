@@ -1,4 +1,5 @@
 import isEqual from 'lodash-es/isEqual';
+import browser from '../../scripts/browser';
 import { playbackManager } from '../playback/playbackmanager';
 import dom from '../../scripts/dom';
 import * as userSettings from '../../scripts/settings/userSettings';
@@ -7,11 +8,13 @@ import ServerConnections from '../ServerConnections';
 import './backdrop.scss';
 
 function enableAnimation() {
-    return true;
+    return !browser.slow;
 }
 
 function enableRotation() {
-    return true;
+    return !browser.tv
+            // Causes high cpu usage
+            && !browser.firefox;
 }
 
 class Backdrop {

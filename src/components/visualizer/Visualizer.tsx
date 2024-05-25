@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 
 declare global {
-    interface Window { myAudioContext: AudioContext; myMediaElement: HTMLMediaElement; mySourceNode: AudioNode }
+    interface Window { myAudioContext: AudioContext; mySourceNode: AudioNode }
 }
 
 type VisualizerProps = {
@@ -14,7 +14,10 @@ type VisualizerProps = {
 
 window.myAudioContext = window.myAudioContext || new AudioContext();
 
-const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioContext, mediaElement = window.myMediaElement, mySourceNode = window.mySourceNode }) => {
+const Visualizer: React.FC<VisualizerProps> = ({
+    audioContext = window.myAudioContext,
+    mediaElement = document.querySelector('.mediaPlayerAudio'),
+    mySourceNode = window.mySourceNode }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const draw = useCallback((analyser: AnalyserNode, ctx: CanvasRenderingContext2D) => {

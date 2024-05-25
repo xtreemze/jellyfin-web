@@ -278,7 +278,7 @@ function useCardImageUrl({ item, cardOptions, shape }: UseCardImageUrlProps) {
             height = Math.round(height * ratio);
         }
         imgUrl = getImageApi(api).getItemImageUrlById(itemId, imgType, {
-            quality: 98,
+            quality: 96,
             fillWidth: width,
             fillHeight: height,
             tag: imgTag
