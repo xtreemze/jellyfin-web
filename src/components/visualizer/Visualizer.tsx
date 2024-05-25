@@ -24,7 +24,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
         analyser.getByteFrequencyData(data);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = 'rgba(86, 36, 166, 0.453)';
+        ctx.fillStyle = 'rgba(76, 36, 141, 0.546)';
         ctx.globalCompositeOperation = 'difference';
 
         for (let i = 0; i < numBars; i++) {

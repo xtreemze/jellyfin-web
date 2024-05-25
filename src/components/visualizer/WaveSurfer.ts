@@ -28,8 +28,7 @@ function waveSurferInitialization() {
     }
     resetVisibility();
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
-        media: window.myMediaElement,
-        duration: window.myMediaElement.duration
+        media: window.myMediaElement
     });
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waveSurferInstance.play();

@@ -223,9 +223,9 @@
     margin: 0;
 }
 
-.layout-mobile .nowPlayingSecondaryButtons .volumecontrol {
-    display: none;
-}
+// .layout-mobile .nowPlayingSecondaryButtons .volumecontrol {
+//     display: none;
+// }
 
 .layout-desktop .nowPlayingInfoButtons .btnRepeat,
 .layout-tv .nowPlayingInfoButtons .btnRepeat {
@@ -237,10 +237,10 @@
     display: none;
 }
 
-.layout-desktop .playlistSectionButton .volumecontrol,
-.layout-tv .playlistSectionButton .volumecontrol {
-    display: none;
-}
+// .layout-desktop .playlistSectionButton .volumecontrol,
+// .layout-tv .playlistSectionButton .volumecontrol {
+//     display: none;
+// }
 
 .nowPlayingInfoControls .nowPlayingPageUserDataButtonsTitle {
     display: none;

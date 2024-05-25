@@ -112,6 +112,7 @@ function requireHlsPlayer(callback) {
     import('hls.js/dist/hls.js').then(({ default: hls }) => {
         hls.DefaultConfig.lowLatencyMode = false;
         hls.DefaultConfig.backBufferLength = Infinity;
+        hls.DefaultConfig.liveBackBufferLength = 90;
         window.Hls = hls;
         callback();
     });
@@ -744,8 +745,8 @@ export class HtmlVideoPlayer {
 
         return profiles.some(function (p) {
             return p.Type === 'Video'
-                    && includesAny((p.Container || '').toLowerCase(), container)
-                    && includesAny((p.AudioCodec || '').toLowerCase(), codec);
+                && includesAny((p.Container || '').toLowerCase(), container)
+                && includesAny((p.AudioCodec || '').toLowerCase(), codec);
         });
     }
 
@@ -1840,11 +1841,11 @@ export class HtmlVideoPlayer {
         if (document.AirPlayEnabled) {
             if (video) {
                 if (isEnabled) {
-                    video.requestAirPlay().catch(function(err) {
+                    video.requestAirPlay().catch(function (err) {
                         console.error('Error requesting AirPlay', err);
                     });
                 } else {
-                    document.exitAirPLay().catch(function(err) {
+                    document.exitAirPLay().catch(function (err) {
                         console.error('Error exiting AirPlay', err);
                     });
                 }

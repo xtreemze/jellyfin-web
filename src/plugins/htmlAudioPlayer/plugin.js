@@ -53,6 +53,7 @@ function requireHlsPlayer(callback) {
     import('hls.js/dist/hls.js').then(({ default: hls }) => {
         hls.DefaultConfig.lowLatencyMode = false;
         hls.DefaultConfig.backBufferLength = Infinity;
+        hls.DefaultConfig.liveBackBufferLength = 1000 * 60 * 12;
         window.Hls = hls;
         callback();
     });
@@ -262,8 +263,6 @@ class HtmlAudioPlayer {
 
                 document.body.appendChild(elem);
             }
-            window.myMediaElement = elem;
-            waveSurferInitialization();
 
             elem.volume = htmlMediaHelper.getSavedVolume();
 
@@ -271,6 +270,8 @@ class HtmlAudioPlayer {
 
             addGainElement(elem);
 
+            window.myMediaElement = elem;
+            waveSurferInitialization();
             return elem;
         }
 
@@ -281,16 +282,16 @@ class HtmlAudioPlayer {
                 const audioCtx = new AudioContext();
                 const source = audioCtx.createMediaElementSource(elem);
 
-                // For the visualizer
-                window.myAudioContext = audioCtx;
-                window.mySourceNode = source;
-
                 const gainNode = audioCtx.createGain();
 
                 source.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
 
                 self.gainNode = gainNode;
+
+                // For the visualizer
+                window.myAudioContext = audioCtx;
+                window.mySourceNode = source;
             } catch (e) {
                 console.error('Web Audio API is not supported in this browser', e);
             }

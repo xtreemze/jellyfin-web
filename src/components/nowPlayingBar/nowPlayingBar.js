@@ -424,7 +424,7 @@ function updateTimeDisplay(positionTicks, runtimeTicks, bufferedRanges) {
 function updatePlayerVolumeState(isMuted, volumeLevel) {
     const supportedCommands = currentPlayerSupportedCommands;
 
-    let showMuteButton = true;
+    let showMuteButton = false;
     let showVolumeSlider = true;
 
     if (supportedCommands.indexOf('ToggleMute') === -1) {
@@ -442,7 +442,7 @@ function updatePlayerVolumeState(isMuted, volumeLevel) {
 
     if (currentPlayer.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {
         showMuteButton = false;
-        showVolumeSlider = false;
+        showVolumeSlider = true;
     }
 
     muteButton.classList.toggle('hide', !showMuteButton);
