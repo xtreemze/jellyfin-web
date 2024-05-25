@@ -32,6 +32,7 @@ export default function (view) {
         if (player !== currentPlayer) {
             releaseCurrentPlayer();
             currentPlayer = player;
+            waveSurferInitialization();
         }
     }
 
