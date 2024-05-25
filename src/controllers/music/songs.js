@@ -26,7 +26,7 @@ export default function (view, params, tabContent) {
                     Fields: 'ParentId',
                     StartIndex: 0,
                     ImageTypeLimit: 1,
-                    EnableImageTypes: 'Primary'
+                    EnableImageTypes: 'Primary,Disc'
                 }
             };
 

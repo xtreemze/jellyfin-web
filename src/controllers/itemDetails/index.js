@@ -1253,7 +1253,7 @@ function renderSimilarItems(page, item, context) {
                 coverImage: item.Type == 'MusicAlbum' || item.Type == 'MusicArtist',
                 overlayPlayButton: true,
                 overlayText: false,
-                showYear: item.Type === 'Movie' || item.Type === 'Trailer' || item.Type === 'Series'
+                showYear: item.Type == 'MusicAlbum' || item.Type === 'Movie' || item.Type === 'Trailer' || item.Type === 'Series'
             });
             const similarContent = similarCollapsible.querySelector('.similarContent');
             similarContent.innerHTML = html;

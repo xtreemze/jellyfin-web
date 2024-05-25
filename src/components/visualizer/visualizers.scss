@@ -16,11 +16,17 @@
 
 @media (min-width: 690px) {
 
-    #inputSurfer,
+    #inputSurfer {
+        height: 5rem;
+        margin-bottom: 1rem;
+        margin-top: -0.5rem;
+        max-width: 75vw;
+    }
+
     #simpleSlider {
-        height: 3rem;
-        margin-top: 0rem;
-        margin-bottom: 3.5rem;
+        height: 2rem;
+        margin-bottom: 0rem;
+        margin-top: 1rem;
         max-width: 75vw;
     }
 }
@@ -67,6 +73,16 @@
         background-image: none;
     }
 
+    #playlist>div:hover>div.listViewUserDataButtons,
+    #playlist>div:hover>span {
+        opacity: 1;
+    }
+
+    #playlist>div>div.listViewUserDataButtons,
+    #playlist>div>span {
+        opacity: 0;
+    }
+
     .nowPlayingInfoControls>.infoContainer,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
@@ -97,10 +113,6 @@
         display: flex;
     }
 
-    html,
-    .skinHeader {
-        color: rgb(248 248 248);
-    }
 
     .itemsContainer-tv>.squareCard,
     .itemsContainer>.squareCard {
@@ -188,10 +200,6 @@
         font-size: 0.6em;
     }
 
-    .infoContainer.flex {
-        font-size: 1.2em;
-    }
-
     #playlist>button {
         height: 1.5rem;
     }
@@ -200,12 +208,6 @@
         background-size: 2em !important;
         bottom: 0.3em;
         opacity: unset;
-    }
-
-    .detailPageWrapperContainer {
-        background-color: #00000082;
-        margin-top: -5rem;
-        padding-top: 5rem;
     }
 
     .listItemBodyText {
@@ -217,8 +219,33 @@
         direction: ltr;
     }
 
-    .playlistSection,
-    .infoContainer.flex {
-        filter: drop-shadow(2px 2px 2px rgba(19, 19, 19, 0.822));
+    // .playlistSection,
+    // .infoContainer.flex {
+    // filter: drop-shadow(2px 2px 2px rgba(19, 19, 19, 0.822));
+    // }
+}
+
+@media (min-width: 1600px) {
+    #reactRoot>canvas {
+        position: fixed;
+        transform: rotate(-90deg);
+        right: 0;
+        bottom: -39vh;
+        width: 100vh;
+        height: 100vw;
+    }
+}
+
+@media (min-width: 1910px) {
+    #inputSurfer,
+    #simpleSlider {
+        bottom: 29vh;
+        left: 75.75rem;
+        right: 15;
+        height: 30rem;
+        margin: 0px;
+        position: fixed;
+        transform: rotate(90deg);
+        width: 101vh;
     }
 }

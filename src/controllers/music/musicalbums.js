@@ -33,13 +33,13 @@ export default function (view, params, tabContent) {
         if (!pageData) {
             pageData = {
                 query: {
-                    SortBy: 'SortName',
+                    SortBy: 'Random',
                     SortOrder: 'Ascending',
                     IncludeItemTypes: 'MusicAlbum',
                     Recursive: true,
                     Fields: 'PrimaryImageAspectRatio,SortName',
                     ImageTypeLimit: 1,
-                    EnableImageTypes: 'Primary,Backdrop,Banner,Thumb',
+                    EnableImageTypes: 'Primary,Disc,Backdrop,Banner,Thumb',
                     StartIndex: 0
                 },
                 view: userSettings.getSavedView(key) || 'Poster'

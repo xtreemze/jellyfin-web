@@ -4,29 +4,31 @@ import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 
 const surferOptions = {
     container: '#inputSurfer',
-    media: window.myMediaElement,
     dragToSeek: false,
     interact: true,
     normalize: false,
     cursorColor: 'rgb(25, 213, 11)',
     cursorWidth: 2,
     barWidth: 2,
+    gap: 1,
     autoplay: true,
     hideScrollbar: true,
-    autoScroll: true,
-    autoCenter: true,
-    minPxPerSec: 200,
+    autoScroll: false,
+    autoCenter: false,
+    minPxPerSec: 30,
     width: '100%',
     plugins: [
         TimelinePlugin.create({
             secondaryLabelOpacity: 0.37,
             insertPosition: 'afterend',
-            height: 15
+            height: 18,
+            primaryLabelInterval: 30,
+            secondaryLabelInterval: 5
         }),
         ZoomPlugin.create({
             scale: 0.1,
-            maxZoom: 700,
-            deltaThreshold: 10
+            maxZoom: 690,
+            deltaThreshold: 12
         })
     ],
     splitChannels: [

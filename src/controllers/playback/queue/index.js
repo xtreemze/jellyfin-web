@@ -7,6 +7,7 @@ import '../../../elements/emby-collapse/emby-collapse';
 import '../../../elements/emby-input/emby-input';
 import '../../../elements/emby-itemscontainer/emby-itemscontainer';
 import '../../../elements/emby-slider/emby-slider';
+import { waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 
 export default function (view) {
     const remoteControl = new RemoteControl();
@@ -31,6 +32,7 @@ export default function (view) {
         if (player !== currentPlayer) {
             releaseCurrentPlayer();
             currentPlayer = player;
+            waveSurferInitialization();
         }
     }
 

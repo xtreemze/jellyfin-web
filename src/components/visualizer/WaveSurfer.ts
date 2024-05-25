@@ -7,9 +7,11 @@ let waveSurferInstance: WaveSurfer;
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
 
-let currentZoom = surferOptions.minPxPerSec || 200;
-const maxZoom = 700;
-const minZoom = 1.05;
+let currentZoom = 90;
+const maxZoom = 690;
+const minZoom = 1.01;
+
+let mobileTouch = false;
 
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
@@ -26,15 +28,8 @@ function waveSurferInitialization() {
     }
     resetVisibility();
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
-        media: window.myMediaElement
-        // minPxPerSec: currentZoom
-    });
-    waveSurferInstance.once('redrawcomplete', () => {
-        findElements();
-        if (inputSurfer && simpleSlider) {
-            simpleSlider.hidden = true;
-            inputSurfer.hidden = false;
-        }
+        media: window.myMediaElement,
+        duration: window.myMediaElement.duration
     });
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waveSurferInstance.play();
@@ -49,6 +44,7 @@ function waveSurferInitialization() {
     }
 
     function onTouchStart(e: TouchEvent): void {
+        mobileTouch = true;
         if (e.touches.length === 1) {
             waveSurferInstance.setOptions({
                 autoScroll: false,
@@ -65,7 +61,7 @@ function waveSurferInitialization() {
     }
 
     function onTouchMove(e: TouchEvent): void {
-        const MIN_DELTA = 15; // Define a threshold for minimal significant distance change
+        const MIN_DELTA = 8; // Define a threshold for minimal significant distance change
 
         if (e.touches.length === 2 && initialDistance !== null) {
             const currentDistance = getDistance(e.touches);
@@ -96,20 +92,38 @@ function waveSurferInitialization() {
         if (e.touches.length < 2) {
             initialDistance = null;
         }
+        mobileTouch = false;
     }
 
-    waveSurferInstance.on('ready', () => {
+    waveSurferInstance.once('ready', () => {
+        findElements();
+        if (inputSurfer && simpleSlider) {
+            simpleSlider.hidden = true;
+            inputSurfer.hidden = false;
+        }
+        waveSurferInstance.setScroll(0);
+        waveSurferInstance.zoom(currentZoom);
+        waveSurferInstance.setOptions({
+            autoScroll: true,
+            autoCenter: true
+        });
         if (!inputSurfer) return;
         inputSurfer.addEventListener('touchstart', onTouchStart);
         inputSurfer.addEventListener('touchmove', onTouchMove);
         inputSurfer.addEventListener('touchend', onTouchEnd);
     });
 
-    waveSurferInstance.on('destroy', () => {
+    waveSurferInstance.on('zoom', (minPxPerSec)=>{
+        if (mobileTouch) return;
+        currentZoom = minPxPerSec;
+    });
+
+    waveSurferInstance.once('destroy', () => {
         if (!inputSurfer) return;
         inputSurfer.removeEventListener('touchstart', onTouchStart);
         inputSurfer.removeEventListener('touchmove', onTouchMove);
         inputSurfer.removeEventListener('touchend', onTouchEnd);
+        waveSurferInstance.unAll();
     });
 }
 

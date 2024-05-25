@@ -50,7 +50,7 @@ function getNowPlayingBarHtml() {
     html += '<div class="nowPlayingBar hide nowPlayingBar-hidden">';
 
     html += '<div class="nowPlayingBarTop">';
-    html += '<div id="wavesurfer" class="nowPlayingBarPositionContainer sliderContainer" dir="ltr">';
+    html += '<div class="nowPlayingBarPositionContainer sliderContainer" dir="ltr">';
     html += '<input type="range" is="emby-slider" pin step=".01" min="0" max="100" value="0" class="slider-medium-thumb nowPlayingBarPositionSlider" data-slider-keep-progress="true"/>';
     html += '</div>';
 
@@ -547,7 +547,7 @@ function updateNowPlayingInfo(state) {
         nowPlayingTextElement.appendChild(secondaryText);
     }
 
-    const imgHeight = 70;
+    const imgHeight = 96;
 
     const url = nowPlayingItem ? (seriesImageUrl(nowPlayingItem, {
         height: imgHeight
