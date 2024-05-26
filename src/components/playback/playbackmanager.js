@@ -22,6 +22,7 @@ import { MediaType } from '@jellyfin/sdk/lib/generated-client/models/media-type'
 
 import { MediaError } from 'types/mediaError';
 import { getMediaError } from 'utils/mediaError';
+import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 
 const UNLIMITED_ITEMS = -1;
 
@@ -3272,6 +3273,7 @@ class PlaybackManager {
          * @param {MediaError} error.type
          */
         function onPlaybackError(e, error) {
+            destroyWaveSurferInstance();
             const player = this;
             error = error || {};
 

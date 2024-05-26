@@ -114,18 +114,18 @@ function onSlideDownComplete() {
 }
 
 function slideDown(elem) {
-    // trigger reflow
-    void elem.offsetWidth;
     console.debug('wavesurfer destroy on slideDown in nowPlayingBar');
     destroyWaveSurferInstance();
+    // trigger reflow
+    void elem.offsetWidth;
 
     elem.classList.add('nowPlayingBar-hidden');
-    console.debug('wavesurfer initialize on slideDown in nowPlayingBar');
-    waveSurferInitialization();
 
     dom.addEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
     });
+    console.debug('wavesurfer initialize on slideDown in nowPlayingBar');
+    waveSurferInitialization();
 }
 
 function slideUp(elem) {

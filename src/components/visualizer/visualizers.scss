@@ -50,16 +50,16 @@
     }
 }
 
-.nowPlayingVolumeSliderContainer {
-    flex: 1;
-    flex-wrap: nowrap;
-}
+// .nowPlayingVolumeSliderContainer {
+//     flex: 1;
+//     flex-wrap: nowrap;
+// }
 
-.volumecontrol.hide {
-    display: flex;
-    flex: 1;
-    flex-wrap: nowrap;
-}
+// .volumecontrol.hide {
+//     display: flex;
+//     flex: 1;
+//     flex-wrap: nowrap;
+// }
 
 .nowPlayingInfoContainer {
     height: calc(98% - 4.2em);
@@ -109,10 +109,10 @@
         height: unset;
     }
 
-    .volumecontrol.hide {
-        display: unset;
-        flex: unset;
-    }
+    // .volumecontrol.hide {
+    //     display: unset;
+    //     flex: unset;
+    // }
 
     .playlist.vertical-list.nowPlayingPlaylist.hide {
         display: flex;

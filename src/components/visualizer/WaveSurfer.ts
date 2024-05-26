@@ -1,15 +1,17 @@
 import WaveSurfer from 'wavesurfer.js';
 import './visualizers.scss';
-import surferOptions from './WaveSurferOptions';
+import { waveSurferChannelStyle, surferOptions } from './WaveSurferOptions';
 
 let waveSurferInstance: WaveSurfer;
 
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
 
-let currentZoom = 90;
-const maxZoom = 690;
+const maxZoom = 60000;
 const minZoom = 1.01;
+const doubleChannelZoom = 200;
+const wholeSongZoom = 10;
+let currentZoom = 100;
 
 let mobileTouch = false;
 
@@ -41,23 +43,18 @@ function waveSurferInitialization() {
 
     function onTouchStart(e: TouchEvent): void {
         mobileTouch = true;
-        if (e.touches.length === 1) {
+        if (e.touches.length > 1) {
             waveSurferInstance.setOptions({
-                autoScroll: false,
-                autoCenter: false
+                interact: false
             });
-        }
-        if (e.touches.length === 2) {
             initialDistance = getDistance(e.touches);
-            waveSurferInstance.setOptions({
-                autoScroll: true,
-                autoCenter: true
-            });
         }
     }
 
+    let lastTouchTime = 0; // Track the last touch time
+
     function onTouchMove(e: TouchEvent): void {
-        const MIN_DELTA = 8; // Define a threshold for minimal significant distance change
+        const MIN_DELTA = 5; // Define a threshold for minimal significant distance change
 
         if (e.touches.length === 2 && initialDistance !== null) {
             const currentDistance = getDistance(e.touches);
@@ -72,45 +69,43 @@ function waveSurferInitialization() {
             if ((currentZoom * zoomFactor) > maxZoom) return;
             if ((currentZoom * zoomFactor) < minZoom) return;
 
-            currentZoom = currentZoom * zoomFactor;
-            waveSurferInstance.zoom(currentZoom);
+            const now = performance.now(); // Get the current time
 
-            // Update the initial distance for the next move event
-            initialDistance = currentDistance;
+            // Debounce logic with time difference check
+            if (now - lastTouchTime > 20) { // Update only if 300ms have passed since last touch
+                currentZoom = currentZoom * zoomFactor;
+                waveSurferInstance.zoom(currentZoom);
+                // Update the initial distance for the next move event
+                initialDistance = currentDistance;
+                lastTouchTime = now; // Update last touch time for next check
+            }
         }
     }
 
     function onTouchEnd(e: TouchEvent): void {
-        waveSurferInstance.setOptions({
-            autoScroll: surferOptions.autoScroll || true,
-            autoCenter: surferOptions.autoCenter || true
-        });
         if (e.touches.length < 2) {
             initialDistance = null;
         }
         mobileTouch = false;
+        initializeStyle(currentZoom);
     }
 
+    waveSurferInstance.on('zoom', (minPxPerSec)=>{
+        if (mobileTouch) return;
+        initializeStyle(minPxPerSec);
+        currentZoom = minPxPerSec;
+    });
+
     waveSurferInstance.once('ready', () => {
-        findElements();
+        initializeStyle(currentZoom);
+        setVisibility();
+        waveSurferInstance.zoom(currentZoom);
+        waveSurferInstance.setScroll(0);
         if (inputSurfer && simpleSlider) {
-            simpleSlider.hidden = true;
-            inputSurfer.hidden = false;
-            waveSurferInstance.setScroll(0);
-            waveSurferInstance.zoom(currentZoom);
-            waveSurferInstance.setOptions({
-                autoScroll: true,
-                autoCenter: true
-            });
             inputSurfer.addEventListener('touchstart', onTouchStart);
             inputSurfer.addEventListener('touchmove', onTouchMove);
             inputSurfer.addEventListener('touchend', onTouchEnd);
         }
-    });
-
-    waveSurferInstance.on('zoom', (minPxPerSec)=>{
-        if (mobileTouch) return;
-        currentZoom = minPxPerSec;
     });
 
     waveSurferInstance.once('destroy', () => {
@@ -119,6 +114,18 @@ function waveSurferInitialization() {
         inputSurfer.removeEventListener('touchmove', onTouchMove);
         inputSurfer.removeEventListener('touchend', onTouchEnd);
     });
+
+    function initializeStyle(minPxPerSec: number) {
+        if (minPxPerSec < doubleChannelZoom && minPxPerSec > wholeSongZoom) {
+            waveSurferInstance.setOptions(waveSurferChannelStyle.showSingleChannel);
+            return;
+        }
+        if (minPxPerSec > doubleChannelZoom && minPxPerSec > wholeSongZoom) {
+            waveSurferInstance.setOptions(waveSurferChannelStyle.showDoubleChannels);
+            return;
+        }
+        waveSurferInstance.setOptions(waveSurferChannelStyle.showWholeSong);
+    }
 }
 
 function destroyWaveSurferInstance() {
@@ -126,6 +133,12 @@ function destroyWaveSurferInstance() {
     if (waveSurferInstance) {
         waveSurferInstance.unAll();
         waveSurferInstance.destroy();
+    }
+}
+function setVisibility() {
+    if ( simpleSlider && inputSurfer) {
+        simpleSlider.hidden = true;
+        inputSurfer.hidden = false;
     }
 }
 
