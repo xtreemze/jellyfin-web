@@ -1,8 +1,29 @@
-#simpleSlider[hidden] {
+// #barSurfer[hidden],
+#simpleSlider[hidden],
+#inputSurfer[hidden] {
     display: none;
 }
 
-#inputSurfer[hidden] {
+#barSurfer>div.mdl-slider-background-flex-container,
+#barSurfer>input.nowPlayingBarPositionSlider,
+#barSurfer>div.sliderBubbleTrack {
+    display: none;
+}
+
+#barSurfer[hidden]>div.mdl-slider-background-flex-container,
+#barSurfer[hidden]>input.nowPlayingBarPositionSlider,
+#barSurfer[hidden]>div.sliderBubbleTrack {
+    display: unset;
+}
+
+#barSurfer ::part(wrapper) {
+    display: block;
+    width: 100vw;
+    user-select: none;
+    height: 0.8rem;
+}
+
+#barSurfer[hidden] ::part(wrapper) {
     display: none;
 }
 

@@ -52,7 +52,7 @@ function getNowPlayingBarHtml() {
     html += '<div class="nowPlayingBar hide nowPlayingBar-hidden">';
 
     html += '<div class="nowPlayingBarTop">';
-    html += '<div class="nowPlayingBarPositionContainer sliderContainer" dir="ltr">';
+    html += '<div id="barSurfer" class="nowPlayingBarPositionContainer sliderContainer" dir="ltr">';
     html += '<input type="range" is="emby-slider" pin step=".01" min="0" max="100" value="0" class="slider-medium-thumb nowPlayingBarPositionSlider" data-slider-keep-progress="true"/>';
     html += '</div>';
 
@@ -114,7 +114,7 @@ function onSlideDownComplete() {
 }
 
 function slideDown(elem) {
-    console.debug('wavesurfer destroy on slideDown in nowPlayingBar');
+    console.debug('wavesurfer destroy inputSurfer on slideDown in nowPlayingBar');
     destroyWaveSurferInstance();
     // trigger reflow
     void elem.offsetWidth;
@@ -124,11 +124,13 @@ function slideDown(elem) {
     dom.addEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
     });
-    console.debug('wavesurfer initialize on slideDown in nowPlayingBar');
-    waveSurferInitialization();
+    console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar');
+    waveSurferInitialization('#inputSurfer');
 }
 
 function slideUp(elem) {
+    console.debug('wavesurfer destroy barSurfer on slideUp in nowPlayingBar');
+    destroyWaveSurferInstance();
     dom.removeEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
     });
@@ -138,6 +140,8 @@ function slideUp(elem) {
     void elem.offsetWidth;
 
     elem.classList.remove('nowPlayingBar-hidden');
+    console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar');
+    waveSurferInitialization('#barSurfer');
 }
 
 function onPlayPauseClick() {

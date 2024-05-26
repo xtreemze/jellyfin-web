@@ -1,9 +1,14 @@
 import { WaveSurferOptions } from 'wavesurfer.js';
-import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
-import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 
 const white = 'rgb(240, 240, 240)';
 const transparentWhite = 'rgba(255, 255, 255, 0.3)';
+
+const color = {
+    progressLeft: 'rgb(20, 160, 160)',
+    progressRight: 'rgb(160, 20, 160)',
+    waveLeft: 'rgb(0, 180, 180)',
+    waveRight: 'rgb(180, 0, 180)'
+};
 
 const waveSurferChannelStyle = {
     showDoubleChannels: {
@@ -19,14 +24,14 @@ const waveSurferChannelStyle = {
         splitChannels: [
             {
                 height: 'auto',
-                waveColor: 'rgb(0, 180, 180)',
-                progressColor: 'rgb(20, 160, 160)',
+                waveColor: color.waveLeft,
+                progressColor: color.progressLeft,
                 barAlign: undefined
             },
             {
                 height: 'auto',
-                waveColor: 'rgb(180, 0, 180)',
-                progressColor: 'rgb(160, 20, 160)',
+                waveColor: color.waveRight,
+                progressColor: color.progressRight,
                 barAlign: undefined
             }
         ]
@@ -44,14 +49,14 @@ const waveSurferChannelStyle = {
         splitChannels: [
             {
                 height: 'auto',
-                waveColor: 'rgb(0, 180, 180)',
-                progressColor: 'rgb(20, 160, 160)',
+                waveColor: color.waveLeft,
+                progressColor: color.progressLeft,
                 barAlign: 'bottom'
             },
             {
                 height: 'auto',
-                waveColor: 'rgb(180, 0, 180)',
-                progressColor: 'rgb(160, 20, 160)',
+                waveColor: color.waveRight,
+                progressColor: color.progressRight,
                 barAlign: 'top'
             }
         ] } as Partial<WaveSurferOptions>,
@@ -78,6 +83,31 @@ const waveSurferChannelStyle = {
                 progressColor: white,
                 barAlign: 'top'
             }
+        ] } as Partial<WaveSurferOptions>,
+    bar: {
+        barWidth: 4,
+        barGap: 2,
+        cursorColor: 'rgb(25, 213, 11)',
+        cursorWidth: 6,
+        autoScroll: false,
+        autoCenter: false,
+        sampleRate: 3000,
+        interact: true,
+        dragToSeek: { debounceTime: 3000 },
+        splitChannels: [
+            {
+                height: 'auto',
+                waveColor: color.waveLeft,
+                progressColor: color.progressLeft,
+                overlay: true,
+                barAlign: undefined
+            },
+            {
+                height: 'auto',
+                waveColor: color.waveRight,
+                progressColor: color.progressRight,
+                barAlign: undefined
+            }
         ] } as Partial<WaveSurferOptions>
 };
 
@@ -92,21 +122,21 @@ const surferOptions = {
     autoCenter: false,
     sampleRate: 3000,
     minPxPerSec: 1,
-    width: '100%',
-    plugins: [
-        TimelinePlugin.create({
-            secondaryLabelOpacity: 0.37,
-            insertPosition: 'afterend',
-            height: 18,
-            primaryLabelInterval: 30,
-            secondaryLabelInterval: 5
-        }),
-        ZoomPlugin.create({
-            scale: 0.1,
-            maxZoom: 690,
-            deltaThreshold: 8
-        })
-    ]
+    width: '100%'
 } as WaveSurferOptions;
 
-export { surferOptions, waveSurferChannelStyle };
+const waveSurferPluginOptions = {
+    timelineOptions: {
+        secondaryLabelOpacity: 0.37,
+        height: 18,
+        primaryLabelInterval: 30,
+        secondaryLabelInterval: 5
+    },
+    zoomOptions:  {
+        scale: 0.1,
+        maxZoom: 690,
+        deltaThreshold: 8
+    }
+};
+
+export { surferOptions, waveSurferChannelStyle, waveSurferPluginOptions };

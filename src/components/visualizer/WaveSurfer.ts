@@ -1,11 +1,14 @@
 import WaveSurfer from 'wavesurfer.js';
 import './visualizers.scss';
-import { waveSurferChannelStyle, surferOptions } from './WaveSurferOptions';
+import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
+import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
+import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
 
 let waveSurferInstance: WaveSurfer;
 
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
+let barSurfer: HTMLElement | null;
 
 const maxZoom = 60000;
 const minZoom = 1.01;
@@ -18,19 +21,67 @@ let mobileTouch = false;
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
     simpleSlider = document.getElementById('simpleSlider');
+    barSurfer = document.getElementById('barSurfer');
 }
 
-function waveSurferInitialization() {
+function waveSurferInitialization(container: string) {
     findElements();
-    if (!inputSurfer && !simpleSlider) {
-        return;
-    }
     resetVisibility();
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
-        media: window.myMediaElement
+        media: window.myMediaElement,
+        container: container
     });
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waveSurferInstance.play();
+
+    waveSurferInstance.on('zoom', (minPxPerSec)=>{
+        if (mobileTouch) return;
+        initializeStyle(minPxPerSec);
+        currentZoom = minPxPerSec;
+    });
+
+    waveSurferInstance.once('ready', () => {
+        setVisibility();
+        if (container === '#barSurfer') {
+            waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
+            return;
+        }
+        initializeStyle(currentZoom);
+        waveSurferInstance.zoom(currentZoom);
+        waveSurferInstance.setScroll(0);
+        if (inputSurfer && simpleSlider) {
+            inputSurfer.addEventListener('touchstart', onTouchStart);
+            inputSurfer.addEventListener('touchmove', onTouchMove);
+            inputSurfer.addEventListener('touchend', onTouchEnd);
+        }
+        waveSurferInstance.registerPlugin(
+            TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
+        );
+        waveSurferInstance.registerPlugin(
+            ZoomPlugin.create(waveSurferPluginOptions.zoomOptions)
+        );
+    });
+
+    waveSurferInstance.once('destroy', () => {
+        if (!inputSurfer) return;
+        inputSurfer.removeEventListener('touchstart', onTouchStart);
+        inputSurfer.removeEventListener('touchmove', onTouchMove);
+        inputSurfer.removeEventListener('touchend', onTouchEnd);
+    });
+
+    function initializeStyle(minPxPerSec: number) {
+        if (minPxPerSec < doubleChannelZoom && minPxPerSec > wholeSongZoom) {
+            waveSurferInstance.setOptions(waveSurferChannelStyle.showSingleChannel);
+            return;
+        }
+        if (minPxPerSec > doubleChannelZoom && minPxPerSec > wholeSongZoom) {
+            waveSurferInstance.setOptions(waveSurferChannelStyle.showDoubleChannels);
+            return;
+        }
+        waveSurferInstance.setOptions(waveSurferChannelStyle.showWholeSong);
+    }
+
+    if (container === '#barSlider') return;
 
     let initialDistance: number | null = null;
 
@@ -89,43 +140,6 @@ function waveSurferInitialization() {
         mobileTouch = false;
         initializeStyle(currentZoom);
     }
-
-    waveSurferInstance.on('zoom', (minPxPerSec)=>{
-        if (mobileTouch) return;
-        initializeStyle(minPxPerSec);
-        currentZoom = minPxPerSec;
-    });
-
-    waveSurferInstance.once('ready', () => {
-        initializeStyle(currentZoom);
-        setVisibility();
-        waveSurferInstance.zoom(currentZoom);
-        waveSurferInstance.setScroll(0);
-        if (inputSurfer && simpleSlider) {
-            inputSurfer.addEventListener('touchstart', onTouchStart);
-            inputSurfer.addEventListener('touchmove', onTouchMove);
-            inputSurfer.addEventListener('touchend', onTouchEnd);
-        }
-    });
-
-    waveSurferInstance.once('destroy', () => {
-        if (!inputSurfer) return;
-        inputSurfer.removeEventListener('touchstart', onTouchStart);
-        inputSurfer.removeEventListener('touchmove', onTouchMove);
-        inputSurfer.removeEventListener('touchend', onTouchEnd);
-    });
-
-    function initializeStyle(minPxPerSec: number) {
-        if (minPxPerSec < doubleChannelZoom && minPxPerSec > wholeSongZoom) {
-            waveSurferInstance.setOptions(waveSurferChannelStyle.showSingleChannel);
-            return;
-        }
-        if (minPxPerSec > doubleChannelZoom && minPxPerSec > wholeSongZoom) {
-            waveSurferInstance.setOptions(waveSurferChannelStyle.showDoubleChannels);
-            return;
-        }
-        waveSurferInstance.setOptions(waveSurferChannelStyle.showWholeSong);
-    }
 }
 
 function destroyWaveSurferInstance() {
@@ -136,17 +150,15 @@ function destroyWaveSurferInstance() {
     }
 }
 function setVisibility() {
-    if ( simpleSlider && inputSurfer) {
-        simpleSlider.hidden = true;
-        inputSurfer.hidden = false;
-    }
+    if (inputSurfer) inputSurfer.hidden = false;
+    if (simpleSlider) simpleSlider.hidden = true;
+    if (barSurfer) barSurfer.hidden = false;
 }
 
 function resetVisibility() {
-    if ( simpleSlider && inputSurfer) {
-        simpleSlider.hidden = false;
-        inputSurfer.hidden = true;
-    }
+    if (simpleSlider) simpleSlider.hidden = false;
+    if (inputSurfer) inputSurfer.hidden = true;
+    if (barSurfer) barSurfer.hidden = true;
 }
 
 export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom };
