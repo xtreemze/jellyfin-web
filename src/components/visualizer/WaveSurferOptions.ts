@@ -7,14 +7,15 @@ const color = {
     progressLeft: 'rgb(20, 160, 160)',
     progressRight: 'rgb(160, 20, 160)',
     waveLeft: 'rgb(0, 180, 180)',
-    waveRight: 'rgb(180, 0, 180)'
+    waveRight: 'rgb(180, 0, 180)',
+    cursor: 'rgb(25, 213, 11)'
 };
 
 const waveSurferChannelStyle = {
     showDoubleChannels: {
         barWidth: undefined,
         barGap: undefined,
-        cursorColor: 'rgb(25, 213, 11)',
+        cursorColor: color.cursor,
         cursorWidth: 1,
         autoScroll: true,
         autoCenter: true,
@@ -39,7 +40,7 @@ const waveSurferChannelStyle = {
     showSingleChannel: {
         barWidth: 4,
         barGap: 2,
-        cursorColor: 'rgb(25, 213, 11)',
+        cursorColor: color.cursor,
         cursorWidth: 2,
         autoScroll: true,
         autoCenter: true,
@@ -63,7 +64,7 @@ const waveSurferChannelStyle = {
     showWholeSong: {
         barWidth: undefined,
         barGap: undefined,
-        cursorColor: 'rgb(25, 213, 11)',
+        cursorColor: color.cursor,
         cursorWidth: 1,
         autoScroll: false,
         autoCenter: false,
@@ -87,23 +88,23 @@ const waveSurferChannelStyle = {
     bar: {
         barWidth: 4,
         barGap: 2,
-        cursorColor: 'rgb(25, 213, 11)',
-        cursorWidth: 6,
+        cursorColor: color.cursor,
+        cursorWidth: 19,
         autoScroll: false,
         autoCenter: false,
         sampleRate: 3000,
         interact: true,
-        dragToSeek: { debounceTime: 3000 },
+        dragToSeek: { debounceTime: 300 },
         splitChannels: [
             {
                 height: 'auto',
                 waveColor: color.waveLeft,
                 progressColor: color.progressLeft,
-                overlay: true,
                 barAlign: undefined
             },
             {
                 height: 'auto',
+                overlay: true,
                 waveColor: color.waveRight,
                 progressColor: color.progressRight,
                 barAlign: undefined

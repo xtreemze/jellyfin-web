@@ -53,7 +53,7 @@ function getNowPlayingBarHtml() {
 
     html += '<div class="nowPlayingBarTop">';
     html += '<div id="barSurfer" class="nowPlayingBarPositionContainer sliderContainer" dir="ltr">';
-    html += '<input type="range" is="emby-slider" pin step=".01" min="0" max="100" value="0" class="slider-medium-thumb nowPlayingBarPositionSlider" data-slider-keep-progress="true"/>';
+    html += '<input id="barSlider" type="range" is="emby-slider" pin step=".01" min="0" max="100" value="0" class="slider-medium-thumb nowPlayingBarPositionSlider" data-slider-keep-progress="true"/>';
     html += '</div>';
 
     html += '<div class="nowPlayingBarInfoContainer">';
@@ -115,7 +115,7 @@ function onSlideDownComplete() {
 
 function slideDown(elem) {
     console.debug('wavesurfer destroy inputSurfer on slideDown in nowPlayingBar');
-    destroyWaveSurferInstance();
+    const legacy = destroyWaveSurferInstance();
     // trigger reflow
     void elem.offsetWidth;
 
@@ -124,13 +124,22 @@ function slideDown(elem) {
     dom.addEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
     });
-    console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar');
+
+    if (Math.floor(10000000 * legacy?.duration) === playbackManager.duration()) {
+        console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar with preserved legacy',
+            'manager: ', playbackManager.duration(), 'legacy: ', legacy.duration);
+        waveSurferInitialization('#inputSurfer', legacy);
+        return;
+    }
+    console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar without preserved legacy',
+        'manager: ', playbackManager.duration(), 'legacy: ', legacy?.duration);
+
     waveSurferInitialization('#inputSurfer');
 }
 
 function slideUp(elem) {
     console.debug('wavesurfer destroy barSurfer on slideUp in nowPlayingBar');
-    destroyWaveSurferInstance();
+    const legacy = destroyWaveSurferInstance();
     dom.removeEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
     });
@@ -140,7 +149,16 @@ function slideUp(elem) {
     void elem.offsetWidth;
 
     elem.classList.remove('nowPlayingBar-hidden');
-    console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar');
+
+    if (Math.floor(10000000 * legacy?.duration) === playbackManager.duration()) {
+        console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar with preserved legacy',
+            'manager: ', playbackManager.duration(), 'legacy: ', legacy.duration);
+        waveSurferInitialization('#barSurfer', legacy);
+        return;
+    }
+    console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar without preserved legacy',
+        'manager: ', playbackManager.duration(), 'legacy: ', legacy?.duration);
+
     waveSurferInitialization('#barSurfer');
 }
 
@@ -280,7 +298,13 @@ function bindEvents(elem) {
         return datetime.getDisplayRunningTime(ticks);
     };
 
-    elem.addEventListener('click', function (e) {
+    nowPlayingImageElement.addEventListener('click', function (e) {
+        if (!dom.parentWithTag(e.target, ['BUTTON', 'INPUT'])) {
+            showRemoteControl();
+        }
+    });
+
+    nowPlayingTextElement.addEventListener('click', function (e) {
         if (!dom.parentWithTag(e.target, ['BUTTON', 'INPUT'])) {
             showRemoteControl();
         }

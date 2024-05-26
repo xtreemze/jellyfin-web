@@ -1,9 +1,7 @@
 // #barSurfer[hidden],
 #simpleSlider[hidden],
-#inputSurfer[hidden] {
-    display: none;
-}
-
+#inputSurfer[hidden],
+#barSurfer[hidden] ::part(wrapper),
 #barSurfer>div.mdl-slider-background-flex-container,
 #barSurfer>input.nowPlayingBarPositionSlider,
 #barSurfer>div.sliderBubbleTrack {
@@ -19,12 +17,11 @@
 #barSurfer ::part(wrapper) {
     display: block;
     width: 100vw;
-    user-select: none;
-    height: 0.8rem;
 }
 
-#barSurfer[hidden] ::part(wrapper) {
-    display: none;
+#barSurfer ::part(cursor) {
+    border-radius: 10px;
+    ;
 }
 
 #inputSurfer,
@@ -34,6 +31,18 @@
     margin-bottom: 3.5rem;
     max-width: 85vw;
 }
+
+.nowPlayingVolumeSliderContainer {
+    flex: 1;
+    flex-wrap: nowrap;
+}
+
+.volumecontrol.hide {
+    display: flex;
+    flex: 1;
+    flex-wrap: nowrap;
+}
+
 
 @media (min-width: 690px) {
 
@@ -71,16 +80,6 @@
     }
 }
 
-// .nowPlayingVolumeSliderContainer {
-//     flex: 1;
-//     flex-wrap: nowrap;
-// }
-
-// .volumecontrol.hide {
-//     display: flex;
-//     flex: 1;
-//     flex-wrap: nowrap;
-// }
 
 .nowPlayingInfoContainer {
     height: calc(98% - 4.2em);

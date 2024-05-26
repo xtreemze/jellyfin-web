@@ -4,17 +4,22 @@ import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
 
+type WaveSurferLegacy = {peaks: number[][], duration: number};
+
 let waveSurferInstance: WaveSurfer;
 
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
 
+let savedPeaks: number[][];
+
 const maxZoom = 60000;
 const minZoom = 1.01;
 const doubleChannelZoom = 200;
 const wholeSongZoom = 10;
 let currentZoom = 100;
+let savedDuration = 0;
 
 let mobileTouch = false;
 
@@ -24,12 +29,14 @@ function findElements() {
     barSurfer = document.getElementById('barSurfer');
 }
 
-function waveSurferInitialization(container: string) {
+function waveSurferInitialization(container: string, legacy?: WaveSurferLegacy ) {
     findElements();
     resetVisibility();
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
         media: window.myMediaElement,
-        container: container
+        container: container,
+        peaks: legacy?.peaks || undefined,
+        duration: legacy?.duration || undefined
     });
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waveSurferInstance.play();
@@ -40,7 +47,9 @@ function waveSurferInitialization(container: string) {
         currentZoom = minPxPerSec;
     });
 
-    waveSurferInstance.once('ready', () => {
+    waveSurferInstance.once('ready', (duration) => {
+        savedDuration = duration;
+        savedPeaks = waveSurferInstance.exportPeaks();
         setVisibility();
         if (container === '#barSurfer') {
             waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
@@ -142,11 +151,15 @@ function waveSurferInitialization(container: string) {
     }
 }
 
-function destroyWaveSurferInstance() {
+function destroyWaveSurferInstance(): WaveSurferLegacy | undefined {
     resetVisibility();
     if (waveSurferInstance) {
+        const legacy = { peaks: savedPeaks,
+            duration: savedDuration
+        };
         waveSurferInstance.unAll();
         waveSurferInstance.destroy();
+        return legacy;
     }
 }
 function setVisibility() {
