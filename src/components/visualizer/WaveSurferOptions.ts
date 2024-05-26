@@ -1,7 +1,7 @@
 import { WaveSurferOptions } from 'wavesurfer.js';
 
 const white = 'rgb(240, 240, 240)';
-const transparentWhite = 'rgba(255, 255, 255, 0.3)';
+const transparentWhite = 'rgba(255, 255, 255, 0.6)';
 
 const color = {
     progressLeft: 'rgb(20, 160, 160)',
@@ -46,7 +46,7 @@ const waveSurferChannelStyle = {
         autoCenter: true,
         dragToSeek: false,
         interact: true,
-        sampleRate: 3000,
+        sampleRate: 4000,
         splitChannels: [
             {
                 height: 'auto',
@@ -68,7 +68,7 @@ const waveSurferChannelStyle = {
         cursorWidth: 1,
         autoScroll: false,
         autoCenter: false,
-        sampleRate: 3000,
+        sampleRate: 4000,
         interact: true,
         dragToSeek: false,
         splitChannels: [
@@ -92,7 +92,7 @@ const waveSurferChannelStyle = {
         cursorWidth: 19,
         autoScroll: false,
         autoCenter: false,
-        sampleRate: 3000,
+        sampleRate: 4000,
         interact: true,
         dragToSeek: { debounceTime: 300 },
         splitChannels: [
@@ -135,8 +135,8 @@ const waveSurferPluginOptions = {
     },
     zoomOptions:  {
         scale: 0.1,
-        maxZoom: 690,
-        deltaThreshold: 8
+        maxZoom: 60000,
+        deltaThreshold: 12
     }
 };
 

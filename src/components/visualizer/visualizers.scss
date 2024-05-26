@@ -129,10 +129,10 @@
         height: unset;
     }
 
-    // .volumecontrol.hide {
-    //     display: unset;
-    //     flex: unset;
-    // }
+    .volumecontrol.hide {
+        display: unset;
+        flex: unset;
+    }
 
     .playlist.vertical-list.nowPlayingPlaylist.hide {
         display: flex;
@@ -161,17 +161,20 @@
         direction: rtl;
     }
 
-    .playlistSection {
-        width: 32rem;
-        position: fixed;
-        right: 0rem;
-        bottom: 2rem;
-        font-size: 0.8em;
-        overflow: auto;
+    div.playlistSection {
+        bottom: 12rem;
+        font-size: .8em;
         padding: 1.5rem;
-        padding-right: 2rem;
         padding-left: 2.5rem;
+        padding-right: 2rem;
         padding-top: 2.5rem;
+        position: fixed;
+        right: 0;
+        width: 32rem;
+        scrollbar-width: none;
+        top: 10rem;
+        max-height: 100vh;
+        overflow: auto;
     }
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
