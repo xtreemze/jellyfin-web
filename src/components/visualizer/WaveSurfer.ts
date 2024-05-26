@@ -72,7 +72,7 @@ function waveSurferInitialization() {
             const now = performance.now(); // Get the current time
 
             // Debounce logic with time difference check
-            if (now - lastTouchTime > 20) { // Update only if 300ms have passed since last touch
+            if (now - lastTouchTime > 20) { // Update only if time have passed since last touch
                 currentZoom = currentZoom * zoomFactor;
                 waveSurferInstance.zoom(currentZoom);
                 // Update the initial distance for the next move event
