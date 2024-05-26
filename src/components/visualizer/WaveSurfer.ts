@@ -19,7 +19,6 @@ function findElements() {
 }
 
 function waveSurferInitialization() {
-    console.debug('wavesurfer initialized');
     findElements();
     if (!inputSurfer && !simpleSlider) {
         return;
@@ -97,17 +96,16 @@ function waveSurferInitialization() {
         if (inputSurfer && simpleSlider) {
             simpleSlider.hidden = true;
             inputSurfer.hidden = false;
+            waveSurferInstance.setScroll(0);
+            waveSurferInstance.zoom(currentZoom);
+            waveSurferInstance.setOptions({
+                autoScroll: true,
+                autoCenter: true
+            });
+            inputSurfer.addEventListener('touchstart', onTouchStart);
+            inputSurfer.addEventListener('touchmove', onTouchMove);
+            inputSurfer.addEventListener('touchend', onTouchEnd);
         }
-        waveSurferInstance.setScroll(0);
-        waveSurferInstance.zoom(currentZoom);
-        waveSurferInstance.setOptions({
-            autoScroll: true,
-            autoCenter: true
-        });
-        if (!inputSurfer) return;
-        inputSurfer.addEventListener('touchstart', onTouchStart);
-        inputSurfer.addEventListener('touchmove', onTouchMove);
-        inputSurfer.addEventListener('touchend', onTouchEnd);
     });
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
@@ -120,14 +118,13 @@ function waveSurferInitialization() {
         inputSurfer.removeEventListener('touchstart', onTouchStart);
         inputSurfer.removeEventListener('touchmove', onTouchMove);
         inputSurfer.removeEventListener('touchend', onTouchEnd);
-        waveSurferInstance.unAll();
     });
 }
 
 function destroyWaveSurferInstance() {
-    console.debug('wavesurfer destroyed');
+    resetVisibility();
     if (waveSurferInstance) {
-        resetVisibility();
+        waveSurferInstance.unAll();
         waveSurferInstance.destroy();
     }
 }

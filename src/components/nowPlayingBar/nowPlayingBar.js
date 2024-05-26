@@ -116,8 +116,12 @@ function onSlideDownComplete() {
 function slideDown(elem) {
     // trigger reflow
     void elem.offsetWidth;
+    console.debug('wavesurfer destroy on slideDown in nowPlayingBar');
+    destroyWaveSurferInstance();
 
     elem.classList.add('nowPlayingBar-hidden');
+    console.debug('wavesurfer initialize on slideDown in nowPlayingBar');
+    waveSurferInitialization();
 
     dom.addEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
@@ -128,7 +132,6 @@ function slideUp(elem) {
     dom.removeEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
     });
-
     elem.classList.remove('hide');
 
     // trigger reflow
@@ -612,12 +615,10 @@ function updateNowPlayingInfo(state) {
 }
 
 function onPlaybackStart(e, state) {
-    destroyWaveSurferInstance();
     console.debug('nowplaying event: ' + e.type);
     const player = this;
 
     onStateChanged.call(player, e, state);
-    waveSurferInitialization();
 }
 
 function onRepeatModeChange() {
@@ -671,7 +672,6 @@ function hideNowPlayingBar() {
 }
 
 function onPlaybackStopped(e, state) {
-    destroyWaveSurferInstance();
     console.debug('[nowPlayingBar:onPlaybackStopped] event: ' + e.type);
 
     const player = this;
