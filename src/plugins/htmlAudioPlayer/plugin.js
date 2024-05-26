@@ -6,7 +6,6 @@ import { getIncludeCorsCredentials } from '../../scripts/settings/webSettings';
 import { PluginType } from '../../types/plugin.ts';
 import Events from '../../utils/events.ts';
 import { MediaError } from 'types/mediaError';
-import { waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 
 function getDefaultProfile() {
     return profileBuilder({});
@@ -115,6 +114,7 @@ class HtmlAudioPlayer {
             console.debug('playing url: ' + val);
             import('../../scripts/settings/userSettings').then((userSettings) => {
                 let normalizationGain;
+                console.debug('volume ', window.myMediaElement.volume);
                 if (userSettings.selectAudioNormalization() == 'TrackGain') {
                     normalizationGain = options.item.NormalizationGain
                         ?? options.mediaSource.albumNormalizationGain;
@@ -129,7 +129,6 @@ class HtmlAudioPlayer {
                 } else {
                     self.gainNode.gain.value = 1;
                 }
-                console.debug('gain: ' + self.gainNode.gain.value);
             }).catch((err) => {
                 console.error('Failed to add/change gainNode', err);
             });
@@ -270,8 +269,6 @@ class HtmlAudioPlayer {
 
             addGainElement(elem);
 
-            window.myMediaElement = elem;
-            waveSurferInitialization();
             return elem;
         }
 
@@ -292,6 +289,7 @@ class HtmlAudioPlayer {
                 // For the visualizer
                 window.myAudioContext = audioCtx;
                 window.mySourceNode = source;
+                window.myMediaElement = elem;
             } catch (e) {
                 console.error('Web Audio API is not supported in this browser', e);
             }

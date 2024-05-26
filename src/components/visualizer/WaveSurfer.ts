@@ -19,9 +19,7 @@ function findElements() {
 }
 
 function waveSurferInitialization() {
-    if (waveSurferInstance) {
-        destroyWaveSurferInstance();
-    }
+    console.debug('wavesurfer initialized');
     findElements();
     if (!inputSurfer && !simpleSlider) {
         return;
@@ -127,6 +125,7 @@ function waveSurferInitialization() {
 }
 
 function destroyWaveSurferInstance() {
+    console.debug('wavesurfer destroyed');
     if (waveSurferInstance) {
         resetVisibility();
         waveSurferInstance.destroy();

@@ -34,14 +34,14 @@ const surferOptions = {
     splitChannels: [
         {
             height: 'auto',
-            waveColor: 'rgb(0, 100, 100)',
-            progressColor: 'rgba(0, 200, 200)',
+            waveColor: 'rgb(0, 180, 180)',
+            progressColor: 'rgb(20, 160, 160)',
             barAlign: 'bottom'
         },
         {
             height: 'auto',
-            waveColor: 'rgba(100, 0, 100)',
-            progressColor: 'rgb(200, 0, 200)',
+            waveColor: 'rgba(180, 0, 180)',
+            progressColor: 'rgba(160, 20, 160)',
             barAlign: 'top'
         }
     ]

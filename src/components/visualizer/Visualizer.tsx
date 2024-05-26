@@ -52,7 +52,6 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
         analyser.maxDecibels = -10;
 
         mySourceNode.connect(analyser);
-        analyser.connect(audioContext.destination);
         const canvas = canvasRef.current;
         if (canvas !== null) {
             const ctx = canvas.getContext('2d');
