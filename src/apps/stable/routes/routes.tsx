@@ -27,7 +27,7 @@ export const STABLE_APP_ROUTES: RouteObject[] = [
             },
 
             /* Public routes */
-            { index: true, loader: () => redirect('/home.html') },
+            { index: true, loader: () => redirect('/music.html') },
             ...LEGACY_PUBLIC_ROUTES.map(toViewManagerPageRoute)
         ]
     },
