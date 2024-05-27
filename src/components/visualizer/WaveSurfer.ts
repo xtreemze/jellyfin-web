@@ -15,9 +15,9 @@ let barSurfer: HTMLElement | null;
 let savedPeaks: number[][];
 
 const maxZoom = 60000;
-const minZoom = 1.01;
-const doubleChannelZoom = 200;
-const wholeSongZoom = 10;
+const minZoom = 1;
+const doubleChannelZoom = 180;
+const wholeSongZoom = 12;
 let currentZoom = 100;
 let savedDuration = 0;
 
@@ -45,6 +45,7 @@ function waveSurferInitialization(container: string, legacy?: WaveSurferLegacy )
         if (mobileTouch) return;
         initializeStyle(minPxPerSec);
         currentZoom = minPxPerSec;
+        if (minPxPerSec < 10) currentZoom = 1;
     });
 
     waveSurferInstance.once('ready', (duration) => {
