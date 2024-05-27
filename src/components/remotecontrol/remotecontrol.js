@@ -414,12 +414,12 @@ export default function () {
         }
 
         if (supportedCommands.indexOf('SetVolume') === -1) {
-            showVolumeSlider = false;
+            showVolumeSlider = true;
         }
 
         if (currentPlayer.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {
             showMuteButton = false;
-            showVolumeSlider = false;
+            showVolumeSlider = true;
         }
 
         const buttonMute = view.querySelector('.buttonMute');
@@ -787,7 +787,7 @@ export default function () {
             if (currentPlayer) {
                 if (playbackManager.isPlayingAudio(currentPlayer)) {
                     // Cancel this event if doubleclick is fired. The actual previousTrack will be processed by the 'dblclick' event
-                    if (e.detail > 1 ) {
+                    if (e.detail > 1) {
                         return;
                     }
 

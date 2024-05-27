@@ -125,6 +125,9 @@ function slideDown(elem) {
         once: true
     });
 
+    if (!currentPlayer) return;
+    if (!currentPlayer.isLocalPlayer) return;
+
     if (Math.floor(10000000 * legacy?.duration) === playbackManager.duration()) {
         console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar with preserved legacy',
             'manager: ', playbackManager.duration(), 'legacy: ', legacy.duration);
@@ -149,6 +152,9 @@ function slideUp(elem) {
     void elem.offsetWidth;
 
     elem.classList.remove('nowPlayingBar-hidden');
+
+    if (!currentPlayer) return;
+    if (!currentPlayer.isLocalPlayer) return;
 
     if (Math.floor(10000000 * legacy?.duration) === playbackManager.duration()) {
         console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar with preserved legacy',
@@ -469,7 +475,7 @@ function updatePlayerVolumeState(isMuted, volumeLevel) {
     muteButton.title = globalize.translate(isMuted ? 'Unmute' : 'Mute');
 
     if (supportedCommands.indexOf('SetVolume') === -1) {
-        showVolumeSlider = false;
+        showVolumeSlider = true;
     }
 
     if (currentPlayer.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {

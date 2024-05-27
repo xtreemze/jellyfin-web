@@ -867,7 +867,7 @@ export default function (view) {
 
         if (player.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {
             showMuteButton = false;
-            showVolumeSlider = false;
+            showVolumeSlider = true;
         }
 
         const buttonMute = view.querySelector('.buttonMute');
