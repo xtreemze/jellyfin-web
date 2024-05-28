@@ -1,6 +1,6 @@
 import { WaveSurferOptions } from 'wavesurfer.js';
 
-const white = 'rgb(240, 240, 240)';
+const white = 'rgb(245, 245, 245)';
 const transparentWhite = 'rgba(255, 255, 255, 0.6)';
 
 const color = {
