@@ -21,8 +21,8 @@ let savedPeaks: number[][];
 
 const maxZoom = 60000;
 const minZoom = 1;
-const doubleChannelZoom = 180;
-const wholeSongZoom = 12;
+const doubleChannelZoom = 150;
+const wholeSongZoom = 15;
 let currentZoom = 100;
 
 let mobileTouch = false;
@@ -113,9 +113,11 @@ function waveSurferInitialization(container: string, legacy?: WaveSurferLegacy )
 
     function onTouchStart(e: TouchEvent): void {
         mobileTouch = true;
-        if (e.touches.length > 1) {
+        if (e.touches.length > 0) {
             waveSurferInstance.setOptions({
-                interact: false
+                interact: false,
+                autoCenter: false,
+                autoScroll: false
             });
         }
         if (e.touches.length === 2) {
@@ -146,7 +148,6 @@ function waveSurferInitialization(container: string, legacy?: WaveSurferLegacy )
                 // Update the initial distance for the next move event
                 initialDistance = currentDistance;
                 lastTouchTime = now; // Update last touch time for next check
-                initializeStyle(currentZoom);
             }
         }
     }
@@ -155,6 +156,7 @@ function waveSurferInitialization(container: string, legacy?: WaveSurferLegacy )
         if (e.touches.length === 2) {
             initialDistance = null;
         }
+        initializeStyle(currentZoom);
         mobileTouch = false;
     }
 }
