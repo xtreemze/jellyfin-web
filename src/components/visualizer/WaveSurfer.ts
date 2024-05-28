@@ -5,10 +5,10 @@ import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
 
 type WaveSurferLegacy = {
-    peaks: number[][],
-    duration: number,
-    isPlaying: boolean,
-    currentTime: number
+    peaks: number[][] | undefined
+    duration: number | undefined
+    isPlaying: boolean | undefined
+    currentTime: number | undefined
 };
 
 let waveSurferInstance: WaveSurfer;
@@ -18,11 +18,12 @@ let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
 
 let savedPeaks: number[][];
+let savedDuration = 0;
 
 const maxZoom = 60000;
 const minZoom = 1;
 const doubleChannelZoom = 150;
-const wholeSongZoom = 15;
+const wholeSongZoom = 20;
 let currentZoom = 100;
 
 let mobileTouch = false;
@@ -37,32 +38,43 @@ function findElements() {
     barSurfer = document.getElementById('barSurfer');
 }
 
-function waveSurferInitialization(container: string, legacy?: WaveSurferLegacy ) {
+function isNewSong(newSongDuration: number) {
+    return (newSongDuration !== Math.floor(savedDuration * 10000000));
+}
+
+function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
     findElements();
     resetVisibility();
+    const newSong = isNewSong(newSongDuration);
+    console.debug('wavesurfer created. New song:', newSong, newSongDuration, Math.floor(savedDuration * 10000000));
+
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
         media: window.myMediaElement,
         container: container,
-        peaks: legacy?.peaks || undefined,
-        duration: legacy?.duration || undefined
+        peaks: newSong ? undefined : legacy?.peaks,
+        duration: newSong ? undefined : legacy?.duration
     });
+    if (legacy?.isPlaying === false && legacy?.currentTime && legacy?.duration) {
+        waveSurferInstance.seekTo(legacy.currentTime / legacy.duration);
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (legacy?.isPlaying) waveSurferInstance.play();
-    if (legacy?.isPlaying === false) waveSurferInstance.seekTo(legacy.currentTime / legacy?.duration);
+    if (legacy?.isPlaying === true) waveSurferInstance.play();
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
         initializeStyle(minPxPerSec);
-        if (minPxPerSec < 12) {
+        if (minPxPerSec < wholeSongZoom) {
             currentZoom = 1; // snap to show whole song
             return;
         }
         currentZoom = minPxPerSec;
     });
 
-    waveSurferInstance.once('ready', () => {
-        savedPeaks = waveSurferInstance.exportPeaks();
+    waveSurferInstance.once('ready', (duration) => {
         setVisibility();
+        savedDuration = duration;
+        savedPeaks = waveSurferInstance.exportPeaks();
         if (container === '#barSurfer') {
             waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
             return;
@@ -113,14 +125,12 @@ function waveSurferInitialization(container: string, legacy?: WaveSurferLegacy )
 
     function onTouchStart(e: TouchEvent): void {
         mobileTouch = true;
-        if (e.touches.length > 0) {
+        if (e.touches.length === 2) {
             waveSurferInstance.setOptions({
                 interact: false,
                 autoCenter: false,
                 autoScroll: false
             });
-        }
-        if (e.touches.length === 2) {
             initialDistance = getDistance(e.touches);
         }
     }
@@ -161,20 +171,21 @@ function waveSurferInitialization(container: string, legacy?: WaveSurferLegacy )
     }
 }
 
-function destroyWaveSurferInstance(): WaveSurferLegacy | undefined {
+function destroyWaveSurferInstance(): WaveSurferLegacy {
+    const legacy = {
+        peaks: savedPeaks || undefined,
+        duration: savedDuration || undefined,
+        isPlaying: waveSurferInstance?.isPlaying() || undefined,
+        currentTime: waveSurferInstance?.getCurrentTime() || undefined
+    };
     resetVisibility();
     if (waveSurferInstance) {
-        const legacy = {
-            peaks: savedPeaks,
-            duration: waveSurferInstance.getDuration(),
-            isPlaying: waveSurferInstance.isPlaying(),
-            currentTime: waveSurferInstance.getCurrentTime()
-        };
         waveSurferInstance.unAll();
         waveSurferInstance.destroy();
-        return legacy;
     }
+    return legacy;
 }
+
 function setVisibility() {
     if (inputSurfer) inputSurfer.hidden = false;
     if (simpleSlider) simpleSlider.hidden = true;

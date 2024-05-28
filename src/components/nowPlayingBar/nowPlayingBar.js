@@ -129,14 +129,8 @@ function slideDown(elem) {
     if (!currentPlayer.isLocalPlayer) return;
 
     // When opening the same song, preserve the player legacy
-    if (Math.floor(10000000 * legacy?.duration) === playbackManager.duration()) {
-        console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar with preserved legacy: ', legacy);
-        waveSurferInitialization('#inputSurfer', legacy);
-        return;
-    }
-    console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar without preserved legacy', legacy);
-
-    waveSurferInitialization('#inputSurfer');
+    console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar with preserved legacy: ', legacy);
+    waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
 }
 
 function slideUp(elem) {
@@ -156,14 +150,8 @@ function slideUp(elem) {
     if (!currentPlayer.isLocalPlayer) return;
 
     // When opening the same song, preserve the player legacy
-    if (Math.floor(10000000 * legacy?.duration) === playbackManager.duration()) {
-        console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar with preserved legacy: ', legacy);
-        waveSurferInitialization('#barSurfer', legacy);
-        return;
-    }
-    console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar without preserved legacy', legacy);
-
-    waveSurferInitialization('#barSurfer');
+    console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar with preserved legacy: ', legacy);
+    waveSurferInitialization('#barSurfer', legacy, playbackManager?.duration());
 }
 
 function onPlayPauseClick() {

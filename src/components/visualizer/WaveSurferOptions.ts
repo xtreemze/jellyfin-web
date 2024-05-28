@@ -1,14 +1,15 @@
 import { WaveSurferOptions } from 'wavesurfer.js';
 
-const white = 'rgb(245, 245, 245)';
-const transparentWhite = 'rgba(255, 255, 255, 0.6)';
-
 const color = {
     progressLeft: 'rgb(20, 160, 160)',
     progressRight: 'rgb(160, 20, 160)',
     waveLeft: 'rgb(0, 180, 180)',
     waveRight: 'rgb(180, 0, 180)',
-    cursor: 'rgb(25, 213, 11)'
+    cursor: 'rgb(25, 213, 11)',
+    black: 'rgb(10, 10, 10)',
+    transparentBlack: 'rgba(0, 0, 0, 0.6)',
+    white: 'rgb(245, 245, 245)',
+    transparentWhite: 'rgba(255, 255, 255, 0.6)'
 };
 
 const waveSurferChannelStyle = {
@@ -74,27 +75,28 @@ const waveSurferChannelStyle = {
         splitChannels: [
             {
                 height: 'auto',
-                waveColor: transparentWhite,
-                progressColor: white,
-                barAlign: 'bottom'
+                waveColor: color.transparentBlack,
+                progressColor: color.black,
+                barAlign: undefined
             },
             {
+                overlay: true,
                 height: 'auto',
-                waveColor: transparentWhite,
-                progressColor: white,
-                barAlign: 'top'
+                waveColor: color.transparentWhite,
+                progressColor: color.white,
+                barAlign: undefined
             }
         ] } as Partial<WaveSurferOptions>,
     bar: {
         barWidth: 4,
         barGap: 2,
         cursorColor: color.cursor,
-        cursorWidth: 19,
+        cursorWidth: 21,
         autoScroll: false,
         autoCenter: false,
         sampleRate: 4000,
         interact: true,
-        dragToSeek: { debounceTime: 300 },
+        dragToSeek: false,
         splitChannels: [
             {
                 height: 'auto',
