@@ -128,14 +128,13 @@ function slideDown(elem) {
     if (!currentPlayer) return;
     if (!currentPlayer.isLocalPlayer) return;
 
+    // When opening the same song, preserve the player legacy
     if (Math.floor(10000000 * legacy?.duration) === playbackManager.duration()) {
-        console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar with preserved legacy',
-            'manager: ', playbackManager.duration(), 'legacy: ', legacy.duration);
+        console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar with preserved legacy: ', legacy);
         waveSurferInitialization('#inputSurfer', legacy);
         return;
     }
-    console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar without preserved legacy',
-        'manager: ', playbackManager.duration(), 'legacy: ', legacy?.duration);
+    console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar without preserved legacy', legacy);
 
     waveSurferInitialization('#inputSurfer');
 }
@@ -156,14 +155,13 @@ function slideUp(elem) {
     if (!currentPlayer) return;
     if (!currentPlayer.isLocalPlayer) return;
 
+    // When opening the same song, preserve the player legacy
     if (Math.floor(10000000 * legacy?.duration) === playbackManager.duration()) {
-        console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar with preserved legacy',
-            'manager: ', playbackManager.duration(), 'legacy: ', legacy.duration);
+        console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar with preserved legacy: ', legacy);
         waveSurferInitialization('#barSurfer', legacy);
         return;
     }
-    console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar without preserved legacy',
-        'manager: ', playbackManager.duration(), 'legacy: ', legacy?.duration);
+    console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar without preserved legacy', legacy);
 
     waveSurferInitialization('#barSurfer');
 }
