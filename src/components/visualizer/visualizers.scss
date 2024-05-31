@@ -65,7 +65,7 @@
 
     #inputSurfer,
     #simpleSlider {
-        height: 38px;
+        height: 136px;
         margin: 0;
         position: fixed;
         left: 0;
@@ -94,8 +94,6 @@
     .backgroundContainer.withBackdrop {
         opacity: 0.8;
         transition: opacity 2s ease-in-out;
-        // background-color: rgb(0 0 0 / 12%);
-        // background-image: none;
     }
 
     #playlist>div:hover>div.listViewUserDataButtons,
@@ -214,10 +212,10 @@
     }
 
     .nowPlayingInfoContainer {
+        bottom: 12rem;
+        left: 6rem;
+        max-width: 60rem;
         position: fixed;
-        max-width: 70rem;
-        bottom: 4rem;
-        left: 5rem;
     }
 
     .sliderContainer.flex {
@@ -248,27 +246,10 @@
     }
 }
 
-// @media (min-width: 1600px) {
-//     #reactRoot>canvas {
-//         position: fixed;
-//         transform: rotate(-90deg);
-//         right: 0;
-//         bottom: -39vh;
-//         width: 100vh;
-//         height: 100vw;
-//     }
-// }
+@media (min-width: 1600px) {
 
-// @media (min-width: 12910px) { EXPERIMENTAL
-
-//     #inputSurfer {
-//         bottom: 29vh;
-//         left: 59vw;
-//         right: 0vw;
-//         height: 30rem;
-//         margin: 0px;
-//         position: fixed;
-//         transform: rotate(90deg);
-//         width: 101vh;
-//     }
-// }
+    .layout-desktop,
+    .scrollY {
+        scrollbar-width: none;
+    }
+}

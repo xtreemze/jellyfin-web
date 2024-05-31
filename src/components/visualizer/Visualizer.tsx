@@ -29,7 +29,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
         analyser.getByteFrequencyData(frequencyData);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = 'rgba(76, 36, 141, 0.546)';
+        ctx.fillStyle = 'rgba(70, 30, 130, 0.54)';
         ctx.globalCompositeOperation = 'difference';
 
         const minFrequency = 20; // Minimum frequency we care about (20 Hz)
@@ -61,10 +61,10 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
                 ctx.translate(ctx.canvas.width, ctx.canvas.height);
                 ctx.rotate(-0.5 * Math.PI);
                 // ctx.scale(1, -1);
-                ctx.fillRect(barPositionX, -barHeight, barWidth / 1.2, barHeight);
+                ctx.fillRect(barPositionX, -barHeight, barWidth / 1.1, barHeight);
                 ctx.restore();
             } else {
-                ctx.fillRect(barPositionX, ctx.canvas.height - barHeight, barWidth / 1.2, barHeight);
+                ctx.fillRect(barPositionX, ctx.canvas.height - barHeight, barWidth / 1.1, barHeight);
             }
         }
 
@@ -78,8 +78,8 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
 
         analyser.fftSize = 8192;
         analyser.smoothingTimeConstant = 0.75;
-        analyser.minDecibels = -110;
-        analyser.maxDecibels = 0;
+        analyser.minDecibels = -100;
+        analyser.maxDecibels = 96;
 
         mySourceNode.connect(analyser);
         const canvas = canvasRef.current;
