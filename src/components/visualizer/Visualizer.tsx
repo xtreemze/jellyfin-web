@@ -16,14 +16,14 @@ window.myAudioContext = window.myAudioContext || new AudioContext();
 
 const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioContext, mediaElement = window.myMediaElement, mySourceNode = window.mySourceNode }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-
     const draw = useCallback((analyser: AnalyserNode, ctx: CanvasRenderingContext2D, defaultBarHeight: number) => {
         // Don't update the visualizer if the tab is not in focus or the screen is off
         if (document.hidden || document.visibilityState !== 'visible') {
             return;
         }
 
-        const numberOfBars = Math.floor(window.innerWidth / 48);
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const numberOfBars = Math.floor((isLandscape ? window.innerHeight : window.innerWidth) / 48);
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
         analyser.getByteFrequencyData(frequencyData);
@@ -31,8 +31,6 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillStyle = 'rgba(76, 36, 141, 0.546)';
         ctx.globalCompositeOperation = 'difference';
-
-        const barWidth = window.innerWidth / (numberOfBars + 1); // Adjusted for equal gaps
 
         const minFrequency = 20; // Minimum frequency we care about (20 Hz)
         const maxFrequency = analyser.context.sampleRate / 2; // Maximum frequency (Nyquist frequency)
@@ -53,10 +51,21 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
 
             // Calculate the average frequency for this bar
             const averageFrequency = sumOfFrequencies / (maxBinIndex - minBinIndex);
-            const barHeight = averageFrequency / 256 * ctx.canvas.height + defaultBarHeight;
+            const barWidth = (isLandscape ? window.innerHeight : window.innerWidth) / (numberOfBars + 1); // Adjusted for equal gaps
+            const barHeight = averageFrequency / 256 * (isLandscape ? ctx.canvas.width : ctx.canvas.height) + defaultBarHeight;
             const barPositionX = (barIndex + 0.5) * barWidth; // Adjusted for equal gaps
 
-            ctx.fillRect(barPositionX, ctx.canvas.height - barHeight, barWidth / 1.2, barHeight);
+            if (isLandscape) {
+                ctx.save();
+                // ctx.translate(ctx.canvas.width / 2, 0);
+                ctx.translate(ctx.canvas.width, ctx.canvas.height);
+                ctx.rotate(-0.5 * Math.PI);
+                // ctx.scale(1, -1);
+                ctx.fillRect(barPositionX, -barHeight, barWidth / 1.2, barHeight);
+                ctx.restore();
+            } else {
+                ctx.fillRect(barPositionX, ctx.canvas.height - barHeight, barWidth / 1.2, barHeight);
+            }
         }
 
         requestAnimationFrame(() => draw(analyser, ctx, defaultBarHeight));
@@ -68,9 +77,9 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
         const analyser = audioContext.createAnalyser();
 
         analyser.fftSize = 8192;
-        analyser.smoothingTimeConstant = 0.8;
+        analyser.smoothingTimeConstant = 0.75;
         analyser.minDecibels = -110;
-        analyser.maxDecibels = -10;
+        analyser.maxDecibels = 0;
 
         mySourceNode.connect(analyser);
         const canvas = canvasRef.current;
@@ -78,7 +87,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            draw(analyser, ctx, 19);
+            draw(analyser, ctx, 24);
         }
     }, [audioContext, mediaElement, mySourceNode, draw]);
 
