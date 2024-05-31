@@ -7,7 +7,6 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 import AppBody from 'components/AppBody';
 import ElevationScroll from 'components/ElevationScroll';
-import { DRAWER_WIDTH } from 'components/ResponsiveDrawer';
 import { useApi } from 'hooks/useApi';
 
 import AppToolbar from './components/AppToolbar';
@@ -35,12 +34,7 @@ const AppLayout = () => {
                     position='fixed'
                     sx={{
                         width: {
-                            xs: '100%',
-                            md: isDrawerAvailable ? `calc(100% - ${DRAWER_WIDTH}px)` : '100%'
-                        },
-                        ml: {
-                            xs: 0,
-                            md: isDrawerAvailable ? DRAWER_WIDTH : 0
+                            xs: '100%'
                         }
                     }}
                 >
