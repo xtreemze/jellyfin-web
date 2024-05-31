@@ -35,7 +35,7 @@ const ResponsiveDrawer: FC<ResponsiveDrawerProps> = ({
                     boxSizing: 'border-box'
                 }
             }}
-            variant='permanent'
+            variant='persistent'
             anchor='left'
         >
             {children}
