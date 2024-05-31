@@ -248,16 +248,16 @@
     }
 }
 
-@media (min-width: 1600px) {
-    #reactRoot>canvas {
-        position: fixed;
-        transform: rotate(-90deg);
-        right: 0;
-        bottom: -39vh;
-        width: 100vh;
-        height: 100vw;
-    }
-}
+// @media (min-width: 1600px) {
+//     #reactRoot>canvas {
+//         position: fixed;
+//         transform: rotate(-90deg);
+//         right: 0;
+//         bottom: -39vh;
+//         width: 100vh;
+//         height: 100vw;
+//     }
+// }
 
 // @media (min-width: 12910px) { EXPERIMENTAL
 
