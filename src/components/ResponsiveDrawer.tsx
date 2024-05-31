@@ -48,7 +48,7 @@ const ResponsiveDrawer: FC<ResponsiveDrawerProps> = ({
             onClose={onClose}
             onOpen={onOpen}
             // Disable swipe to open on iOS since it interferes with back navigation
-            disableDiscovery={browser.iOS}
+            disableDiscovery={browser.mobile}
             ModalProps={{
                 keepMounted: true // Better open performance on mobile.
             }}
