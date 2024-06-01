@@ -114,7 +114,6 @@ class HtmlAudioPlayer {
             console.debug('playing url: ' + val);
             import('../../scripts/settings/userSettings').then((userSettings) => {
                 let normalizationGain;
-                console.debug('volume ', window.myMediaElement.volume);
                 if (userSettings.selectAudioNormalization() == 'TrackGain') {
                     normalizationGain = options.item.NormalizationGain
                         ?? options.mediaSource.albumNormalizationGain;
@@ -258,6 +257,7 @@ class HtmlAudioPlayer {
             if (!elem) {
                 elem = document.createElement('audio');
                 elem.classList.add('mediaPlayerAudio');
+                elem.id = 'currentMediaElement';
                 elem.classList.add('hide');
 
                 document.body.appendChild(elem);
@@ -289,7 +289,6 @@ class HtmlAudioPlayer {
                 // For the visualizer
                 window.myAudioContext = audioCtx;
                 window.mySourceNode = source;
-                window.myMediaElement = elem;
             } catch (e) {
                 console.error('Web Audio API is not supported in this browser', e);
             }

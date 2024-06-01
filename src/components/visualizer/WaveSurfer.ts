@@ -16,6 +16,7 @@ let waveSurferInstance: WaveSurfer;
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
+let mediaElement: HTMLMediaElement | null;
 
 let savedPeaks: number[][];
 let savedDuration = 0;
@@ -36,6 +37,7 @@ function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
     simpleSlider = document.getElementById('simpleSlider');
     barSurfer = document.getElementById('barSurfer');
+    mediaElement = document.getElementById('currentMediaElement') as HTMLMediaElement || null;
 }
 
 function isNewSong(newSongDuration: number) {
@@ -45,11 +47,12 @@ function isNewSong(newSongDuration: number) {
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
     findElements();
     resetVisibility();
+    if (!mediaElement) return;
     const newSong = isNewSong(newSongDuration);
     console.debug('wavesurfer created. New song:', newSong, newSongDuration, Math.floor(savedDuration * 10000000));
 
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
-        media: window.myMediaElement,
+        media: mediaElement,
         container: container,
         peaks: newSong ? undefined : legacy?.peaks,
         duration: newSong ? undefined : legacy?.duration
