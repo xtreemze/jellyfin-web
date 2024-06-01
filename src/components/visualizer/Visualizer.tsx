@@ -3,20 +3,31 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 
 declare global {
-    interface Window { myAudioContext: AudioContext; myMediaElement: HTMLMediaElement; mySourceNode: AudioNode }
+    interface Window {
+        myAudioContext: AudioContext
+        mySourceNode: AudioNode
+    }
 }
 
 type VisualizerProps = {
-    audioContext?: AudioContext;
-    mediaElement?: HTMLMediaElement;
-    mySourceNode?: AudioNode;
+    audioContext?: AudioContext
+    mySourceNode?: AudioNode
 };
 
 window.myAudioContext = window.myAudioContext || new AudioContext();
 
-const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioContext, mediaElement = window.myMediaElement, mySourceNode = window.mySourceNode }) => {
+const Visualizer: React.FC<VisualizerProps> = ({
+    audioContext = window.myAudioContext,
+    mySourceNode = window.mySourceNode
+}) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const draw = useCallback((analyser: AnalyserNode, ctx: CanvasRenderingContext2D, defaultBarHeight: number) => {
+    const canvas = canvasRef.current || document.getElementById('visualizer') as HTMLCanvasElement;
+
+    const draw = useCallback((
+        analyser: AnalyserNode,
+        ctx: CanvasRenderingContext2D,
+        defaultBarHeight: number
+    ) => {
         // Don't update the visualizer if the tab is not in focus or the screen is off
         if (document.hidden || document.visibilityState !== 'visible') {
             return;
@@ -29,7 +40,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
         analyser.getByteFrequencyData(frequencyData);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = 'rgba(70, 30, 130, 0.54)';
+        ctx.fillStyle = 'rgba(70, 30, 120, 0.45)';
         ctx.globalCompositeOperation = 'difference';
 
         const minFrequency = 20; // Minimum frequency we care about (20 Hz)
@@ -57,10 +68,8 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
 
             if (isLandscape) {
                 ctx.save();
-                // ctx.translate(ctx.canvas.width / 2, 0);
                 ctx.translate(ctx.canvas.width, ctx.canvas.height);
                 ctx.rotate(-0.5 * Math.PI);
-                // ctx.scale(1, -1);
                 ctx.fillRect(barPositionX, -barHeight, barWidth / 1.1, barHeight);
                 ctx.restore();
             } else {
@@ -72,39 +81,43 @@ const Visualizer: React.FC<VisualizerProps> = ({ audioContext = window.myAudioCo
     }, []);
 
     useEffect(() => {
-        if (!audioContext || !mediaElement || !mySourceNode) return;
+        if (!audioContext || !mySourceNode) return;
 
         const analyser = audioContext.createAnalyser();
 
         analyser.fftSize = 8192;
         analyser.smoothingTimeConstant = 0.75;
-        analyser.minDecibels = -100;
-        analyser.maxDecibels = 96;
+        analyser.minDecibels = -102;
+        analyser.maxDecibels = 102;
 
         mySourceNode.connect(analyser);
-        const canvas = canvasRef.current;
         if (canvas !== null) {
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            draw(analyser, ctx, 24);
+            draw(analyser, ctx, 72);
         }
-    }, [audioContext, mediaElement, mySourceNode, draw]);
+    }, [audioContext, mySourceNode, canvas, draw]);
 
     useEffect(() => {
         const resizeCanvas = () => {
-            if (canvasRef.current) {
-                canvasRef.current.width = window.innerWidth;
-                canvasRef.current.height = window.innerHeight;
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
             }
         };
 
         window.addEventListener('resize', resizeCanvas);
         return () => window.removeEventListener('resize', resizeCanvas);
-    }, []);
+    }, [canvas]);
 
     return (
-        <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight} />
+        <canvas
+            id='visualizer'
+            ref={canvasRef}
+            width={window.innerWidth}
+            height={window.innerHeight}
+        />
     );
 };
 

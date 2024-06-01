@@ -13,9 +13,10 @@ import AppToolbar from './components/AppToolbar';
 import AppDrawer, { isDrawerPath } from './components/drawers/AppDrawer';
 
 import './AppOverrides.scss';
+import Visualizer from 'components/visualizer/Visualizer';
 
 const AppLayout = () => {
-    const [ isDrawerActive, setIsDrawerActive ] = useState(false);
+    const [isDrawerActive, setIsDrawerActive] = useState(false);
     const { user } = useApi();
     const location = useLocation();
 
@@ -25,7 +26,7 @@ const AppLayout = () => {
 
     const onToggleDrawer = useCallback(() => {
         setIsDrawerActive(!isDrawerActive);
-    }, [ isDrawerActive, setIsDrawerActive ]);
+    }, [isDrawerActive, setIsDrawerActive]);
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -66,6 +67,7 @@ const AppLayout = () => {
                 <AppBody>
                     <Outlet />
                 </AppBody>
+                <Visualizer />
             </Box>
         </Box>
     );

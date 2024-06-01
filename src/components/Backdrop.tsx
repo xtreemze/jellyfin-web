@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import React, { useEffect } from 'react';
-import Visualizer from './visualizer/Visualizer';
 
 const Backdrop = () => {
     useEffect(() => {
@@ -10,7 +9,6 @@ const Backdrop = () => {
 
     return (
         <>
-            <Visualizer />
             <Box
                 className='backdropContainer'
             />
