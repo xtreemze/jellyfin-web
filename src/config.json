@@ -1,12 +1,7 @@
 {
   "includeCorsCredentials": false,
-  "multiserver": false,
+  "multiserver": true,
   "themes": [
-    {
-      "name": "Apple TV",
-      "id": "appletv",
-      "color": "#bcbcbc"
-    },
     {
       "name": "Blue Radiance",
       "id": "blueradiance",
@@ -27,27 +22,23 @@
       "id": "purplehaze",
       "color": "#000420",
       "default": true
-    },
-    {
-      "name": "WMC",
-      "id": "wmc",
-      "color": "#0c2450"
     }
   ],
-  "menuLinks": [],
+  "menuLinks": [
+    {
+      "name": "Local Server",
+      "url": "http://192.168.0.199:8096"
+    }
+  ],
   "servers": [
-    "192.168.0.199:8096",
-    "localhost:8096"
+    "http://80.217.111.124:8096",
+    "http://192.168.0.199:8096"
   ],
   "plugins": [
     "playAccessValidation/plugin",
     "experimentalWarnings/plugin",
     "htmlAudioPlayer/plugin",
     "htmlVideoPlayer/plugin",
-    "photoPlayer/plugin",
-    "youtubePlayer/plugin",
-    "backdropScreensaver/plugin",
-    "logoScreensaver/plugin",
     "sessionPlayer/plugin",
     "chromecastPlayer/plugin",
     "syncPlay/plugin"
