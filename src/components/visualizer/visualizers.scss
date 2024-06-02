@@ -109,7 +109,9 @@ canvas#visualizer {
 
     .nowPlayingInfoControls>.infoContainer,
     header,
-    div.skinBody,
+    div#itemDetailPage,
+    div#musicPage,
+    div#indexPage,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 2s ease-in-out;
@@ -117,7 +119,9 @@ canvas#visualizer {
 
     body.mouseIdle .nowPlayingInfoControls>.infoContainer,
     body.mouseIdle header,
-    body.mouseIdle div.skinBody,
+    body.mouseIdle div#itemDetailPage,
+    body.mouseIdle div#musicPage,
+    body.mouseIdle div#indexPage,
     body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
         transition: opacity 7s ease-out;
@@ -141,15 +145,9 @@ canvas#visualizer {
         display: flex;
     }
 
-
     .itemsContainer-tv>.squareCard,
     .itemsContainer>.squareCard {
         width: calc(100%/5);
-    }
-
-    body.mouseIdle .skinHeader {
-        opacity: 0.001;
-        transition: opacity 2s ease-in-out;
     }
 
     .listItemImage,
