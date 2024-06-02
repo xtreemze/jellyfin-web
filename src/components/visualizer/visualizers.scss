@@ -42,6 +42,10 @@ canvas#visualizer {
     height: calc(98% - 4.2em);
 }
 
+.padPagination {
+    padding-bottom: 12rem;
+}
+
 /* Medium devices (tablets, 690px and up) */
 @media (min-width: 690px) {
     #inputSurfer {
