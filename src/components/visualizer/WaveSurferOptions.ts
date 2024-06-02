@@ -22,7 +22,7 @@ const waveSurferChannelStyle = {
         autoCenter: true,
         dragToSeek: false,
         interact: false,
-        sampleRate: 4000,
+        sampleRate: 8000,
         splitChannels: [
             {
                 height: 'auto',
@@ -47,7 +47,7 @@ const waveSurferChannelStyle = {
         autoCenter: true,
         dragToSeek: false,
         interact: true,
-        sampleRate: 4000,
+        sampleRate: 8000,
         splitChannels: [
             {
                 height: 'auto',
@@ -69,7 +69,7 @@ const waveSurferChannelStyle = {
         cursorWidth: 1,
         autoScroll: true,
         autoCenter: true,
-        sampleRate: 4000,
+        sampleRate: 8000,
         interact: true,
         dragToSeek: false,
         splitChannels: [
@@ -94,7 +94,7 @@ const waveSurferChannelStyle = {
         cursorWidth: 21,
         autoScroll: false,
         autoCenter: false,
-        sampleRate: 4000,
+        sampleRate: 8000,
         interact: true,
         dragToSeek: false,
         splitChannels: [
