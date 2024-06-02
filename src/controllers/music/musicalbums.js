@@ -236,7 +236,10 @@ export default function (view, params, tabContent) {
 
         tabElement.querySelector('.btnSort').addEventListener('click', (e) => {
             libraryBrowser.showSortMenu({
-                items: [{
+                items: [ {
+                    name: globalize.translate('OptionRandom'),
+                    id: 'Random,SortName'
+                }, {
                     name: globalize.translate('Name'),
                     id: 'SortName'
                 }, {
@@ -254,9 +257,6 @@ export default function (view, params, tabContent) {
                 }, {
                     name: globalize.translate('OptionReleaseDate'),
                     id: 'ProductionYear,PremiereDate,SortName'
-                }, {
-                    name: globalize.translate('OptionRandom'),
-                    id: 'Random,SortName'
                 }],
                 callback: function () {
                     getQuery().StartIndex = 0;
@@ -289,7 +289,7 @@ export default function (view, params, tabContent) {
     onViewStyleChange();
 
     this.renderTab = () => {
-        reloadItems();
+        // reloadItems();
         this.alphaPicker?.updateControls(getQuery());
     };
 }
