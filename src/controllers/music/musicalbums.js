@@ -260,7 +260,7 @@ export default function (view, params, tabContent) {
                 }],
                 callback: function () {
                     getQuery().StartIndex = 0;
-                    reloadItems();
+                    // reloadItems();
                 },
                 query: getQuery(),
                 button: e.target
@@ -278,7 +278,7 @@ export default function (view, params, tabContent) {
             userSettings.saveViewSetting(getSavedQueryKey(), viewStyle);
             getQuery().StartIndex = 0;
             onViewStyleChange();
-            reloadItems();
+            // reloadItems();
         });
 
         tabElement.querySelector('.btnPlayAll').addEventListener('click', playAll);
