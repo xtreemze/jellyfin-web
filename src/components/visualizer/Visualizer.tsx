@@ -40,7 +40,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
         analyser.getByteFrequencyData(frequencyData);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = 'rgb(70, 30, 120)';
+        ctx.fillStyle = 'rgb(90, 60, 140)';
         ctx.globalCompositeOperation = 'difference';
 
         const minFrequency = 20; // Minimum frequency we care about (20 Hz)
@@ -95,7 +95,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            draw(analyser, ctx, 64);
+            draw(analyser, ctx, 62);
         }
     }, [audioContext, mySourceNode, canvas, draw]);
 
