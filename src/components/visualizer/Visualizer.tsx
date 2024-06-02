@@ -40,7 +40,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
         analyser.getByteFrequencyData(frequencyData);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = 'rgba(70, 30, 120, 0.45)';
+        ctx.fillStyle = 'rgb(70, 30, 120)';
         ctx.globalCompositeOperation = 'difference';
 
         const minFrequency = 20; // Minimum frequency we care about (20 Hz)
