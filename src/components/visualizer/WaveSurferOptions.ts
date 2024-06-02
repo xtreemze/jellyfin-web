@@ -123,7 +123,7 @@ const surferOptions = {
     hideScrollbar: true,
     autoScroll: false,
     autoCenter: false,
-    sampleRate: 3000,
+    sampleRate: 8000,
     minPxPerSec: 1,
     width: '100%'
 } as WaveSurferOptions;
