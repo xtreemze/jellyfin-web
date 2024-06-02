@@ -1,8 +1,8 @@
-import type { Theme } from '@mui/material/styles';
+// import type { Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
+// import Drawer from '@mui/material/Drawer';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import useMediaQuery from '@mui/material/useMediaQuery';
+// import useMediaQuery from '@mui/material/useMediaQuery';
 import React, { FC } from 'react';
 
 import browser from 'scripts/browser';
@@ -21,26 +21,27 @@ const ResponsiveDrawer: FC<ResponsiveDrawerProps> = ({
     onClose,
     onOpen
 }) => {
-    const isMediumScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
+    // const isMediumScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 
-    return ( isMediumScreen ? (
-        /* DESKTOP DRAWER */
-        <Drawer
-            sx={{
-                width: DRAWER_WIDTH,
-                flexShrink: 0,
-                '& .MuiDrawer-paper': {
-                    width: DRAWER_WIDTH,
-                    paddingBottom: '4.2rem', // Padding for now playing bar
-                    boxSizing: 'border-box'
-                }
-            }}
-            variant='persistent'
-            anchor='left'
-        >
-            {children}
-        </Drawer>
-    ) : (
+    return (
+        //     isMediumScreen ? (
+        //     /* DESKTOP DRAWER */
+        //     <Drawer
+        //         sx={{
+        //             width: DRAWER_WIDTH,
+        //             flexShrink: 0,
+        //             '& .MuiDrawer-paper': {
+        //                 width: DRAWER_WIDTH,
+        //                 paddingBottom: '4.2rem', // Padding for now playing bar
+        //                 boxSizing: 'border-box'
+        //             }
+        //         }}
+        //         variant='persistent'
+        //         anchor='left'
+        //     >
+        //         {children}
+        //     </Drawer>
+        // ) : (
         /* MOBILE DRAWER */
         <SwipeableDrawer
             anchor='left'
@@ -62,7 +63,8 @@ const ResponsiveDrawer: FC<ResponsiveDrawerProps> = ({
                 {children}
             </Box>
         </SwipeableDrawer>
-    ));
+        // )
+    );
 };
 
 export default ResponsiveDrawer;

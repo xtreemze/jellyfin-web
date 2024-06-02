@@ -85,8 +85,9 @@
     height: calc(98% - 4.2em);
 }
 
-#reactRoot>canvas {
+canvas#visualizer {
     position: fixed;
+    z-index: -1;
 }
 
 
@@ -107,12 +108,16 @@
     }
 
     .nowPlayingInfoControls>.infoContainer,
+    header,
+    div.skinBody,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 2s ease-in-out;
     }
 
     body.mouseIdle .nowPlayingInfoControls>.infoContainer,
+    body.mouseIdle header,
+    body.mouseIdle div.skinBody,
     body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
         transition: opacity 7s ease-out;
@@ -120,7 +125,7 @@
 
     body.mouseIdle .backgroundContainer.withBackdrop {
         opacity: 0.2;
-        transition: opacity 2s ease-in-out;
+        transition: opacity 7s ease-in-out;
     }
 
     .nowPlayingInfoContainer {
