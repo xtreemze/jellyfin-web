@@ -95,7 +95,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
 
-            draw(analyser, ctx, 72);
+            draw(analyser, ctx, 64);
         }
     }, [audioContext, mySourceNode, canvas, draw]);
 
