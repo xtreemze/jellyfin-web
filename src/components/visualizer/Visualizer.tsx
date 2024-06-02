@@ -34,7 +34,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
         }
 
         const isLandscape = window.innerWidth > window.innerHeight;
-        const numberOfBars = Math.floor((isLandscape ? window.innerHeight : window.innerWidth) / 48);
+        const numberOfBars = Math.floor((isLandscape ? window.innerHeight : window.innerWidth) / 32);
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
         analyser.getByteFrequencyData(frequencyData);
