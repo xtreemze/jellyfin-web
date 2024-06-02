@@ -1,6 +1,6 @@
 {
   "includeCorsCredentials": false,
-  "multiserver": true,
+  "multiserver": false,
   "themes": [
     {
       "name": "Blue Radiance",
@@ -28,15 +28,15 @@
     {
       "name": "Local Server",
       "url": "http://192.168.0.199:8096"
+    },
+    {
+      "name": "Internet Server",
+      "url": "http://80.217.111.124:8096"
     }
   ],
-  "servers": [
-    "http://80.217.111.124:8096",
-    "http://192.168.0.199:8096"
-  ],
+  "servers": [],
   "plugins": [
     "playAccessValidation/plugin",
-    "experimentalWarnings/plugin",
     "htmlAudioPlayer/plugin",
     "htmlVideoPlayer/plugin",
     "sessionPlayer/plugin",
