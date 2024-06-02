@@ -1,4 +1,4 @@
-// #barSurfer[hidden],
+/* Base styles for mobile-first approach */
 #simpleSlider[hidden],
 #inputSurfer[hidden],
 #barSurfer[hidden] ::part(wrapper),
@@ -8,12 +8,6 @@
     display: none;
 }
 
-#barSurfer[hidden]>div.mdl-slider-background-flex-container,
-#barSurfer[hidden]>input.nowPlayingBarPositionSlider,
-#barSurfer[hidden]>div.sliderBubbleTrack {
-    display: unset;
-}
-
 #barSurfer ::part(wrapper) {
     display: block;
     width: 100vw;
@@ -21,7 +15,6 @@
 
 #barSurfer ::part(cursor) {
     border-radius: 10px;
-    ;
 }
 
 #inputSurfer,
@@ -32,20 +25,24 @@
     max-width: 85vw;
 }
 
-.nowPlayingVolumeSliderContainer {
-    flex: 1;
-    flex-wrap: nowrap;
-}
-
+.nowPlayingVolumeSliderContainer,
 .volumecontrol.hide {
     display: flex;
     flex: 1;
     flex-wrap: nowrap;
 }
 
+canvas#visualizer {
+    position: fixed;
+    z-index: -1;
+}
 
+.nowPlayingInfoContainer {
+    height: calc(98% - 4.2em);
+}
+
+/* Medium devices (tablets, 690px and up) */
 @media (min-width: 690px) {
-
     #inputSurfer {
         height: 5rem;
         margin-bottom: 1rem;
@@ -61,6 +58,7 @@
     }
 }
 
+/* Large devices (desktops, 1600px and up) */
 @media (min-width: 1600px) {
 
     #inputSurfer,
@@ -78,25 +76,34 @@
         padding-left: 5rem;
         padding-right: 5rem;
     }
-}
 
-
-.nowPlayingInfoContainer {
-    height: calc(98% - 4.2em);
-}
-
-canvas#visualizer {
-    position: fixed;
-    z-index: -1;
-}
-
-
-@media(min-width:1600px) {
-    .backgroundContainer.withBackdrop {
-        opacity: 0.8;
+    /* Additional styles for large devices */
+    .backgroundContainer.withBackdrop,
+    .nowPlayingInfoControls>.infoContainer,
+    header,
+    div#itemDetailPage,
+    div#musicPage,
+    div#indexPage,
+    .nowPlayingInfoContainer>.nowPlayingPageImageContainer,
+    .layout-desktop,
+    .scrollY {
+        opacity: 1;
         transition: opacity 2s ease-in-out;
+        scrollbar-width: none;
     }
 
+    body.mouseIdle .backgroundContainer.withBackdrop,
+    body.mouseIdle .nowPlayingInfoControls>.infoContainer,
+    body.mouseIdle header,
+    body.mouseIdle div#itemDetailPage,
+    body.mouseIdle div#musicPage,
+    body.mouseIdle div#indexPage,
+    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+        opacity: 0.2;
+        transition: opacity 7s ease-in-out;
+    }
+
+    /* Hover effects */
     #playlist>div:hover>div.listViewUserDataButtons,
     #playlist>div:hover>span {
         opacity: 1;
@@ -107,152 +114,22 @@ canvas#visualizer {
         opacity: 0;
     }
 
-    .nowPlayingInfoControls>.infoContainer,
-    header,
-    div#itemDetailPage,
-    div#musicPage,
-    div#indexPage,
-    .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        opacity: 1;
-        transition: opacity 2s ease-in-out;
-    }
-
-    body.mouseIdle .nowPlayingInfoControls>.infoContainer,
-    body.mouseIdle header,
-    body.mouseIdle div#itemDetailPage,
-    body.mouseIdle div#musicPage,
-    body.mouseIdle div#indexPage,
-    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        opacity: 0;
-        transition: opacity 7s ease-out;
-    }
-
-    body.mouseIdle .backgroundContainer.withBackdrop {
-        opacity: 0.2;
-        transition: opacity 7s ease-in-out;
-    }
-
-    .nowPlayingInfoContainer {
-        height: unset;
-    }
-
-    .volumecontrol.hide {
-        display: unset;
-        flex: unset;
-    }
-
-    .playlist.vertical-list.nowPlayingPlaylist.hide {
-        display: flex;
-    }
-
-    .itemsContainer-tv>.squareCard,
-    .itemsContainer>.squareCard {
-        width: calc(100%/5);
-    }
-
-    .listItemImage,
-    #playlist>div>div.listItemImage.itemAction.lazy {
-        opacity: 0;
-        animation: none;
-    }
-
-    body.mouseIdle .playlistSection {
-        width: 16.5rem;
-        opacity: 1;
-        direction: rtl;
-    }
-
+    /* Fixed positioning for certain elements */
+    .nowPlayingInfoContainer,
+    .sliderContainer.flex,
     div.playlistSection {
-        bottom: 12rem;
-        font-size: .8em;
-        padding: 1.5rem;
-        padding-left: 2.5rem;
-        padding-right: 2rem;
-        padding-top: 2.5rem;
         position: fixed;
-        right: 0;
-        width: 32rem;
-        scrollbar-width: none;
-        top: 10rem;
-        max-height: 100vh;
-        overflow: auto;
+        bottom: 12rem;
+        max-width: 60rem;
+        left: 6rem;
     }
 
-    .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        width: 400px;
-        margin-right: 3rem;
-    }
-
-    .mediaInfoItem {
-        min-width: 1.5rem;
-    }
-
-    .listItem.listItem-border {
-        border: none !important;
-        border-style: none !important;
-        border-color: rgb(255 255 255 / 0%) !important;
-    }
-
-    .nowPlayingInfoContainer>.nowPlayingInfoControls {
-        justify-content: flex-end;
-    }
-
-    .nowPlayingInfoContainerMedia {
-        margin-bottom: 0;
-    }
-
-    body::-webkit-scrollbar,
+    /* Visibility toggles for idle mouse state */
     body.mouseIdle .nowPlayingInfoContainer>.nowPlayingInfoControls>.nowPlayingButtonsContainer,
     body.mouseIdle .playlistSection>div.playlistSectionButton,
     body.mouseIdle .listViewUserDataButtons,
     body.mouseIdle .listViewDragHandle.material-icons.listItemIcon.drag_handle,
     body.mouseIdle .remoteControlSection {
         display: none;
-    }
-
-    html {
-        scrollbar-width: none;
-    }
-
-    .nowPlayingInfoContainer {
-        bottom: 12rem;
-        left: 6rem;
-        max-width: 60rem;
-        position: fixed;
-    }
-
-    .sliderContainer.flex {
-        position: fixed;
-        bottom: 1rem;
-        left: 2.8rem;
-        right: 2.8rem;
-        font-size: 0.6em;
-    }
-
-    #playlist>button {
-        height: 1.5rem;
-    }
-
-    .listItemImage.playlistIndexIndicatorImage {
-        background-size: 2em !important;
-        bottom: 0.3em;
-        opacity: unset;
-    }
-
-    .listItemBodyText {
-        margin: 0;
-        overflow: hidden;
-        padding: .1em 0;
-        text-overflow: ellipsis;
-        white-space: pre;
-        direction: ltr;
-    }
-}
-
-@media (min-width: 1600px) {
-
-    .layout-desktop,
-    .scrollY {
-        scrollbar-width: none;
     }
 }
