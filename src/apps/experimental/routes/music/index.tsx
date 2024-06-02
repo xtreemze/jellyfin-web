@@ -11,6 +11,7 @@ import { MusicSuggestionsSectionsView } from 'types/sections';
 const albumArtistsTabContent: LibraryTabContent = {
     viewType: LibraryTab.AlbumArtists,
     collectionType: CollectionType.Music,
+    isAlphabetPickerEnabled: true,
     isBtnSortEnabled: true
 };
 
@@ -26,7 +27,8 @@ const albumsTabContent: LibraryTabContent = {
 const artistsTabContent: LibraryTabContent = {
     viewType: LibraryTab.Artists,
     collectionType: CollectionType.Music,
-    isBtnSortEnabled: false
+    isAlphabetPickerEnabled: true,
+    isBtnSortEnabled: true
 };
 
 const playlistsTabContent: LibraryTabContent = {
