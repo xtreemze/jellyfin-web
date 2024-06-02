@@ -85,7 +85,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
 
         const analyser = audioContext.createAnalyser();
 
-        analyser.fftSize = 8192;
+        analyser.fftSize = 16384;
         analyser.smoothingTimeConstant = 0.75;
         analyser.minDecibels = -102;
         analyser.maxDecibels = 102;
