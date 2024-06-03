@@ -16,7 +16,7 @@ export default function (view, params, tabContent, options) {
 
         if (!pageData) {
             const queryValues = {
-                SortBy: 'Random',
+                SortBy: 'SortName',
                 SortOrder: 'Ascending',
                 Recursive: true,
                 Fields: 'PrimaryImageAspectRatio,SortName',

@@ -437,7 +437,7 @@
     width: 30em;
 }
 
-.smallBackdropPosterItem .cardOverlayInner>div {
+.smallBackdropPosterItem .cardOverlayInner > div {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -448,7 +448,7 @@
     background-image: url(../../assets/img/equalizer.gif) !important;
 }
 
-.playlistIndexIndicatorImage>* {
+.playlistIndexIndicatorImage > * {
     display: none;
 }
 
@@ -465,7 +465,6 @@
 }
 
 @media all and (max-width: 63em) {
-
     .nowPlayingInfoButtons .playlist .listItemMediaInfo,
     .nowPlayingInfoButtons .btnStop {
         display: none !important;

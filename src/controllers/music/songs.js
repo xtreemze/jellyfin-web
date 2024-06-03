@@ -19,14 +19,14 @@ export default function (view, params, tabContent) {
         if (!pageData) {
             pageData = data[key] = {
                 query: {
-                    SortBy: 'Random,SortName',
+                    SortBy: 'Album,SortName',
                     SortOrder: 'Ascending',
                     IncludeItemTypes: 'Audio',
                     Recursive: true,
                     Fields: 'ParentId',
                     StartIndex: 0,
                     ImageTypeLimit: 1,
-                    EnableImageTypes: 'Primary,Disc'
+                    EnableImageTypes: 'Primary'
                 }
             };
 
