@@ -114,7 +114,6 @@ function onSlideDownComplete() {
 }
 
 function slideDown(elem) {
-    console.debug('wavesurfer destroy inputSurfer on slideDown in nowPlayingBar');
     const legacy = destroyWaveSurferInstance();
     // trigger reflow
     void elem.offsetWidth;
@@ -129,12 +128,10 @@ function slideDown(elem) {
     if (!currentPlayer.isLocalPlayer) return;
 
     // When opening the same song, preserve the player legacy
-    console.debug('wavesurfer initialize inputSurfer on slideDown in nowPlayingBar with preserved legacy: ', legacy);
     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
 }
 
 function slideUp(elem) {
-    console.debug('wavesurfer destroy barSurfer on slideUp in nowPlayingBar');
     const legacy = destroyWaveSurferInstance();
     dom.removeEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
@@ -150,7 +147,6 @@ function slideUp(elem) {
     if (!currentPlayer.isLocalPlayer) return;
 
     // When opening the same song, preserve the player legacy
-    console.debug('wavesurfer initialize barSurfer on slideUp in nowPlayingBar with preserved legacy: ', legacy);
     waveSurferInitialization('#barSurfer', legacy, playbackManager?.duration());
 }
 
