@@ -33,13 +33,13 @@ export default function (view, params, tabContent) {
         if (!pageData) {
             pageData = {
                 query: {
-                    SortBy: 'Random',
+                    SortBy: 'SortName',
                     SortOrder: 'Ascending',
                     IncludeItemTypes: 'MusicAlbum',
                     Recursive: true,
                     Fields: 'PrimaryImageAspectRatio,SortName',
                     ImageTypeLimit: 1,
-                    EnableImageTypes: 'Primary,Disc,Backdrop,Banner,Thumb',
+                    EnableImageTypes: 'Primary,Backdrop,Banner,Thumb',
                     StartIndex: 0
                 },
                 view: userSettings.getSavedView(key) || 'Poster'
@@ -236,10 +236,7 @@ export default function (view, params, tabContent) {
 
         tabElement.querySelector('.btnSort').addEventListener('click', (e) => {
             libraryBrowser.showSortMenu({
-                items: [ {
-                    name: globalize.translate('OptionRandom'),
-                    id: 'Random,SortName'
-                }, {
+                items: [{
                     name: globalize.translate('Name'),
                     id: 'SortName'
                 }, {
@@ -257,10 +254,13 @@ export default function (view, params, tabContent) {
                 }, {
                     name: globalize.translate('OptionReleaseDate'),
                     id: 'ProductionYear,PremiereDate,SortName'
+                }, {
+                    name: globalize.translate('OptionRandom'),
+                    id: 'Random,SortName'
                 }],
                 callback: function () {
                     getQuery().StartIndex = 0;
-                    // reloadItems();
+                    reloadItems();
                 },
                 query: getQuery(),
                 button: e.target
@@ -278,7 +278,7 @@ export default function (view, params, tabContent) {
             userSettings.saveViewSetting(getSavedQueryKey(), viewStyle);
             getQuery().StartIndex = 0;
             onViewStyleChange();
-            // reloadItems();
+            reloadItems();
         });
 
         tabElement.querySelector('.btnPlayAll').addEventListener('click', playAll);
@@ -289,7 +289,7 @@ export default function (view, params, tabContent) {
     onViewStyleChange();
 
     this.renderTab = () => {
-        // reloadItems();
+        reloadItems();
         this.alphaPicker?.updateControls(getQuery());
     };
 }
