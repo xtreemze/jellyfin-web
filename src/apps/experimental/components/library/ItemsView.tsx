@@ -59,7 +59,7 @@ const ItemsView: FC<ItemsViewProps> = ({
     isBtnFilterEnabled = true,
     isBtnNewCollectionEnabled = false,
     isBtnGridListEnabled = true,
-    isAlphabetPickerEnabled = false,
+    isAlphabetPickerEnabled = true,
     itemType,
     noItemsMessage
 }) => {
