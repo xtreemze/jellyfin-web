@@ -30,7 +30,7 @@ function fade(instance, elem, startingVolume) {
         cancelFadeTimeout();
         fadeTimeout = setTimeout(function () {
             fade(instance, elem, newVolume).then(resolve, reject);
-        }, 25);
+        }, 20);
     });
 }
 
