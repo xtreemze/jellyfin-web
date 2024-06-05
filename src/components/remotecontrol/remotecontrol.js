@@ -537,6 +537,11 @@ export default function () {
                     img.classList.remove('lazy');
                     img.classList.add('playlistIndexIndicatorImage');
                     img.classList.toggle('playlistIndexIndicatorPausedImage', playbackManager.paused());
+                    img.scrollIntoView({
+                        block: 'center',
+                        inline: 'nearest',
+                        behavior: 'smooth'
+                    });
                 }
             }
 
