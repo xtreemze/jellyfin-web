@@ -119,7 +119,7 @@ div.padded-bottom.padPagination {
         position: fixed;
         bottom: 34vh;
         left: -0.2em;
-        z-index: -1;
+        z-index: 4;
         background-color: black;
         padding: 2rem;
         padding-left: 34rem;
@@ -209,6 +209,8 @@ div.padded-bottom.padPagination {
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         width: 400px;
         margin-right: 3rem;
+        position: absolute;
+        z-index: 5;
     }
 
     .mediaInfoItem {
