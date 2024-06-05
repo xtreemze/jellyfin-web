@@ -125,11 +125,13 @@ div.padded-bottom.padPagination {
         padding-left: 34rem;
         transition: transform 4s ease-in-out;
         border-radius: .2em;
-        transition-delay: 1s;
+        transition-delay: 0s;
     }
 
     body.mouseIdle .nowPlayingInfoControls>.infoContainer {
+        transition: transform 4s ease-in-out;
         transform: translateX(-50vw);
+        transition-delay: 5s;
     }
 
     header,
@@ -139,7 +141,8 @@ div.padded-bottom.padPagination {
     div#indexPage,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
-        transition: opacity 2s ease-in-out;
+        transition: opacity 1s ease-in-out;
+        transition-delay: 0s;
     }
 
     body.mouseIdle header,
@@ -149,13 +152,14 @@ div.padded-bottom.padPagination {
     body.mouseIdle div#indexPage,
     body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
-        transition: opacity 2s ease-out;
-        transition-delay: 4s;
+        transition: opacity 1.5s ease-out;
+        transition-delay: 8s;
     }
 
     body.mouseIdle .backgroundContainer.withBackdrop {
         opacity: 0.3;
-        transition: opacity 7s ease-in-out;
+        transition: opacity 8s ease-in-out;
+        transition-delay: 6s;
     }
 
     .nowPlayingInfoContainer {
