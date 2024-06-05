@@ -103,12 +103,14 @@ div.padded-bottom.padPagination {
         transition: opacity 2s ease-in-out;
     }
 
-    #playlist>div:hover>div.listViewUserDataButtons,
-    #playlist>div:hover>span {
+    #playlist>div.listItem:hover>div.listViewUserDataButtons,
+    #playlist>div.listItem:hover>div.listItemImage.itemAction.lazy,
+    #playlist>div.listItem:hover>span {
         opacity: 1;
     }
 
     #playlist>div>div.listViewUserDataButtons,
+    #playlist>div.listItem div.listItemImage.itemAction.lazy,
     #playlist>div>span {
         opacity: 0;
     }
@@ -123,31 +125,32 @@ div.padded-bottom.padPagination {
         padding-left: 34rem;
         transition: transform 4s ease-in-out;
         border-radius: .2em;
+        transition-delay: 1s;
     }
 
     body.mouseIdle .nowPlayingInfoControls>.infoContainer {
         transform: translateX(-50vw);
     }
 
-
     header,
+    .skinHeader,
     div#itemDetailPage,
     div#musicPage,
     div#indexPage,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
-        transition-delay: 2s;
         transition: opacity 2s ease-in-out;
     }
 
     body.mouseIdle header,
+    body.mouseIdle .skinHeader,
     body.mouseIdle div#itemDetailPage,
     body.mouseIdle div#musicPage,
     body.mouseIdle div#indexPage,
     body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
-        transition-delay: 6s;
         transition: opacity 2s ease-out;
+        transition-delay: 4s;
     }
 
     body.mouseIdle .backgroundContainer.withBackdrop {
@@ -173,8 +176,7 @@ div.padded-bottom.padPagination {
         width: calc(100%/5);
     }
 
-    .listItemImage,
-    #playlist>div>div.listItemImage.itemAction.lazy {
+    #playlist>div .listItemImage.itemAction.lazy {
         opacity: 0;
         animation: none;
     }
