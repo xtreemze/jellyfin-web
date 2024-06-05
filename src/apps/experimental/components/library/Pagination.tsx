@@ -9,6 +9,12 @@ import globalize from 'scripts/globalize';
 import * as userSettings from 'scripts/settings/userSettings';
 import { LibraryViewSettings } from 'types/library';
 
+function scrollPageToTop() {
+    const page = document.getElementsByClassName('skinBody')[1] as HTMLDivElement;
+    if (page) {
+        page.scrollIntoView();
+    }
+}
 interface PaginationProps {
     libraryViewSettings: LibraryViewSettings;
     setLibraryViewSettings: React.Dispatch<React.SetStateAction<LibraryViewSettings>>;
@@ -36,6 +42,7 @@ const Pagination: FC<PaginationProps> = ({
             ...prevState,
             StartIndex: newIndex
         }));
+        scrollPageToTop();
     }, [limit, setLibraryViewSettings, startIndex]);
 
     const onPreviousPageClick = useCallback(() => {
@@ -44,6 +51,7 @@ const Pagination: FC<PaginationProps> = ({
             ...prevState,
             StartIndex: newIndex
         }));
+        scrollPageToTop();
     }, [limit, setLibraryViewSettings, startIndex]);
 
     return (
@@ -74,7 +82,7 @@ const Pagination: FC<PaginationProps> = ({
                         <IconButton
                             title={globalize.translate('Next')}
                             className='paper-icon-button-light btnNextPage autoSize'
-                            disabled={startIndex + limit >= totalRecordCount || isPreviousData }
+                            disabled={startIndex + limit >= totalRecordCount || isPreviousData}
                             onClick={onNextPageClick}
                         >
                             <ArrowForwardIcon />

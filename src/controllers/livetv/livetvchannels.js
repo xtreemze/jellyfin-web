@@ -52,7 +52,6 @@ export default function (view, params, tabContent) {
                 query.StartIndex += query.Limit;
             }
             reloadItems(context).then(() => {
-                window.scrollTo(0, 0);
             });
         }
 
@@ -65,7 +64,6 @@ export default function (view, params, tabContent) {
                 query.StartIndex = Math.max(0, query.StartIndex - query.Limit);
             }
             reloadItems(context).then(() => {
-                window.scrollTo(0, 0);
             });
         }
 

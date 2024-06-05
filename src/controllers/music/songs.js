@@ -76,7 +76,6 @@ export default function (view, params, tabContent) {
                 reloadItems(tabContent);
             }
 
-            window.scrollTo(0, 0);
             const pagingHtml = libraryBrowser.getQueryPagingHtml({
                 startIndex: query.StartIndex,
                 limit: query.Limit,

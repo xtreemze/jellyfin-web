@@ -446,7 +446,7 @@ export class UserSettings {
             // Explicitly return 0 to avoid returning 100 because 0 is falsy.
             return 0;
         } else {
-            return libraryPageSize || 100;
+            return libraryPageSize || 60;
         }
     }
 

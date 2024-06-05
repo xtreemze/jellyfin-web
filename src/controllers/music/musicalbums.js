@@ -106,7 +106,6 @@ export default function (view, params, tabContent) {
                 reloadItems();
             }
 
-            window.scrollTo(0, 0);
             this.alphaPicker?.updateControls(query);
             let html;
             const pagingHtml = libraryBrowser.getQueryPagingHtml({
