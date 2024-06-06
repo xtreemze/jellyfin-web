@@ -140,6 +140,13 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     function onTouchStart(e: TouchEvent): void {
         mobileTouch = true;
+        if (e.touches.length === 1) {
+            waveSurferInstance.setOptions({
+                autoCenter: false,
+                autoScroll: false
+            });
+        }
+
         if (e.touches.length === 2) {
             waveSurferInstance.setOptions({
                 interact: false,
@@ -177,6 +184,12 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     function onTouchEnd(e: TouchEvent): void {
         requestAnimationFrame(() => {
+            if (e.touches.length === 1) {
+                waveSurferInstance.setOptions({
+                    autoCenter: true,
+                    autoScroll: true
+                });
+            }
             if (e.touches.length === 2) {
                 initialDistance = null;
             }

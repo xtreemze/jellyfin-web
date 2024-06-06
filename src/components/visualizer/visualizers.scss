@@ -66,13 +66,13 @@
 @media (orientation: landscape) {
     #nowPlayingPage .nowPlayingPageImageContainer {
         width: 75vh;
-        max-width: 42vw;
+        max-width: 33.33vw;
     }
 
     #inputSurfer {
-        height: 42vh;
+        height: 33.33vh;
         margin-bottom: 1rem;
-        margin-top: -0.5rem;
+        margin-top: -1rem;
         max-width: calc(94vw - 75vh);
     }
 
