@@ -4,11 +4,14 @@
     "lang": "en-US",
     "orientation": "any",
     "short_name": "Jellyfin",
-    "start_url": "index.html#/music.html",
+    "start_url": "index.html",
     "theme_color": "#101010",
     "background_color": "#101010",
+    "display_override": [
+        "fullscreen",
+        "window-controls-overlay"
+    ],
     "display": "fullscreen",
-    "display_override": "['fullscreen']",
     "icons": [
         {
             "sizes": "72x72",
