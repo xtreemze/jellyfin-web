@@ -2,11 +2,13 @@
     "name": "Jellyfin",
     "description": "The Free Software Media System",
     "lang": "en-US",
+    "orientation": "any",
     "short_name": "Jellyfin",
     "start_url": "index.html#/music.html",
     "theme_color": "#101010",
     "background_color": "#101010",
     "display": "fullscreen",
+    "display_override": "['fullscreen']",
     "icons": [
         {
             "sizes": "72x72",

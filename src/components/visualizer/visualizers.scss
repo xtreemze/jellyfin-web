@@ -42,10 +42,15 @@
 }
 
 div.skinBody>#musicPage,
-.page.mainAnimatedPage.libraryPage.withTabspage {
-    margin-top: 6rem;
-    margin-bottom: 6rem;
+.page.mainAnimatedPage.libraryPage.withTabs {
+    margin-top: 6rem !important;
     scroll-behavior: smooth;
+}
+
+div.skinBody>#musicPage,
+div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.padded-left.padded-right.padded-bottom.focuscontainer-x.padPagination.MuiBox-root.css-0 {
+    scroll-behavior: smooth;
+    padding-bottom: 12rem !important;
 }
 
 
@@ -77,6 +82,7 @@ div.skinBody>#musicPage,
         margin-bottom: 1rem;
         margin-top: -1rem;
         max-width: calc(94vw - 75vh);
+        min-width: 60vw;
     }
 
 }
