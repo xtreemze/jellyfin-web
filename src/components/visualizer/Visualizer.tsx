@@ -1,33 +1,28 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable compat/compat */
 import React, { useEffect, useRef, useCallback } from 'react';
 
 declare global {
     interface Window {
-        myAudioContext: AudioContext
-        mySourceNode: AudioNode
+        myAudioContext: AudioContext;
+        mySourceNode: AudioNode;
     }
 }
 
 type VisualizerProps = {
-    audioContext?: AudioContext
-    mySourceNode?: AudioNode
+    audioContext?: AudioContext;
+    mySourceNode?: AudioNode;
 };
 
+// Ensure the global AudioContext is initialized
+// eslint-disable-next-line compat/compat
 window.myAudioContext = window.myAudioContext || new AudioContext();
 
 const Visualizer: React.FC<VisualizerProps> = ({
     audioContext = window.myAudioContext,
     mySourceNode = window.mySourceNode
 }) => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const canvas = canvasRef.current || document.getElementById('visualizer') as HTMLCanvasElement;
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const draw = useCallback((
-        analyser: AnalyserNode,
-        ctx: CanvasRenderingContext2D,
-        defaultBarHeight: number
-    ) => {
+    const draw = useCallback((analyser: AnalyserNode, ctx: CanvasRenderingContext2D, defaultBarHeight: number) => {
         const isLandscape = window.innerWidth > window.innerHeight;
         const numberOfBars = Math.floor((isLandscape ? window.innerHeight : window.innerWidth) / 32);
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
@@ -86,30 +81,30 @@ const Visualizer: React.FC<VisualizerProps> = ({
         analyser.maxDecibels = 102;
 
         mySourceNode.connect(analyser);
-        if (canvas !== null) {
+
+        const canvas = canvasRef.current;
+        if (canvas) {
             const ctx = canvas.getContext('2d');
-            if (!ctx) return;
-
-            // Don't update the visualizer if the tab is not in focus or the screen is off
-            if (document.hidden || document.visibilityState !== 'visible') {
-                return;
+            if (ctx) {
+                // Start the drawing process
+                draw(analyser, ctx, 62);
             }
-
-            draw(analyser, ctx, 62);
         }
-    }, [audioContext, mySourceNode, canvas, draw]);
+    }, [audioContext, mySourceNode, draw]);
 
     useEffect(() => {
         const resizeCanvas = () => {
-            if (canvas) {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+            if (canvasRef.current) {
+                canvasRef.current.width = window.innerWidth;
+                canvasRef.current.height = window.innerHeight;
             }
         };
 
         window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // Ensure the canvas is set to the correct size initially
+
         return () => window.removeEventListener('resize', resizeCanvas);
-    }, [canvas]);
+    }, []);
 
     return (
         <canvas
