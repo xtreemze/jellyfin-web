@@ -10,6 +10,10 @@ declare global {
 type VisualizerProps = {
     audioContext?: AudioContext;
     mySourceNode?: AudioNode;
+    fftSize?: number;
+    smoothingTimeConstant?: number;
+    minDecibels?: number;
+    maxDecibels?: number;
 };
 
 // Ensure the global AudioContext is initialized
@@ -18,7 +22,11 @@ window.myAudioContext = window.myAudioContext || new AudioContext();
 
 const Visualizer: React.FC<VisualizerProps> = ({
     audioContext = window.myAudioContext,
-    mySourceNode = window.mySourceNode
+    mySourceNode = window.mySourceNode,
+    fftSize = 16384,
+    smoothingTimeConstant = 0.4,
+    minDecibels = -102,
+    maxDecibels = 102
 }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -37,11 +45,9 @@ const Visualizer: React.FC<VisualizerProps> = ({
         const maxFrequency = analyser.context.sampleRate / 2; // Maximum frequency (Nyquist frequency)
 
         for (let barIndex = 0; barIndex < numberOfBars; barIndex++) {
-            // Calculate the frequency range for this bar
             const minBarFrequency = minFrequency * Math.pow(maxFrequency / minFrequency, barIndex / numberOfBars);
             const maxBarFrequency = minFrequency * Math.pow(maxFrequency / minFrequency, (barIndex + 1) / numberOfBars);
 
-            // Map the frequencies to the range [0, frequencyBinCount]
             const minBinIndex = Math.floor(minBarFrequency / maxFrequency * frequencyData.length);
             const maxBinIndex = Math.floor(maxBarFrequency / maxFrequency * frequencyData.length);
 
@@ -50,11 +56,10 @@ const Visualizer: React.FC<VisualizerProps> = ({
                 sumOfFrequencies += frequencyData[binIndex];
             }
 
-            // Calculate the average frequency for this bar
             const averageFrequency = sumOfFrequencies / (maxBinIndex - minBinIndex);
-            const barWidth = (isLandscape ? window.innerHeight : window.innerWidth) / (numberOfBars + 1); // Adjusted for equal gaps
+            const barWidth = (isLandscape ? window.innerHeight : window.innerWidth) / (numberOfBars + 1);
             const barHeight = averageFrequency / 256 * (isLandscape ? ctx.canvas.width : ctx.canvas.height) + defaultBarHeight;
-            const barPositionX = (barIndex + 0.5) * barWidth; // Adjusted for equal gaps
+            const barPositionX = (barIndex + 0.5) * barWidth;
 
             if (isLandscape) {
                 ctx.save();
@@ -75,10 +80,10 @@ const Visualizer: React.FC<VisualizerProps> = ({
 
         const analyser = audioContext.createAnalyser();
 
-        analyser.fftSize = 16384;
-        analyser.smoothingTimeConstant = 0.4;
-        analyser.minDecibels = -102;
-        analyser.maxDecibels = 102;
+        analyser.fftSize = fftSize;
+        analyser.smoothingTimeConstant = smoothingTimeConstant;
+        analyser.minDecibels = minDecibels;
+        analyser.maxDecibels = maxDecibels;
 
         mySourceNode.connect(analyser);
 
@@ -86,11 +91,14 @@ const Visualizer: React.FC<VisualizerProps> = ({
         if (canvas) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                // Start the drawing process
                 draw(analyser, ctx, 62);
             }
         }
-    }, [audioContext, mySourceNode, draw]);
+
+        return () => {
+            mySourceNode.disconnect(analyser);
+        };
+    }, [audioContext, mySourceNode, fftSize, smoothingTimeConstant, minDecibels, maxDecibels, draw]);
 
     useEffect(() => {
         const resizeCanvas = () => {
