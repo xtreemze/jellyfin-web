@@ -46,7 +46,7 @@
 }
 
 
-@media (min-width: 690px) {
+@media (min-width: 690px) and (orientation: portrait) {
 
     #inputSurfer {
         height: 5rem;
@@ -61,6 +61,21 @@
         margin-top: 1rem;
         max-width: 75vw;
     }
+}
+
+@media (orientation: landscape) {
+    #nowPlayingPage .nowPlayingPageImageContainer {
+        width: 75vh;
+        max-width: 42vw;
+    }
+
+    #inputSurfer {
+        height: 42vh;
+        margin-bottom: 1rem;
+        margin-top: -0.5rem;
+        max-width: calc(94vw - 75vh);
+    }
+
 }
 
 @media (min-width: 1600px) {
