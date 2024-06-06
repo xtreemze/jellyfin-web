@@ -41,7 +41,10 @@
     flex-wrap: nowrap;
 }
 
-.skinBody {
+div.skinBody>#musicPage,
+.page.mainAnimatedPage.libraryPage.withTabspage {
+    margin-top: 6rem;
+    margin-bottom: 6rem;
     scroll-behavior: smooth;
 }
 
@@ -113,10 +116,6 @@ body.mouseIdle canvas#visualizer {
     opacity: 0.6;
     transition: opacity 6s ease-in-out;
     transition-delay: 20s;
-}
-
-div.padded-bottom.padPagination {
-    padding-bottom: 12rem;
 }
 
 @media(min-width:1600px) {
