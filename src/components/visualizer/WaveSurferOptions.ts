@@ -7,9 +7,9 @@ const color = {
     waveRight: 'rgb(180, 0, 180)',
     cursor: 'rgb(25, 213, 11)',
     black: 'rgb(10, 10, 10)',
-    transparentBlack: 'rgba(0, 0, 0, 0.6)',
-    white: 'rgb(245, 245, 245)',
-    transparentWhite: 'rgba(255, 255, 255, 0.6)'
+    transparentBlack: 'rgba(0, 0, 0, 0.7)',
+    white: 'rgb(251, 251, 251)',
+    transparentWhite: 'rgba(255, 255, 255, 0.7)'
 };
 
 const waveSurferChannelStyle = {
@@ -21,6 +21,7 @@ const waveSurferChannelStyle = {
         autoScroll: true,
         autoCenter: true,
         dragToSeek: false,
+        backend: 'WebAudio',
         interact: false,
         sampleRate: 8000,
         splitChannels: [
@@ -46,6 +47,7 @@ const waveSurferChannelStyle = {
         autoScroll: true,
         autoCenter: true,
         dragToSeek: false,
+        backend: 'WebAudio',
         interact: true,
         sampleRate: 8000,
         splitChannels: [
@@ -69,6 +71,7 @@ const waveSurferChannelStyle = {
         cursorWidth: 1,
         autoScroll: true,
         autoCenter: true,
+        backend: 'WebAudio',
         sampleRate: 8000,
         interact: true,
         dragToSeek: false,
@@ -94,6 +97,7 @@ const waveSurferChannelStyle = {
         cursorWidth: 21,
         autoScroll: false,
         autoCenter: false,
+        backend: 'WebAudio',
         sampleRate: 8000,
         interact: true,
         dragToSeek: false,
@@ -119,7 +123,8 @@ const surferOptions = {
     dragToSeek: false,
     interact: true,
     normalize: false,
-    autoplay: true,
+    autoplay: false,
+    backend: 'WebAudio',
     hideScrollbar: true,
     autoScroll: false,
     autoCenter: false,

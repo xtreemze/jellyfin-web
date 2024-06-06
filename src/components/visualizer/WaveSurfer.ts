@@ -5,10 +5,11 @@ import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
 
 type WaveSurferLegacy = {
-    peaks: number[][] | undefined
-    duration: number | undefined
-    isPlaying: boolean | undefined
-    currentTime: number | undefined
+    peaks: number[][]
+    duration: number
+    isPlaying: boolean
+    currentTime: number
+    scrollPosition: number
 };
 
 let waveSurferInstance: WaveSurfer;
@@ -21,7 +22,7 @@ let mediaElement: HTMLMediaElement | null;
 let savedPeaks: number[][];
 let savedDuration = 0;
 
-const maxZoom = 60000;
+const maxZoom = 10000;
 const minZoom = 1;
 const doubleChannelZoom = 150;
 const wholeSongZoom = 20;
@@ -30,8 +31,7 @@ let currentZoom = 100;
 let mobileTouch = false;
 
 let initialDistance: number | null = null;
-let lastTouchTime = 0; // Track the last touch time
-const MIN_DELTA = 5; // Define a threshold for minimal significant distance change
+const MIN_DELTA = 15; // Define a threshold for minimal significant distance change
 
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
@@ -45,6 +45,12 @@ function isNewSong(newSongDuration: number) {
 }
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
+    // Don't update if the tab is not in focus or the screen is off
+    if (document.hidden || document.visibilityState !== 'visible') {
+        destroyWaveSurferInstance();
+        return;
+    }
+
     findElements();
     resetVisibility();
     if (!mediaElement) return;
@@ -54,11 +60,13 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
         media: mediaElement,
         container: container,
+        backend: 'WebAudio',
         peaks: newSong ? undefined : legacy?.peaks,
         duration: newSong ? undefined : legacy?.duration
     });
     if (legacy?.isPlaying === false && legacy?.currentTime && legacy?.duration) {
         waveSurferInstance.seekTo(legacy.currentTime / legacy.duration);
+        waveSurferInstance.setScroll(legacy?.scrollPosition);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -66,12 +74,14 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
-        initializeStyle(minPxPerSec);
-        if (minPxPerSec < wholeSongZoom) {
-            currentZoom = 1; // snap to show whole song
-            return;
-        }
-        currentZoom = minPxPerSec;
+        requestAnimationFrame(() => {
+            initializeStyle(minPxPerSec);
+            if (minPxPerSec < wholeSongZoom) {
+                currentZoom = 1; // snap to show whole song
+                return;
+            }
+            currentZoom = minPxPerSec;
+        });
     });
 
     waveSurferInstance.once('ready', (duration) => {
@@ -82,8 +92,10 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
             return;
         }
-        initializeStyle(currentZoom);
-        waveSurferInstance.zoom(currentZoom);
+        requestAnimationFrame(() => {
+            initializeStyle(currentZoom);
+            waveSurferInstance.zoom(currentZoom);
+        });
 
         if (inputSurfer) {
             inputSurfer.addEventListener('touchstart', onTouchStart);
@@ -139,52 +151,58 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     }
 
     function onTouchMove(e: TouchEvent): void {
-        if (e.touches.length === 2 && initialDistance !== null) {
-            const currentDistance = getDistance(e.touches);
-            const delta = Math.abs(currentDistance - initialDistance);
+        requestAnimationFrame(() => {
+            if (e.touches.length === 2 && initialDistance !== null) {
+                const currentDistance = getDistance(e.touches);
+                const delta = Math.abs(currentDistance - initialDistance);
 
-            // Check if the distance change is significant
-            if (delta < MIN_DELTA) return;
+                // Check if the distance change is significant
+                if (delta < MIN_DELTA) return;
 
-            const zoomFactor = currentDistance / initialDistance;
+                const zoomFactor = currentDistance / initialDistance;
 
-            // Ensure the new zoom factor is within allowed bounds
-            if ((currentZoom * zoomFactor) > maxZoom) return;
-            if ((currentZoom * zoomFactor) < minZoom) return;
+                // Ensure the new zoom factor is within allowed bounds
+                const newZoom = currentZoom ** zoomFactor;
+                if (newZoom >= maxZoom || newZoom <= minZoom) return;
 
-            const now = performance.now(); // Get the current time
-
-            // Debounce logic with time difference check
-            if (now - lastTouchTime > 20) { // Update only if time have passed since last touch
-                currentZoom = currentZoom * zoomFactor;
-                waveSurferInstance.zoom(currentZoom);
+                // Debounce logic with time difference check
+                waveSurferInstance.zoom(newZoom);
+                currentZoom = newZoom ;
                 // Update the initial distance for the next move event
                 initialDistance = currentDistance;
-                lastTouchTime = now; // Update last touch time for next check
+            // }
             }
-        }
+        });
     }
 
     function onTouchEnd(e: TouchEvent): void {
-        if (e.touches.length === 2) {
-            initialDistance = null;
-        }
-        initializeStyle(currentZoom);
-        mobileTouch = false;
+        requestAnimationFrame(() => {
+            if (e.touches.length === 2) {
+                initialDistance = null;
+            }
+            initializeStyle(currentZoom);
+
+            mobileTouch = false;
+        });
     }
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
     const legacy = {
-        peaks: savedPeaks || undefined,
-        duration: savedDuration || undefined,
-        isPlaying: waveSurferInstance?.isPlaying() || undefined,
-        currentTime: waveSurferInstance?.getCurrentTime() || undefined
+        peaks: savedPeaks,
+        duration: savedDuration,
+        isPlaying: waveSurferInstance?.isPlaying(),
+        currentTime: waveSurferInstance?.getCurrentTime(),
+        scrollPosition: waveSurferInstance?.getScroll()
     };
     resetVisibility();
     if (waveSurferInstance) {
         waveSurferInstance.unAll();
         waveSurferInstance.destroy();
+    }
+    if (legacy?.isPlaying) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        mediaElement?.play();
     }
     return legacy;
 }

@@ -28,11 +28,6 @@ const Visualizer: React.FC<VisualizerProps> = ({
         ctx: CanvasRenderingContext2D,
         defaultBarHeight: number
     ) => {
-        // Don't update the visualizer if the tab is not in focus or the screen is off
-        if (document.hidden || document.visibilityState !== 'visible') {
-            return;
-        }
-
         const isLandscape = window.innerWidth > window.innerHeight;
         const numberOfBars = Math.floor((isLandscape ? window.innerHeight : window.innerWidth) / 32);
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
@@ -94,6 +89,11 @@ const Visualizer: React.FC<VisualizerProps> = ({
         if (canvas !== null) {
             const ctx = canvas.getContext('2d');
             if (!ctx) return;
+
+            // Don't update the visualizer if the tab is not in focus or the screen is off
+            if (document.hidden || document.visibilityState !== 'visible') {
+                return;
+            }
 
             draw(analyser, ctx, 62);
         }
