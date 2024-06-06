@@ -96,7 +96,7 @@ canvas#visualizer {
 
 body.mouseIdle canvas#visualizer {
     opacity: 0.6;
-    transition: opacity 2s ease-in-out;
+    transition: opacity 6s ease-in-out;
     transition-delay: 20s;
 }
 
@@ -129,6 +129,7 @@ div.padded-bottom.padPagination {
         background-color: black;
         padding: 2rem;
         padding-left: 34rem;
+        padding-right: 4rem;
         transition: transform 4s ease-in-out;
         border-radius: .2em;
         transition-delay: 0s;
@@ -199,7 +200,7 @@ div.padded-bottom.padPagination {
 
     div.playlistSection {
         font-size: 0.75em;
-        max-height: 400px;
+        max-height: 395px;
         overflow: auto;
         padding: 0;
         padding-left: 2.5rem;

@@ -40,7 +40,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
         analyser.getByteFrequencyData(frequencyData);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = 'rgb(90, 60, 140)';
+        ctx.fillStyle = 'rgb(94, 65, 145)';
         ctx.globalCompositeOperation = 'difference';
 
         const minFrequency = 20; // Minimum frequency we care about (20 Hz)
@@ -86,7 +86,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
         const analyser = audioContext.createAnalyser();
 
         analyser.fftSize = 16384;
-        analyser.smoothingTimeConstant = 0.6;
+        analyser.smoothingTimeConstant = 0.4;
         analyser.minDecibels = -102;
         analyser.maxDecibels = 102;
 
