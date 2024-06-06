@@ -122,6 +122,11 @@ div.padded-bottom.padPagination {
         opacity: 0;
     }
 
+    #playlist {
+        padding-top: 190px;
+        padding-bottom: 200px;
+    }
+
     .nowPlayingInfoControls>.infoContainer {
         position: fixed;
         bottom: 34vh;
@@ -199,8 +204,9 @@ div.padded-bottom.padPagination {
     }
 
     div.playlistSection {
-        font-size: 0.75em;
-        max-height: 395px;
+        bottom: 13.3rem;
+        font-size: .75em;
+        max-height: 300px;
         overflow: auto;
         padding: 0;
         padding-left: 2.5rem;
@@ -208,7 +214,6 @@ div.padded-bottom.padPagination {
         position: fixed;
         right: 0;
         scrollbar-width: none;
-        bottom: 12rem;
         width: 32rem;
     }
 
