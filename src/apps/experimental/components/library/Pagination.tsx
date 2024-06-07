@@ -12,7 +12,11 @@ import { LibraryViewSettings } from 'types/library';
 function scrollPageToTop() {
     const page = document.getElementsByClassName('skinBody')[1] as HTMLDivElement;
     if (page) {
-        page.scrollIntoView();
+        page.scrollIntoView({
+            block: 'start',
+            inline: 'nearest',
+            behavior: 'auto'
+        });
     }
 }
 interface PaginationProps {

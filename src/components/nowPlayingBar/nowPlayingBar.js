@@ -18,6 +18,7 @@ import './nowPlayingBar.scss';
 import '../../elements/emby-slider/emby-slider';
 import { appRouter } from '../router/appRouter';
 import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
+import { addIdleClasses, hideCursor } from 'scripts/mouseManager';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];
@@ -114,6 +115,7 @@ function onSlideDownComplete() {
 }
 
 function slideDown(elem) {
+    hideCursor();
     const legacy = destroyWaveSurferInstance();
     // trigger reflow
     void elem.offsetWidth;

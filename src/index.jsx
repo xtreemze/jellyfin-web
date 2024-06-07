@@ -241,15 +241,11 @@ async function onAppReady() {
 
 function registerServiceWorker() {
     /* eslint-disable compat/compat */
-    if (navigator.serviceWorker && window.appMode !== 'cordova' && window.appMode !== 'android') {
-        navigator.serviceWorker.register('serviceworker.js').then(() =>
-            console.log('serviceWorker registered')
-        ).catch(error =>
-            console.log('error registering serviceWorker: ' + error)
-        );
-    } else {
-        console.warn('serviceWorker unsupported');
-    }
+    navigator.serviceWorker.register('serviceworker.js').then(() =>
+        console.log('jellyfin serviceWorker registered')
+    ).catch(error =>
+        console.log('error registering jellyfin serviceWorker: ' + error)
+    );
     /* eslint-enable compat/compat */
 }
 
