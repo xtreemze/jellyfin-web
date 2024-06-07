@@ -114,7 +114,7 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
 canvas#visualizer {
     position: fixed;
     z-index: -1;
-    opacity: 0.25;
+    opacity: 0.3;
     transition: opacity 1.4s ease-in-out;
 }
 
@@ -171,6 +171,7 @@ body.mouseIdle canvas#visualizer {
     div#itemDetailPage,
     div#musicPage,
     div#indexPage,
+    .nowPlayingInfoContainer>.nowPlayingInfoControls,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 1s ease-in-out;
@@ -182,6 +183,7 @@ body.mouseIdle canvas#visualizer {
     body.mouseIdle div#itemDetailPage,
     body.mouseIdle div#musicPage,
     body.mouseIdle div#indexPage,
+    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingInfoControls,
     body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
         transition: opacity 1.5s ease-out;
@@ -258,8 +260,8 @@ body.mouseIdle canvas#visualizer {
     }
 
     .nowPlayingInfoContainer>.nowPlayingInfoControls {
-        bottom: 5.8vh;
-        height: 60px;
+        bottom: 3.8rem;
+        height: 63px;
         left: 7.2rem;
         margin: 0;
         position: fixed;
