@@ -18,7 +18,7 @@ import './nowPlayingBar.scss';
 import '../../elements/emby-slider/emby-slider';
 import { appRouter } from '../router/appRouter';
 import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
-import { addIdleClasses, hideCursor } from 'scripts/mouseManager';
+import { hideCursor } from 'scripts/mouseManager';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];

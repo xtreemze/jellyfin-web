@@ -3,6 +3,7 @@ import './visualizers.scss';
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
+import { hideCursor, showCursor } from 'scripts/mouseManager';
 
 type WaveSurferLegacy = {
     peaks: number[][]
@@ -201,6 +202,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
+    showCursor();
     const legacy = {
         peaks: savedPeaks,
         duration: savedDuration,
@@ -217,6 +219,7 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         mediaElement?.play();
     }
+    hideCursor();
     return legacy;
 }
 
