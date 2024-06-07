@@ -23,7 +23,7 @@ const waveSurferChannelStyle = {
         dragToSeek: false,
         backend: 'MediaElement',
         interact: false,
-        sampleRate: 8000,
+        sampleRate: 3000,
         splitChannels: [
             {
                 height: 'auto',
@@ -49,7 +49,7 @@ const waveSurferChannelStyle = {
         dragToSeek: false,
         backend: 'MediaElement',
         interact: true,
-        sampleRate: 8000,
+        sampleRate: 3000,
         splitChannels: [
             {
                 height: 'auto',
@@ -72,7 +72,7 @@ const waveSurferChannelStyle = {
         autoScroll: true,
         autoCenter: true,
         backend: 'MediaElement',
-        sampleRate: 8000,
+        sampleRate: 3000,
         interact: true,
         dragToSeek: false,
         splitChannels: [
@@ -99,6 +99,7 @@ const waveSurferChannelStyle = {
         autoCenter: false,
         backend: 'MediaElement',
         sampleRate: 8000,
+        minPxPerSec: 1,
         interact: true,
         dragToSeek: false,
         splitChannels: [
@@ -129,7 +130,7 @@ const surferOptions = {
     autoScroll: false,
     autoCenter: false,
     sampleRate: 8000,
-    minPxPerSec: 1,
+    minPxPerSec: 1000,
     width: '100%'
 } as WaveSurferOptions;
 

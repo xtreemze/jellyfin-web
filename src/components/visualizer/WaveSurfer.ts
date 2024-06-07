@@ -3,7 +3,7 @@ import './visualizers.scss';
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
-import { hideCursor, showCursor } from 'scripts/mouseManager';
+import { addIdleClasses, removeIdleClasses } from 'scripts/mouseManager';
 
 type WaveSurferLegacy = {
     peaks: number[][]
@@ -54,6 +54,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     findElements();
     resetVisibility();
+
     if (!mediaElement) return;
     const newSong = isNewSong(newSongDuration);
     console.debug('wavesurfer created. New song:', newSong, newSongDuration, Math.floor(savedDuration * 10000000));
@@ -61,17 +62,16 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
         media: mediaElement,
         container: container,
-        backend: 'MediaElement',
         peaks: newSong ? undefined : legacy?.peaks,
         duration: newSong ? undefined : legacy?.duration
     });
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    if (legacy?.isPlaying === true) waveSurferInstance.play();
+
     if (legacy?.isPlaying === false && legacy?.currentTime && legacy?.duration) {
         waveSurferInstance.seekTo(legacy.currentTime / legacy.duration);
         waveSurferInstance.setScroll(legacy?.scrollPosition);
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (legacy?.isPlaying === true) waveSurferInstance.play();
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
@@ -86,29 +86,31 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     });
 
     waveSurferInstance.once('ready', (duration) => {
-        setVisibility();
-        savedDuration = duration;
-        savedPeaks = waveSurferInstance.exportPeaks();
-        if (container === '#barSurfer') {
-            waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
-            return;
-        }
         requestAnimationFrame(() => {
+            addIdleClasses();
+
+            setVisibility();
+            savedDuration = duration;
+            savedPeaks = waveSurferInstance.exportPeaks();
+            if (container === '#barSurfer') {
+                waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
+                return;
+            }
             initializeStyle(currentZoom);
             waveSurferInstance.zoom(currentZoom);
-        });
 
-        if (inputSurfer) {
-            inputSurfer.addEventListener('touchstart', onTouchStart);
-            inputSurfer.addEventListener('touchmove', onTouchMove);
-            inputSurfer.addEventListener('touchend', onTouchEnd);
-        }
-        waveSurferInstance.registerPlugin(
-            TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
-        );
-        waveSurferInstance.registerPlugin(
-            ZoomPlugin.create(waveSurferPluginOptions.zoomOptions)
-        );
+            if (inputSurfer) {
+                inputSurfer.addEventListener('touchstart', onTouchStart);
+                inputSurfer.addEventListener('touchmove', onTouchMove);
+                inputSurfer.addEventListener('touchend', onTouchEnd);
+            }
+            waveSurferInstance.registerPlugin(
+                TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
+            );
+            waveSurferInstance.registerPlugin(
+                ZoomPlugin.create(waveSurferPluginOptions.zoomOptions)
+            );
+        });
     });
 
     waveSurferInstance.once('destroy', () => {
@@ -202,7 +204,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
-    showCursor();
+    removeIdleClasses();
     const legacy = {
         peaks: savedPeaks,
         duration: savedDuration,
@@ -219,7 +221,6 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         mediaElement?.play();
     }
-    hideCursor();
     return legacy;
 }
 
