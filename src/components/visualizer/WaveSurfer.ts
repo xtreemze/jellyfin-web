@@ -60,7 +60,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
         media: mediaElement,
         container: container,
-        backend: 'WebAudio',
+        backend: 'MediaElement',
         peaks: newSong ? undefined : legacy?.peaks,
         duration: newSong ? undefined : legacy?.duration
     });
