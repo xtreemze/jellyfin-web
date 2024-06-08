@@ -91,7 +91,7 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
 
     #inputSurfer,
     #simpleSlider {
-        height: 136px;
+        height: 9.8rem;
         margin: 0;
         position: fixed;
         left: 0;
@@ -148,10 +148,11 @@ body.mouseIdle canvas#visualizer {
     }
 
     .nowPlayingButtonsContainer {
-        bottom: 3.8rem;
-        height: 63px;
+        bottom: 0;
+        height: 9.8rem;
         left: 7.2rem;
         margin: 0;
+        padding-bottom: 1.5rem;
         position: fixed;
         width: 90vw;
     }
@@ -159,12 +160,13 @@ body.mouseIdle canvas#visualizer {
     .nowPlayingInfoControls>.infoContainer {
         z-index: -1;
         position: fixed;
-        bottom: 22rem;
+        bottom: 23rem;
         left: -0.2em;
         background-color: black;
-        padding: 2rem;
-        padding-left: 34rem;
-        padding-right: 4rem;
+        padding-top: 2.1rem;
+        padding-bottom: 1.1rem;
+        padding-left: 32.5rem;
+        padding-right: 2.6rem;
         border-radius: .2em;
     }
 
@@ -246,16 +248,10 @@ body.mouseIdle canvas#visualizer {
         animation: none;
     }
 
-    body.mouseIdle .playlistSection {
-        width: 16.5rem;
-        opacity: 1;
-        direction: rtl;
-    }
-
     div.playlistSection {
         bottom: 13.3rem;
         font-size: .75em;
-        max-height: 300px;
+        max-height: 12rem;
         overflow: auto;
         padding: 0;
         padding-left: 2.5rem;
@@ -267,8 +263,7 @@ body.mouseIdle canvas#visualizer {
     }
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        width: 400px;
-        margin-right: 3rem;
+        width: 24rem;
     }
 
     .nowPlayingPageImage {
@@ -291,7 +286,6 @@ body.mouseIdle canvas#visualizer {
     }
 
     body::-webkit-scrollbar,
-    body.mouseIdle .playlistSection>div.playlistSectionButton,
     body.mouseIdle .listViewUserDataButtons,
     body.mouseIdle .listViewDragHandle.material-icons.listItemIcon.drag_handle,
     body.mouseIdle .remoteControlSection {
