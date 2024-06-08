@@ -147,17 +147,17 @@ body.mouseIdle canvas#visualizer {
         padding-bottom: 200px;
     }
 
-    @keyframes slideIn {
-        0% {
-            transform: translateX(-50vw);
-        }
-
-        100% {
-            transform: translateX(0);
-        }
+    .nowPlayingButtonsContainer {
+        bottom: 3.8rem;
+        height: 63px;
+        left: 7.2rem;
+        margin: 0;
+        position: fixed;
+        width: 90vw;
     }
 
     .nowPlayingInfoControls>.infoContainer {
+        z-index: -1;
         position: fixed;
         bottom: 22rem;
         left: -0.2em;
@@ -165,17 +165,26 @@ body.mouseIdle canvas#visualizer {
         padding: 2rem;
         padding-left: 34rem;
         padding-right: 4rem;
-        transition: transform 4s ease-in-out;
         border-radius: .2em;
-        transition-delay: 0s;
-        animation: slideIn 4s forwards;
-        /* Add this line */
     }
 
-    body.mouseIdle .nowPlayingInfoControls>.infoContainer {
-        transition: transform 4s ease-in-out;
+    /* Base state: element is off-screen */
+    .nowPlayingInfoControls>.infoContainer {
         transform: translateX(-50vw);
+        transition: transform 4s ease-in-out;
+    }
+
+    /* Slide in when the page loads or when the user is active */
+    body:not(.mouseIdle) .nowPlayingInfoControls>.infoContainer {
+        transform: translateX(0);
+        transition-delay: 0s;
+        /* Ensures immediate transition when user becomes active */
+    }
+
+    /* Slide out after 15 seconds of mouse idle */
+    body.mouseIdle .nowPlayingInfoControls>.infoContainer {
         transition-delay: 15s;
+        /* Delays the transition by 15 seconds */
     }
 
 
@@ -184,8 +193,7 @@ body.mouseIdle canvas#visualizer {
     div#itemDetailPage,
     div#musicPage,
     div#indexPage,
-    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingInfoControls>canvas#visualizer,
-    .nowPlayingInfoContainer>.nowPlayingInfoControls,
+    .nowPlayingButtonsContainer,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 1s ease-in-out;
@@ -194,10 +202,15 @@ body.mouseIdle canvas#visualizer {
 
     body.mouseIdle header,
     body.mouseIdle .skinHeader,
+    body.mouseIdle .nowPlayingButtonsContainer {
+        opacity: 0;
+        transition: opacity 1.5s ease-out;
+        transition-delay: 15s;
+    }
+
     body.mouseIdle div#itemDetailPage,
     body.mouseIdle div#musicPage,
     body.mouseIdle div#indexPage,
-    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingInfoControls,
     body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
         transition: opacity 1.5s ease-out;
@@ -273,22 +286,11 @@ body.mouseIdle canvas#visualizer {
         border-color: rgb(255 255 255 / 0%) !important;
     }
 
-    .nowPlayingInfoContainer>.nowPlayingInfoControls {
-        bottom: 3.8rem;
-        height: 63px;
-        left: 7.2rem;
-        margin: 0;
-        position: fixed;
-        width: 90vw;
-        z-index: -1;
-    }
-
     .nowPlayingInfoContainerMedia {
         margin-bottom: 0;
     }
 
     body::-webkit-scrollbar,
-    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingInfoControls>.nowPlayingButtonsContainer,
     body.mouseIdle .playlistSection>div.playlistSectionButton,
     body.mouseIdle .listViewUserDataButtons,
     body.mouseIdle .listViewDragHandle.material-icons.listItemIcon.drag_handle,
