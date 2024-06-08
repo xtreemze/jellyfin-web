@@ -149,12 +149,13 @@ body.mouseIdle canvas#visualizer {
 
     .nowPlayingButtonsContainer {
         bottom: 0;
-        height: 9.8rem;
+        height: 0rem;
         left: 7.2rem;
         margin: 0;
-        padding-bottom: 1.5rem;
+        padding-bottom: 6.4rem;
         position: fixed;
         width: 90vw;
+        align-items: center;
     }
 
     .nowPlayingInfoControls>.infoContainer {
@@ -268,7 +269,6 @@ body.mouseIdle canvas#visualizer {
 
     .nowPlayingPageImage {
         position: absolute;
-        z-index: 2;
     }
 
     .mediaInfoItem {

@@ -23,7 +23,7 @@ let mediaElement: HTMLMediaElement | null;
 let savedPeaks: number[][];
 let savedDuration = 0;
 
-const maxZoom = 10000;
+const maxZoom = 8000;
 const minZoom = 1;
 const doubleChannelZoom = 150;
 const wholeSongZoom = 50;
@@ -32,7 +32,7 @@ let currentZoom = 100;
 let mobileTouch = false;
 
 let initialDistance: number | null = null;
-const MIN_DELTA = 15; // Define a threshold for minimal significant distance change
+const MIN_DELTA = 5; // Define a threshold for minimal significant distance change
 
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
@@ -76,10 +76,10 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
         initializeStyle(minPxPerSec);
-        if (minPxPerSec < wholeSongZoom) {
-            currentZoom = 1; // snap to show whole song
-            return;
-        }
+        // if (minPxPerSec < wholeSongZoom) {
+        //     currentZoom = 1; // snap to show whole song
+        //     return;
+        // }
         currentZoom = minPxPerSec;
     });
 

@@ -12,6 +12,82 @@ const color = {
     transparentWhite: 'rgba(255, 255, 255, 0.7)'
 };
 
+const barStyles = {
+    wholeSongWhite: [
+        {
+            height: 'auto',
+            waveColor: color.transparentBlack,
+            progressColor: color.black,
+            barAlign: undefined
+        },
+        {
+            overlay: true,
+            height: 'auto',
+            waveColor: color.transparentWhite,
+            progressColor: color.white,
+            barAlign: undefined
+        }
+    ],
+    coloredCenteredOverlay: [
+        {
+            height: 'auto',
+            waveColor: color.waveLeft,
+            progressColor: color.progressLeft,
+            barAlign: undefined
+        },
+        {
+            height: 'auto',
+            overlay: true,
+            waveColor: color.waveRight,
+            progressColor: color.progressRight,
+            barAlign: undefined
+        }
+    ],
+    joinedColorNoOverlay: [
+        {
+            height: 'auto',
+            waveColor: color.waveLeft,
+            progressColor: color.progressLeft,
+            barAlign: 'bottom'
+        },
+        {
+            height: 'auto',
+            waveColor: color.waveRight,
+            progressColor: color.progressRight,
+            barAlign: 'top'
+        }
+    ],
+    splitColored: [
+        {
+            height: 'auto',
+            waveColor: color.waveLeft,
+            progressColor: color.progressLeft,
+            barAlign: 'bottom'
+        },
+        {
+            height: 'auto',
+            waveColor: color.waveRight,
+            progressColor: color.progressRight,
+            barAlign: 'top'
+        }
+    ],
+    splitColoredCentered:
+    [
+        {
+            height: 'auto',
+            waveColor: color.waveLeft,
+            progressColor: color.progressLeft,
+            barAlign: undefined
+        },
+        {
+            height: 'auto',
+            waveColor: color.waveRight,
+            progressColor: color.progressRight,
+            barAlign: undefined
+        }
+    ]
+};
+
 const waveSurferChannelStyle = {
     showDoubleChannels: {
         barWidth: undefined,
@@ -24,20 +100,7 @@ const waveSurferChannelStyle = {
         backend: 'MediaElement',
         interact: false,
         sampleRate: 3000,
-        splitChannels: [
-            {
-                height: 'auto',
-                waveColor: color.waveLeft,
-                progressColor: color.progressLeft,
-                barAlign: undefined
-            },
-            {
-                height: 'auto',
-                waveColor: color.waveRight,
-                progressColor: color.progressRight,
-                barAlign: undefined
-            }
-        ]
+        splitChannels: barStyles.splitColoredCentered
     } as Partial<WaveSurferOptions>,
     showSingleChannel: {
         barWidth: 4,
@@ -50,23 +113,8 @@ const waveSurferChannelStyle = {
         backend: 'MediaElement',
         interact: true,
         sampleRate: 3000,
-        splitChannels: [
-            {
-                height: 'auto',
-                waveColor: color.waveLeft,
-                progressColor: color.progressLeft,
-                barAlign: 'bottom'
-            },
-            {
-                height: 'auto',
-                waveColor: color.waveRight,
-                progressColor: color.progressRight,
-                barAlign: 'top'
-            }
-        ] } as Partial<WaveSurferOptions>,
+        splitChannels: barStyles.splitColored } as Partial<WaveSurferOptions>,
     showWholeSong: {
-        barWidth: undefined,
-        barGap: undefined,
         cursorColor: color.cursor,
         cursorWidth: 1,
         autoScroll: true,
@@ -75,21 +123,9 @@ const waveSurferChannelStyle = {
         sampleRate: 3000,
         interact: true,
         dragToSeek: false,
-        splitChannels: [
-            {
-                height: 'auto',
-                waveColor: color.transparentBlack,
-                progressColor: color.black,
-                barAlign: undefined
-            },
-            {
-                overlay: true,
-                height: 'auto',
-                waveColor: color.transparentWhite,
-                progressColor: color.white,
-                barAlign: undefined
-            }
-        ] } as Partial<WaveSurferOptions>,
+        barWidth: undefined,
+        barGap: undefined,
+        splitChannels: barStyles.joinedColorNoOverlay } as Partial<WaveSurferOptions>,
     bar: {
         barWidth: 4,
         barGap: 2,
@@ -102,21 +138,7 @@ const waveSurferChannelStyle = {
         minPxPerSec: 1,
         interact: true,
         dragToSeek: false,
-        splitChannels: [
-            {
-                height: 'auto',
-                waveColor: color.waveLeft,
-                progressColor: color.progressLeft,
-                barAlign: undefined
-            },
-            {
-                height: 'auto',
-                overlay: true,
-                waveColor: color.waveRight,
-                progressColor: color.progressRight,
-                barAlign: undefined
-            }
-        ] } as Partial<WaveSurferOptions>
+        splitChannels: barStyles.coloredCenteredOverlay } as Partial<WaveSurferOptions>
 };
 
 const surferOptions = {
@@ -143,8 +165,8 @@ const waveSurferPluginOptions = {
     },
     zoomOptions:  {
         scale: 0.25,
-        maxZoom: 10000,
-        deltaThreshold: 10
+        maxZoom: 8000,
+        deltaThreshold: 5
     }
 };
 
