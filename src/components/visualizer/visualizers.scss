@@ -248,7 +248,7 @@ body.mouseIdle canvas#visualizer {
     }
 
     div.playlistSection {
-        bottom: 13.3rem;
+        bottom: 12rem;
         font-size: .75em;
         max-height: 12rem;
         overflow: auto;
@@ -256,9 +256,12 @@ body.mouseIdle canvas#visualizer {
         padding-left: 2.5rem;
         padding-right: 2rem;
         position: fixed;
-        right: 0;
         scrollbar-width: none;
         width: 32rem;
+        z-index: 0;
+        padding-top: 6rem;
+        padding-bottom: 0rem;
+        right: 1rem;
     }
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
@@ -297,6 +300,7 @@ body.mouseIdle canvas#visualizer {
         left: 6rem;
         max-width: 60rem;
         position: fixed;
+        z-index: 1;
     }
 
     .sliderContainer.flex {
