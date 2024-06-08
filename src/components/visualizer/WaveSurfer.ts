@@ -73,20 +73,19 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         waveSurferInstance.setScroll(legacy?.scrollPosition);
     }
 
+    waveSurferInstance.on('load', ()=>{
+        addIdleClasses();
+    });
+
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
         initializeStyle(minPxPerSec);
-        // if (minPxPerSec < wholeSongZoom) {
-        //     currentZoom = 1; // snap to show whole song
-        //     return;
-        // }
+
         currentZoom = minPxPerSec;
     });
 
     waveSurferInstance.once('ready', (duration) => {
         requestAnimationFrame(() => {
-            addIdleClasses();
-
             setVisibility();
             savedDuration = duration;
             savedPeaks = waveSurferInstance.exportPeaks();
