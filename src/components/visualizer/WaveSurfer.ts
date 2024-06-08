@@ -26,7 +26,7 @@ let savedDuration = 0;
 const maxZoom = 10000;
 const minZoom = 1;
 const doubleChannelZoom = 150;
-const wholeSongZoom = 20;
+const wholeSongZoom = 50;
 let currentZoom = 100;
 
 let mobileTouch = false;
@@ -75,14 +75,12 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
-        requestAnimationFrame(() => {
-            initializeStyle(minPxPerSec);
-            if (minPxPerSec < wholeSongZoom) {
-                currentZoom = 1; // snap to show whole song
-                return;
-            }
-            currentZoom = minPxPerSec;
-        });
+        initializeStyle(minPxPerSec);
+        if (minPxPerSec < wholeSongZoom) {
+            currentZoom = 1; // snap to show whole song
+            return;
+        }
+        currentZoom = minPxPerSec;
     });
 
     waveSurferInstance.once('ready', (duration) => {
@@ -161,45 +159,42 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     }
 
     function onTouchMove(e: TouchEvent): void {
-        requestAnimationFrame(() => {
-            if (e.touches.length === 2 && initialDistance !== null) {
-                const currentDistance = getDistance(e.touches);
-                const delta = Math.abs(currentDistance - initialDistance);
+        if (e.touches.length === 2 && initialDistance !== null) {
+            const currentDistance = getDistance(e.touches);
+            const delta = Math.abs(currentDistance - initialDistance);
 
-                // Check if the distance change is significant
-                if (delta < MIN_DELTA) return;
+            // Check if the distance change is significant
+            if (delta < MIN_DELTA) return;
 
-                const zoomFactor = currentDistance / initialDistance;
+            const zoomFactor = currentDistance / initialDistance;
 
-                // Ensure the new zoom factor is within allowed bounds
-                const newZoom = currentZoom ** zoomFactor;
-                if (newZoom >= maxZoom || newZoom <= minZoom) return;
+            // Ensure the new zoom factor is within allowed bounds
+            const newZoom = currentZoom ** zoomFactor;
+            if (newZoom >= maxZoom || newZoom <= minZoom) return;
 
+            requestAnimationFrame(() => {
                 // Debounce logic with time difference check
                 waveSurferInstance.zoom(newZoom);
                 currentZoom = newZoom ;
                 // Update the initial distance for the next move event
                 initialDistance = currentDistance;
-            // }
-            }
-        });
+            });
+        }
     }
 
     function onTouchEnd(e: TouchEvent): void {
-        requestAnimationFrame(() => {
-            if (e.touches.length === 1) {
-                waveSurferInstance.setOptions({
-                    autoCenter: true,
-                    autoScroll: true
-                });
-            }
-            if (e.touches.length === 2) {
-                initialDistance = null;
-            }
-            initializeStyle(currentZoom);
+        if (e.touches.length === 1) {
+            waveSurferInstance.setOptions({
+                autoCenter: true,
+                autoScroll: true
+            });
+        }
+        if (e.touches.length === 2) {
+            initialDistance = null;
+        }
+        initializeStyle(currentZoom);
 
-            mobileTouch = false;
-        });
+        mobileTouch = false;
     }
 }
 

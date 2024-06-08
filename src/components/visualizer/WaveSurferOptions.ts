@@ -130,7 +130,7 @@ const surferOptions = {
     autoScroll: false,
     autoCenter: false,
     sampleRate: 8000,
-    minPxPerSec: 1000,
+    minPxPerSec: 1,
     width: '100%'
 } as WaveSurferOptions;
 
@@ -142,9 +142,9 @@ const waveSurferPluginOptions = {
         secondaryLabelInterval: 5
     },
     zoomOptions:  {
-        scale: 0.1,
-        maxZoom: 60000,
-        deltaThreshold: 12
+        scale: 0.25,
+        maxZoom: 10000,
+        deltaThreshold: 10
     }
 };
 
