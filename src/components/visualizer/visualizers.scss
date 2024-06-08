@@ -148,14 +148,14 @@ body.mouseIdle canvas#visualizer {
     }
 
     .nowPlayingButtonsContainer {
+        align-items: center;
         bottom: 0;
-        height: 0rem;
+        height: 0;
         left: 7.2rem;
         margin: 0;
         padding-bottom: 6.4rem;
         position: fixed;
-        width: 90vw;
-        align-items: center;
+        right: 6.5rem;
     }
 
     .nowPlayingInfoControls>.infoContainer {
