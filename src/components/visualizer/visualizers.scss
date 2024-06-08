@@ -200,7 +200,6 @@ body.mouseIdle canvas#visualizer {
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 1s ease-in-out;
-        transition-delay: 0s;
     }
 
     body.mouseIdle header,
@@ -208,7 +207,6 @@ body.mouseIdle canvas#visualizer {
     body.mouseIdle .nowPlayingButtonsContainer {
         opacity: 0;
         transition: opacity 1.5s ease-out;
-        transition-delay: 0s;
     }
 
     body.mouseIdle div#itemDetailPage,
