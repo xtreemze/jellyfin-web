@@ -199,14 +199,14 @@ body.mouseIdle canvas#visualizer {
     .nowPlayingButtonsContainer,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
-        transition: opacity 1s ease-in-out;
+        transition: opacity 500ms ease-in-out;
     }
 
     body.mouseIdle header,
     body.mouseIdle .skinHeader,
     body.mouseIdle .nowPlayingButtonsContainer {
         opacity: 0;
-        transition: opacity 1.5s ease-out;
+        transition: opacity 500ms ease-out;
     }
 
     body.mouseIdle div#itemDetailPage,
@@ -214,7 +214,7 @@ body.mouseIdle canvas#visualizer {
     body.mouseIdle div#indexPage,
     body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
-        transition: opacity 1.5s ease-out;
+        transition: opacity 500ms ease-out;
         transition-delay: 25s;
     }
 

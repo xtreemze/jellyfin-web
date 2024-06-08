@@ -116,11 +116,11 @@ function onSlideDownComplete() {
 
 function slideDown(elem) {
     hideCursor();
-    const legacy = destroyWaveSurferInstance();
     // trigger reflow
     void elem.offsetWidth;
 
     elem.classList.add('nowPlayingBar-hidden');
+    const legacy = destroyWaveSurferInstance();
 
     dom.addEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
@@ -129,12 +129,23 @@ function slideDown(elem) {
     if (!currentPlayer) return;
     if (!currentPlayer.isLocalPlayer) return;
 
+    const activePlaylistItem = document.getElementsByClassName('playlistIndexIndicatorImage')[0];
+
+    activePlaylistItem.scrollIntoView({
+        block: 'center',
+        inline: 'nearest',
+        behavior: 'smooth'
+    });
+
     // When opening the same song, preserve the player legacy
     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
 }
 
 function slideUp(elem) {
     const legacy = destroyWaveSurferInstance();
+
+    // When opening the same song, preserve the player legacy
+    waveSurferInitialization('#barSurfer', legacy, playbackManager?.duration());
     dom.removeEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
     });
@@ -147,9 +158,6 @@ function slideUp(elem) {
 
     if (!currentPlayer) return;
     if (!currentPlayer.isLocalPlayer) return;
-
-    // When opening the same song, preserve the player legacy
-    waveSurferInitialization('#barSurfer', legacy, playbackManager?.duration());
 }
 
 function onPlayPauseClick() {
