@@ -187,6 +187,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
     #playlist {
         padding-top: 190px;
         padding-bottom: 200px;
+        scrollbar-width: none;
     }
 
     .nowPlayingButtonsContainer {
