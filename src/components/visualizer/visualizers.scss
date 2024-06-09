@@ -244,9 +244,9 @@ body:not(.transition).mouseIdle canvas#visualizer {
         transition: opacity 500ms ease-in-out;
     }
 
-    body:not(.transition).mouseIdle header,
-    body:not(.transition).mouseIdle .skinHeader,
-    body:not(.transition).mouseIdle .nowPlayingButtonsContainer {
+    body.mouseIdle header,
+    body.mouseIdle .skinHeader,
+    body.mouseIdle .nowPlayingButtonsContainer {
         opacity: 0;
         transition: opacity 500ms ease-out;
     }
@@ -329,7 +329,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
     }
 
     body::-webkit-scrollbar,
-    body:not(.transition).mouseIdle .remoteControlSection {
+    body.mouseIdle .remoteControlSection {
         display: none;
     }
 
