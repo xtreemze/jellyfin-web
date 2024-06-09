@@ -238,6 +238,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
     div#itemDetailPage,
     div#musicPage,
     div#indexPage,
+    #simpleSlider,
     .nowPlayingButtonsContainer,
     body.transition .nowPlayingInfoContainer>.nowPlayingPageImageContainer .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
@@ -246,6 +247,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
 
     body.mouseIdle header,
     body.mouseIdle .skinHeader,
+    body.mouseIdle #simpleSlider,
     body.mouseIdle .nowPlayingButtonsContainer {
         opacity: 0;
         transition: opacity 500ms ease-out;
