@@ -217,7 +217,7 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
 
     setTimeout(()=>{
         endTransition();
-    }, 4000);
+    }, 5000);
 
     const legacy = {
         peaks: savedPeaks,
