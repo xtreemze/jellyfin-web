@@ -43,6 +43,21 @@ const barStyles = {
             barAlign: undefined
         }
     ],
+    coloredBottomOverlay: [
+        {
+            height: 'auto',
+            waveColor: color.waveLeft,
+            progressColor: color.progressLeft,
+            barAlign: 'bottom'
+        },
+        {
+            height: 'auto',
+            overlay: true,
+            waveColor: color.waveRight,
+            progressColor: color.progressRight,
+            barAlign: 'bottom'
+        }
+    ],
     joinedColorNoOverlay: [
         {
             height: 'auto',
@@ -134,10 +149,22 @@ const waveSurferChannelStyle = {
         autoScroll: false,
         autoCenter: false,
         backend: 'MediaElement',
-        sampleRate: 8000,
+        sampleRate: 10000,
         minPxPerSec: 1,
         interact: true,
         dragToSeek: false,
+        splitChannels: barStyles.coloredCenteredOverlay } as Partial<WaveSurferOptions>,
+    map: {
+        barWidth: 6,
+        barGap: 3,
+        cursorColor: color.cursor,
+        cursorWidth: 12,
+        autoScroll: false,
+        autoCenter: false,
+        sampleRate: 3000,
+        minPxPerSec: 1,
+        interact: true,
+        dragToSeek: true,
         splitChannels: barStyles.coloredCenteredOverlay } as Partial<WaveSurferOptions>
 };
 
@@ -151,7 +178,7 @@ const surferOptions = {
     hideScrollbar: true,
     autoScroll: false,
     autoCenter: false,
-    sampleRate: 8000,
+    sampleRate: 10000,
     minPxPerSec: 1,
     width: '100%'
 } as WaveSurferOptions;

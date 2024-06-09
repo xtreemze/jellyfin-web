@@ -39,7 +39,6 @@ const Visualizer: React.FC<VisualizerProps> = ({
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillStyle = 'rgb(94, 65, 145)';
-        ctx.globalCompositeOperation = 'difference';
 
         const minFrequency = 20; // Minimum frequency we care about (20 Hz)
         const maxFrequency = analyser.context.sampleRate / 2; // Maximum frequency (Nyquist frequency)

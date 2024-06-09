@@ -27,11 +27,11 @@
   "menuLinks": [
     {
       "name": "Local Server",
-      "url": "http://192.168.0.199:8096"
+      "url": "http://192.168.0.199"
     },
     {
       "name": "Internet Server",
-      "url": "http://80.217.111.124:8096"
+      "url": "https://80.217.111.124"
     }
   ],
   "servers": [],

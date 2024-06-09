@@ -2,8 +2,8 @@ import WaveSurfer from 'wavesurfer.js';
 import './visualizers.scss';
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
+import MiniMapPlugin from 'wavesurfer.js/dist/plugins/minimap';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
-import { addIdleClasses, removeIdleClasses } from 'scripts/mouseManager';
 
 type WaveSurferLegacy = {
     peaks: number[][]
@@ -15,6 +15,7 @@ type WaveSurferLegacy = {
 
 let waveSurferInstance: WaveSurfer;
 
+let activePlaylistItem: HTMLElement | null;
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
@@ -39,10 +40,23 @@ function findElements() {
     simpleSlider = document.getElementById('simpleSlider');
     barSurfer = document.getElementById('barSurfer');
     mediaElement = document.getElementById('currentMediaElement') as HTMLMediaElement || null;
+
+    const activePlaylistItems = document.getElementsByClassName('playlistIndexIndicatorImage');
+    if (activePlaylistItems) activePlaylistItem = activePlaylistItems[0] as HTMLElement;
 }
 
 function isNewSong(newSongDuration: number) {
     return (newSongDuration !== Math.floor(savedDuration * 10000000));
+}
+
+function scrollToActivePlaylsitItem() {
+    if (activePlaylistItem) {
+        activePlaylistItem.scrollIntoView({
+            block: 'center',
+            inline: 'nearest',
+            behavior: 'smooth'
+        });
+    }
 }
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
@@ -73,9 +87,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         waveSurferInstance.setScroll(legacy?.scrollPosition);
     }
 
-    waveSurferInstance.on('load', ()=>{
-        addIdleClasses();
-    });
+    scrollToActivePlaylsitItem();
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
@@ -97,15 +109,18 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             waveSurferInstance.zoom(currentZoom);
 
             if (inputSurfer) {
-                inputSurfer.addEventListener('touchstart', onTouchStart);
-                inputSurfer.addEventListener('touchmove', onTouchMove);
-                inputSurfer.addEventListener('touchend', onTouchEnd);
+                inputSurfer.addEventListener('touchstart', onTouchStart, { passive: true });
+                inputSurfer.addEventListener('touchmove', onTouchMove, { passive: true });
+                inputSurfer.addEventListener('touchend', onTouchEnd, { passive: true });
             }
             waveSurferInstance.registerPlugin(
                 TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
             );
             waveSurferInstance.registerPlugin(
                 ZoomPlugin.create(waveSurferPluginOptions.zoomOptions)
+            );
+            waveSurferInstance.registerPlugin(
+                MiniMapPlugin.create(waveSurferChannelStyle.map)
             );
         });
     });
@@ -198,7 +213,12 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
-    removeIdleClasses();
+    startTransition();
+
+    setTimeout(()=>{
+        endTransition();
+    }, 4000);
+
     const legacy = {
         peaks: savedPeaks,
         duration: savedDuration,
@@ -216,6 +236,18 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         mediaElement?.play();
     }
     return legacy;
+}
+
+function startTransition() {
+    const classList = document.body.classList;
+
+    classList.add('transition');
+}
+
+function endTransition() {
+    const classList = document.body.classList;
+
+    classList.remove('transition');
 }
 
 function setVisibility() {

@@ -18,6 +18,24 @@
     width: 100vw;
 }
 
+.nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+    z-index: 1;
+}
+
+.nowPlayingInfoControls {
+    max-width: 60%;
+}
+
+#inputSurfer ::part(minimap) {
+    height: 1rem;
+    left: 20%;
+    opacity: 0.9;
+    right: 20%;
+    top: -13.65rem;
+    transform: scaleY(-1);
+    width: 60%;
+}
+
 #barSurfer ::part(cursor) {
     border-radius: 10px;
 }
@@ -53,6 +71,25 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     padding-bottom: 12rem !important;
 }
 
+
+@media (min-width: 690px) {
+    .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+        width: 38%;
+    }
+
+    #inputSurfer ::part(minimap) {
+        position: fixed;
+        bottom: -0.5rem;
+        left: 25vw;
+        right: 25vw;
+        height: 1rem;
+        z-index: 3;
+        top: unset;
+        transform: unset;
+        width: 50vw;
+        opacity: 0.8;
+    }
+}
 
 @media (min-width: 690px) and (orientation: portrait) {
 
@@ -111,21 +148,26 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     height: calc(98% - 4.2em);
 }
 
+body.transition canvas#visualizer,
 canvas#visualizer {
     position: fixed;
     z-index: -1;
-    opacity: 0.6;
+    opacity: 0.4;
+    mix-blend-mode: difference;
     transition: opacity 1.4s ease-in-out;
 }
 
 body.mouseIdle canvas#visualizer {
-    opacity: 0.3;
+    opacity: 0.25;
+    mix-blend-mode: difference;
     transition: opacity 6s ease-in-out;
     transition-delay: 20s;
 }
 
 @media(min-width:1600px) {
-    .backgroundContainer.withBackdrop {
+
+    .backgroundContainer.withBackdrop,
+    body.transition .backgroundContainer.withBackdrop {
         opacity: 0.9;
         transition: opacity 1.4s ease-in-out;
     }
@@ -149,11 +191,10 @@ body.mouseIdle canvas#visualizer {
 
     .nowPlayingButtonsContainer {
         align-items: center;
-        bottom: 0;
+        bottom: 6.4rem;
         height: 0;
         left: 7.2rem;
         margin: 0;
-        padding-bottom: 6.4rem;
         position: fixed;
         right: 6.5rem;
     }
@@ -178,7 +219,8 @@ body.mouseIdle canvas#visualizer {
     }
 
     /* Slide in when the page loads or when the user is active */
-    body:not(.mouseIdle) .nowPlayingInfoControls>.infoContainer {
+    body:not(.mouseIdle) .nowPlayingInfoControls>.infoContainer,
+    body.transition .nowPlayingInfoControls>.infoContainer {
         transform: translateX(0);
         transition-delay: 0s;
         /* Ensures immediate transition when user becomes active */
@@ -197,7 +239,7 @@ body.mouseIdle canvas#visualizer {
     div#musicPage,
     div#indexPage,
     .nowPlayingButtonsContainer,
-    .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+    body.transition .nowPlayingInfoContainer>.nowPlayingPageImageContainer .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 500ms ease-in-out;
     }

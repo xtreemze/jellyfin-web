@@ -129,14 +129,6 @@ function slideDown(elem) {
     if (!currentPlayer) return;
     if (!currentPlayer.isLocalPlayer) return;
 
-    const activePlaylistItem = document.getElementsByClassName('playlistIndexIndicatorImage')[0];
-
-    activePlaylistItem.scrollIntoView({
-        block: 'center',
-        inline: 'nearest',
-        behavior: 'smooth'
-    });
-
     // When opening the same song, preserve the player legacy
     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
 }
