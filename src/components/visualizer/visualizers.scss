@@ -22,10 +22,6 @@
     z-index: 1;
 }
 
-.nowPlayingInfoControls {
-    max-width: 60%;
-}
-
 #inputSurfer ::part(minimap) {
     height: 1rem;
     left: 20%;
@@ -93,6 +89,10 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
 
 @media (min-width: 690px) and (orientation: portrait) {
 
+    .nowPlayingInfoControls {
+        max-width: 60%;
+    }
+
     #inputSurfer {
         height: 5rem;
         margin-bottom: 1rem;
@@ -157,7 +157,7 @@ canvas#visualizer {
     transition: opacity 1.4s ease-in-out;
 }
 
-body.mouseIdle canvas#visualizer {
+body:not(.transition).mouseIdle canvas#visualizer {
     opacity: 0.25;
     mix-blend-mode: difference;
     transition: opacity 6s ease-in-out;
@@ -227,7 +227,7 @@ body.mouseIdle canvas#visualizer {
     }
 
     /* Slide out after 15 seconds of mouse idle */
-    body.mouseIdle .nowPlayingInfoControls>.infoContainer {
+    body:not(.transition).mouseIdle .nowPlayingInfoControls>.infoContainer {
         transition-delay: 15s;
         /* Delays the transition by 15 seconds */
     }
@@ -244,23 +244,23 @@ body.mouseIdle canvas#visualizer {
         transition: opacity 500ms ease-in-out;
     }
 
-    body.mouseIdle header,
-    body.mouseIdle .skinHeader,
-    body.mouseIdle .nowPlayingButtonsContainer {
+    body:not(.transition).mouseIdle header,
+    body:not(.transition).mouseIdle .skinHeader,
+    body:not(.transition).mouseIdle .nowPlayingButtonsContainer {
         opacity: 0;
         transition: opacity 500ms ease-out;
     }
 
-    body.mouseIdle div#itemDetailPage,
-    body.mouseIdle div#musicPage,
-    body.mouseIdle div#indexPage,
-    body.mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+    body:not(.transition).mouseIdle div#itemDetailPage,
+    body:not(.transition).mouseIdle div#musicPage,
+    body:not(.transition).mouseIdle div#indexPage,
+    body:not(.transition).mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
         transition: opacity 500ms ease-out;
         transition-delay: 25s;
     }
 
-    body.mouseIdle .backgroundContainer.withBackdrop {
+    body:not(.transition).mouseIdle .backgroundContainer.withBackdrop {
         opacity: 0.5;
         transition: opacity 12s ease-in-out;
         transition-delay: 20s;
@@ -329,7 +329,7 @@ body.mouseIdle canvas#visualizer {
     }
 
     body::-webkit-scrollbar,
-    body.mouseIdle .remoteControlSection {
+    body:not(.transition).mouseIdle .remoteControlSection {
         display: none;
     }
 
