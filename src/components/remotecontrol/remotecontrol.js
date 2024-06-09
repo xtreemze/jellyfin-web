@@ -919,7 +919,7 @@ export default function () {
     function init(ownerView, context) {
         let volumecontrolHtml = '<div class="volumecontrol flex align-items-center flex-wrap-wrap justify-content-center">';
         volumecontrolHtml += `<button is="paper-icon-button-light" class="buttonMute autoSize" title=${globalize.translate('Mute')}><span class="xlargePaperIconButton material-icons volume_up" aria-hidden="true"></span></button>`;
-        volumecontrolHtml += '<div class="sliderContainer nowPlayingVolumeSliderContainer"><input is="emby-slider" type="range" step="0.01" min="0" max="100" value="0" class="nowPlayingVolumeSlider"/></div>';
+        volumecontrolHtml += '<div class="sliderContainer nowPlayingVolumeSliderContainer"><input is="emby-slider" type="range" step="0.1" min="0" max="100" value="0" class="nowPlayingVolumeSlider"/></div>';
         volumecontrolHtml += '</div>';
         const optionsSection = context.querySelector('.playlistSectionButton');
         if (!layoutManager.mobile) {
