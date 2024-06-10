@@ -124,7 +124,15 @@ class HtmlAudioPlayer {
                 }
 
                 if (normalizationGain) {
-                    self.gainNode.gain.value = Math.pow(10, normalizationGain / 20);
+                    // Calculate the normalization gain
+                    const gainValue = Math.pow(10, normalizationGain / 20);
+
+                    // Apply the makeup gain
+                    const makeupGain = 6; // Example value
+                    const makeupGainValue = Math.pow(10, makeupGain / 20);
+
+                    // Set the final gain value
+                    self.gainNode.gain.value = gainValue * makeupGainValue;
                 } else {
                     self.gainNode.gain.value = 1;
                 }
