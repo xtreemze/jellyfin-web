@@ -156,12 +156,14 @@ body:not(.transition).mouseIdle canvas#visualizer {
     }
 
     #playlist>div.listItem:hover>div.listViewUserDataButtons,
+    div.playlistSection>div.playlistSectionButton,
     #playlist>div.listItem:hover>div.listItemImage.itemAction.lazy,
     #playlist>div.listItem:hover>span {
         opacity: 1;
     }
 
     #playlist>div>div.listViewUserDataButtons,
+    div.playlistSection>div.playlistSectionButton,
     #playlist>div.listItem div.listItemImage.itemAction.lazy,
     #playlist>div>span {
         opacity: 0;
