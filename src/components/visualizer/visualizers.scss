@@ -68,12 +68,33 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
 }
 
 
+.nowPlayingInfoContainer {
+    height: calc(98% - 4.2em);
+}
+
+body.transition canvas#visualizer,
+canvas#visualizer {
+    position: fixed;
+    z-index: -1;
+    opacity: 0.4;
+    mix-blend-mode: difference;
+    transition: opacity 1.4s ease-in-out;
+}
+
+body:not(.transition).mouseIdle canvas#visualizer {
+    opacity: 0.25;
+    mix-blend-mode: difference;
+    transition: opacity 6s ease-in-out;
+    transition-delay: 20s;
+}
+
 @media (min-width: 690px) {
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         width: 38%;
     }
 
-    #inputSurfer ::part(minimap) {
+    #inputSurfer ::part(minimap),
+    #simpleSlider {
         position: fixed;
         bottom: -0.5rem;
         left: 25vw;
@@ -99,13 +120,6 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
         margin-top: -0.5rem;
         max-width: 75vw;
     }
-
-    #simpleSlider {
-        height: 2rem;
-        margin-bottom: 0rem;
-        margin-top: 1rem;
-        max-width: 75vw;
-    }
 }
 
 @media (orientation: landscape) and (max-width: 1599px) {
@@ -124,10 +138,8 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
 
 }
 
-@media (min-width: 1600px) {
-
-    #inputSurfer,
-    #simpleSlider {
+@media(min-width:1600px) {
+    #inputSurfer {
         height: 9.8rem;
         margin: 0;
         position: fixed;
@@ -136,35 +148,6 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
         max-width: 100vw;
         bottom: 1.5rem;
     }
-
-    #simpleSlider {
-        padding-left: 5rem;
-        padding-right: 5rem;
-    }
-}
-
-
-.nowPlayingInfoContainer {
-    height: calc(98% - 4.2em);
-}
-
-body.transition canvas#visualizer,
-canvas#visualizer {
-    position: fixed;
-    z-index: -1;
-    opacity: 0.4;
-    mix-blend-mode: difference;
-    transition: opacity 1.4s ease-in-out;
-}
-
-body:not(.transition).mouseIdle canvas#visualizer {
-    opacity: 0.25;
-    mix-blend-mode: difference;
-    transition: opacity 6s ease-in-out;
-    transition-delay: 20s;
-}
-
-@media(min-width:1600px) {
 
     .backgroundContainer.withBackdrop,
     body.transition .backgroundContainer.withBackdrop {
@@ -296,7 +279,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
         bottom: 12rem;
         font-size: .75em;
         max-height: 12rem;
-        overflow: auto;
+        overflow: hidden;
         padding: 0;
         padding-left: 2.5rem;
         padding-right: 2rem;
