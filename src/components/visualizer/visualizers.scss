@@ -32,6 +32,13 @@
     width: 60%;
 }
 
+div.infoContainer>.nowPlayingInfoContainerMedia>div,
+div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 #barSurfer ::part(cursor) {
     border-radius: 10px;
 }
