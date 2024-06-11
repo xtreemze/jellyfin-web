@@ -19,12 +19,6 @@ div#barSurfer ::part(wrapper) {
     overflow: visible;
 }
 
-.nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-    z-index: 1;
-    user-select: none;
-    pointer-events: none;
-}
-
 .nowPlayingBarTop {
     height: 5em;
     padding: 0.5rem;
@@ -33,31 +27,32 @@ div#barSurfer ::part(wrapper) {
 
 #inputSurfer ::part(minimap) {
     height: 1rem;
-    left: 25%;
+    left: 35%;
     opacity: 0.9;
-    right: 25%;
-    top: calc(-4rem - 28vh);
-    width: 50%;
+    bottom: 14.5rem;
+    width: 25%;
     user-select: none;
+    z-index: 3;
 }
 
 #inputSurfer {
-    bottom: -4rem;
+    bottom: 6rem;
     height: 6rem;
     width: 100vw;
-    position: relative;
+    left: 0;
+    right: 0;
+    position: fixed;
     z-index: 0;
-    margin-left: -2.5rem;
     cursor: pointer;
     user-select: none;
 }
 
 #simpleSlider {
-    height: 6rem;
-    max-width: 85vw;
-    position: relative;
-    bottom: -7.19rem;
+    position: fixed;
+    bottom: 17.9rem;
     z-index: 1;
+    width: 53%;
+    left: 22%;
 }
 
 #simpleSlider[hidden] .nowPlayingPositionSliderContainer {
@@ -65,10 +60,8 @@ div#barSurfer ::part(wrapper) {
 }
 
 #simpleSlider[hidden] {
-    height: 1rem;
     overflow: visible;
     user-select: none;
-    margin: none;
     pointer-events: none;
 }
 
@@ -78,8 +71,14 @@ div#barSurfer ::part(wrapper) {
 }
 
 .nowPlayingSecondaryButtons {
-    position: relative;
-    bottom: -8rem;
+    position: fixed;
+    bottom: 1.5rem;
+}
+
+#playlist {
+    background-color: rgba(7, 7, 7, 0.936);
+    z-index: 4;
+    position: absolute;
 }
 
 div.infoContainer>.nowPlayingInfoContainerMedia>div,
@@ -87,6 +86,28 @@ div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+div.nowPlayingPageImageContainer {
+    position: fixed;
+    bottom: 26.25rem;
+    width: 92.5%;
+    margin-right: 0rem !important;
+    z-index: 1;
+    user-select: none;
+    pointer-events: none;
+}
+
+div.infoContainer {
+    bottom: 20rem;
+    position: fixed;
+    width: 85%;
+}
+
+div.nowPlayingButtonsContainer {
+    position: fixed;
+    bottom: 12rem;
+    width: 85%;
 }
 
 body.mouseIdle {
@@ -132,11 +153,6 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     padding-bottom: 12rem !important;
 }
 
-
-.nowPlayingInfoContainer {
-    height: calc(98% - 4.2em);
-}
-
 body.transition canvas#visualizer,
 canvas#visualizer {
     position: fixed;
@@ -155,7 +171,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
 
 @media (min-width: 690px) {
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        width: 40%;
+        width: 30%;
     }
 
     #inputSurfer ::part(minimap) {
@@ -173,39 +189,14 @@ body:not(.transition).mouseIdle canvas#visualizer {
     }
 
     #simpleslider {
-        height: unset;
+        height: 3rem;
         position: fixed;
         z-index: 3;
-        top: unset;
-        transform: unset;
+        bottom: -1.5rem;
         left: 20vw;
         right: 20vw;
-        top: 50vh;
-        bottom: 50vh;
         width: 60vw;
         max-width: unset;
-    }
-
-    .nowPlayingButtonsContainer {
-        bottom: 0rem;
-    }
-
-    .nowPlayingSecondaryButtons {
-        bottom: 0rem;
-    }
-}
-
-@media (min-width: 690px) and (orientation: portrait) {
-
-    .nowPlayingInfoControls {
-        max-width: 60%;
-    }
-
-    #inputSurfer {
-        max-height: 4rem;
-        margin-bottom: 1rem;
-        margin-top: -0.5rem;
-        max-width: 75vw;
     }
 }
 
@@ -213,6 +204,8 @@ body:not(.transition).mouseIdle canvas#visualizer {
     #nowPlayingPage .nowPlayingPageImageContainer {
         width: 75vh;
         max-width: 33.33vw;
+        position: relative;
+        bottom: unset;
     }
 
     #inputSurfer {
@@ -223,18 +216,47 @@ body:not(.transition).mouseIdle canvas#visualizer {
         max-width: calc(94vw - 75vh);
         top: 0;
         position: relative;
+        bottom: unset;
     }
 
+    .nowPlayingButtonsContainer {
+        bottom: unset;
+        position: unset;
+    }
+
+    .nowPlayingSecondaryButtons {
+        bottom: unset;
+        position: unset;
+    }
+
+    div.infoContainer {
+        position: relative;
+        bottom: unset;
+        left: 2rem;
+    }
+
+    #simpleSlider {
+        position: fixed;
+        bottom: -0.25rem;
+        z-index: 1;
+        width: 53%;
+        left: 22%;
+    }
 }
 
 @media(min-width:1600px) {
+
+    .nowPlayingSecondaryButtons {
+        position: unset;
+        bottom: unset;
+    }
+
     #inputSurfer ::part(minimap) {
         height: 1rem;
         z-index: 3;
         bottom: -0.5rem;
         opacity: 0.8;
     }
-
 
     #simpleSlider {
         z-index: 3;
@@ -254,7 +276,6 @@ body:not(.transition).mouseIdle canvas#visualizer {
             margin-right: 2vw;
         }
     }
-
 
     #inputSurfer {
         height: 9.8rem;
@@ -286,10 +307,13 @@ body:not(.transition).mouseIdle canvas#visualizer {
         opacity: 0;
     }
 
-    #playlist {
-        padding-top: 190px;
-        padding-bottom: 200px;
+    div#playlist {
+        background-color: unset;
+        padding-top: 12rem;
+        padding-bottom: 12rem;
         scrollbar-width: none;
+        position: unset;
+        z-index: unset;
     }
 
     div.nowPlayingButtonsContainer {
@@ -313,6 +337,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
         padding-left: 32.5rem;
         padding-right: 2.6rem;
         border-radius: .2em;
+        width: unset;
     }
 
     /* Base state: element is off-screen */
@@ -399,7 +424,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
         bottom: 12rem;
         font-size: .75em;
         max-height: 12rem;
-        overflow: hidden;
+        overflow: auto;
         padding: 0;
         padding-left: 2.5rem;
         padding-right: 2rem;
@@ -414,6 +439,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         width: 24rem;
+        bottom: unset;
     }
 
     .nowPlayingPageImage {
@@ -443,7 +469,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
         scrollbar-width: none;
     }
 
-    .nowPlayingInfoContainer {
+    div.nowPlayingInfoContainer {
         bottom: 12rem;
         left: 6rem;
         max-width: 60rem;
