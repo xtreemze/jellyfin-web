@@ -83,7 +83,7 @@ body.transition canvas#visualizer,
 canvas#visualizer {
     position: fixed;
     z-index: -1;
-    opacity: 0.4;
+    opacity: 0.6;
     mix-blend-mode: difference;
     transition: opacity 1.4s ease-in-out;
 }
@@ -233,7 +233,8 @@ body:not(.transition).mouseIdle canvas#visualizer {
     div#indexPage,
     #simpleSlider,
     .nowPlayingButtonsContainer,
-    body.transition .nowPlayingInfoContainer>.nowPlayingPageImageContainer .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+    body.transition .nowPlayingInfoContainer>.nowPlayingPageImageContainer,
+     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 500ms ease-in-out;
     }
