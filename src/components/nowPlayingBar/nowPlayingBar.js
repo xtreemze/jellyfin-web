@@ -115,14 +115,17 @@ function onSlideDownComplete() {
 }
 
 function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
+    if (!document?.fullscreenElement) {
+        document.documentElement?.requestFullscreen({ navigationUI: 'hide' }).catch((err) => {
+            console.debug(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+        });
     }
 }
 
 function slideDown(elem) {
-    toggleFullscreen();
     hideCursor();
+    toggleFullscreen();
+
     // trigger reflow
     void elem.offsetWidth;
 
