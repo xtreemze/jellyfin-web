@@ -13,13 +13,21 @@
     display: unset;
 }
 
-#barSurfer ::part(wrapper) {
+div#barSurfer ::part(wrapper) {
     display: block;
     width: 100vw;
+    background-color: rgb(50 50 50 / 15%);
+    overflow: visible;
 }
 
 .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
     z-index: 1;
+}
+
+.nowPlayingBarTop {
+    height: 5em;
+    padding: 0.5rem;
+    padding-bottom: 0;
 }
 
 #inputSurfer ::part(minimap) {
@@ -37,6 +45,22 @@ div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+body.mouseIdle {
+    cursor: none !important;
+}
+
+div>form>div>button,
+button.button-submit.btnSave {
+    position: fixed !important;
+    bottom: 5rem;
+    right: 2rem;
+    width: 20% !important;
+    min-width: 12rem;
+    z-index: 1;
+    left: unset;
+    top: unset;
 }
 
 #barSurfer ::part(cursor) {
@@ -234,7 +258,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
     #simpleSlider,
     .nowPlayingButtonsContainer,
     body.transition .nowPlayingInfoContainer>.nowPlayingPageImageContainer,
-     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+    .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 500ms ease-in-out;
     }

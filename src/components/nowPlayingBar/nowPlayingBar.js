@@ -114,7 +114,14 @@ function onSlideDownComplete() {
     this.classList.add('hide');
 }
 
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    }
+}
+
 function slideDown(elem) {
+    toggleFullscreen();
     hideCursor();
     // trigger reflow
     void elem.offsetWidth;
