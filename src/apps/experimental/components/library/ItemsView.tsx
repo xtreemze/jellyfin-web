@@ -72,7 +72,7 @@ const ItemsView: FC<ItemsViewProps> = ({
     const {
         isLoading,
         data: itemsResult,
-        isPreviousData,
+        isPlaceholderData,
         refetch
     } = useGetItemsViewByType(
         viewType,
@@ -229,7 +229,7 @@ const ItemsView: FC<ItemsViewProps> = ({
                     <Pagination
                         totalRecordCount={totalRecordCount}
                         libraryViewSettings={libraryViewSettings}
-                        isPreviousData={isPreviousData}
+                        isPlaceholderData={isPlaceholderData}
                         setLibraryViewSettings={setLibraryViewSettings}
                     />
                 )}
@@ -313,7 +313,7 @@ const ItemsView: FC<ItemsViewProps> = ({
                     <Pagination
                         totalRecordCount={totalRecordCount}
                         libraryViewSettings={libraryViewSettings}
-                        isPreviousData={isPreviousData}
+                        isPlaceholderData={isPlaceholderData}
                         setLibraryViewSettings={setLibraryViewSettings}
                     />
                 </Box>

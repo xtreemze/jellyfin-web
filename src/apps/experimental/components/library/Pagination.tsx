@@ -23,14 +23,14 @@ interface PaginationProps {
     libraryViewSettings: LibraryViewSettings;
     setLibraryViewSettings: React.Dispatch<React.SetStateAction<LibraryViewSettings>>;
     totalRecordCount: number;
-    isPreviousData: boolean
+    isPlaceholderData: boolean
 }
 
 const Pagination: FC<PaginationProps> = ({
     libraryViewSettings,
     setLibraryViewSettings,
     totalRecordCount,
-    isPreviousData
+    isPlaceholderData
 }) => {
     const limit = userSettings.libraryPageSize(undefined);
     const startIndex = libraryViewSettings.StartIndex ?? 0;
@@ -77,7 +77,7 @@ const Pagination: FC<PaginationProps> = ({
                         <IconButton
                             title={globalize.translate('Previous')}
                             className='paper-icon-button-light btnPreviousPage autoSize'
-                            disabled={startIndex == 0 || isPreviousData}
+                            disabled={startIndex == 0 || isPlaceholderData}
                             onClick={onPreviousPageClick}
                         >
                             <ArrowBackIcon />
@@ -86,7 +86,7 @@ const Pagination: FC<PaginationProps> = ({
                         <IconButton
                             title={globalize.translate('Next')}
                             className='paper-icon-button-light btnNextPage autoSize'
-                            disabled={startIndex + limit >= totalRecordCount || isPreviousData}
+                            disabled={startIndex + limit >= totalRecordCount || isPlaceholderData }
                             onClick={onNextPageClick}
                         >
                             <ArrowForwardIcon />
