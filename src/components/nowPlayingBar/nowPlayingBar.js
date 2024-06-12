@@ -19,6 +19,7 @@ import '../../elements/emby-slider/emby-slider';
 import { appRouter } from '../router/appRouter';
 import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 import { hideCursor } from 'scripts/mouseManager';
+import { isMobileBrowser } from 'utils/detectMobile';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];
@@ -115,7 +116,7 @@ function onSlideDownComplete() {
 }
 
 function toggleFullscreen() {
-    if (!document?.fullscreenElement) {
+    if (!document?.fullscreenElement && isMobileBrowser()) {
         document.documentElement?.requestFullscreen({ navigationUI: 'hide' }).catch((err) => {
             console.debug(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
         });

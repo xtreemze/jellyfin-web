@@ -10,15 +10,15 @@ import * as userSettings from 'scripts/settings/userSettings';
 import { LibraryViewSettings } from 'types/library';
 
 function scrollPageToTop() {
-    const page = document.getElementsByClassName('skinBody')[1] as HTMLDivElement;
-    if (page) {
-        page.scrollIntoView({
+    requestAnimationFrame(() => {
+        document.body.scrollIntoView({
             block: 'start',
             inline: 'nearest',
-            behavior: 'auto'
+            behavior: 'smooth'
         });
-    }
+    });
 }
+
 interface PaginationProps {
     libraryViewSettings: LibraryViewSettings;
     setLibraryViewSettings: React.Dispatch<React.SetStateAction<LibraryViewSettings>>;
@@ -86,7 +86,7 @@ const Pagination: FC<PaginationProps> = ({
                         <IconButton
                             title={globalize.translate('Next')}
                             className='paper-icon-button-light btnNextPage autoSize'
-                            disabled={startIndex + limit >= totalRecordCount || isPlaceholderData }
+                            disabled={startIndex + limit >= totalRecordCount || isPlaceholderData}
                             onClick={onNextPageClick}
                         >
                             <ArrowForwardIcon />
