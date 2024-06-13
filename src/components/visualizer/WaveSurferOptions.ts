@@ -172,7 +172,7 @@ const surferOptions = {
     container: '#inputSurfer',
     dragToSeek: false,
     interact: true,
-    normalize: true,
+    normalize: false,
     autoplay: false,
     backend: 'MediaElement',
     hideScrollbar: true,
