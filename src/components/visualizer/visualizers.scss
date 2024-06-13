@@ -12,17 +12,30 @@
     display: unset;
 }
 
+header,
+div.nowPlayingBarTop {
+    padding: 1rem 1rem;
+}
+
 div#barSurfer ::part(wrapper) {
     display: block;
     width: 100vw;
     background-color: rgb(50 50 50 / 15%);
     overflow: visible;
+    z-index: 6;
 }
 
-.nowPlayingBarTop {
-    height: 5em;
-    padding: 0.5rem;
-    padding-bottom: 0;
+div#barSurfer,
+div#inputSurfer,
+div#inputSurfer ::part(wrapper),
+div#barSurfer ::part(wrapper),
+div.appfooter > div.nowPlayingBar {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #inputSurfer ::part(minimap) {
@@ -46,7 +59,6 @@ div#barSurfer ::part(wrapper) {
     position: fixed;
     z-index: 0;
     cursor: pointer;
-    user-select: none;
 }
 
 #simpleSlider {
@@ -167,8 +179,8 @@ canvas#visualizer {
 }
 
 body:not(.transition).mouseIdle canvas#visualizer {
-    opacity: 0.25;
-    mix-blend-mode: difference;
+    opacity: 0.75;
+    mix-blend-mode: normal;
     transition: opacity 6s ease-in-out;
     transition-delay: 20s;
 }
@@ -250,6 +262,13 @@ body:not(.transition).mouseIdle canvas#visualizer {
 
 @media(min-width:1600px) {
 
+    body:not(.transition).mouseIdle canvas#visualizer {
+        opacity: 0.25;
+        mix-blend-mode: difference;
+        transition: opacity 6s ease-in-out;
+        transition-delay: 20s;
+    }
+
     .nowPlayingSecondaryButtons {
         position: unset;
         bottom: unset;
@@ -260,9 +279,11 @@ body:not(.transition).mouseIdle canvas#visualizer {
         z-index: 3;
         bottom: -0.5rem;
         opacity: 0.8;
+        padding: unset;
     }
 
     #simpleSlider {
+        padding: unset;
         z-index: 3;
         height: 1rem;
         position: fixed;

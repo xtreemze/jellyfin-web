@@ -49,13 +49,19 @@ function isNewSong(newSongDuration: number) {
     return (newSongDuration !== Math.floor(savedDuration * 10000000));
 }
 
+const smoothScrollSettings = {
+    block: 'center',
+    inline: 'nearest',
+    behavior: 'smooth'
+} as ScrollIntoViewOptions;
+
 function scrollToActivePlaylsitItem() {
     if (activePlaylistItem) {
-        activePlaylistItem.scrollIntoView({
-            block: 'center',
-            inline: 'nearest',
-            behavior: 'smooth'
-        });
+        activePlaylistItem.scrollIntoView(smoothScrollSettings);
+
+        setTimeout(()=>{
+            document.body.scrollIntoView(smoothScrollSettings);
+        }, 1200);
     }
 }
 
