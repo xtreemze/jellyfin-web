@@ -40,7 +40,6 @@
     "htmlAudioPlayer/plugin",
     "htmlVideoPlayer/plugin",
     "sessionPlayer/plugin",
-    "chromecastPlayer/plugin",
     "syncPlay/plugin"
   ]
 }
