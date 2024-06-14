@@ -4,7 +4,7 @@ import Events from '../utils/events.ts';
 import { MediaError } from 'types/mediaError';
 
 export function getSavedVolume() {
-    return appSettings.get('volume') || 1;
+    return appSettings.get('volume') || 0.8;
 }
 
 export function saveVolume(value) {
