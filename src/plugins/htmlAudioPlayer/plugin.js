@@ -128,7 +128,7 @@ class HtmlAudioPlayer {
                     const gainValue = Math.pow(10, normalizationGain / 20);
 
                     // Apply the makeup gain
-                    const makeupGain = 12; // Example value
+                    const makeupGain = 12;
                     const makeupGainValue = Math.pow(10, makeupGain / 20);
 
                     // Set the final gain value
