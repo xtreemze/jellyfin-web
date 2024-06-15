@@ -90,7 +90,7 @@ async function loadDisplaySettings({
         enableRewatchingInNextUp: Boolean(settings.enableRewatchingInNextUp()),
         episodeImagesInNextUp: Boolean(settings.useEpisodeImagesInNextUpAndResume()),
         language: settings.language() || 'auto',
-        layout: layoutManager.getSavedLayout() || 'auto',
+        layout: layoutManager.getSavedLayout() || 'experimental',
         libraryPageSize: settings.libraryPageSize(),
         maxDaysForNextUp: settings.maxDaysForNextUp(),
         screensaver: settings.screensaver() || 'none',
