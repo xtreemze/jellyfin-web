@@ -1,6 +1,7 @@
 import loadable from '@loadable/component';
 import { History } from '@remix-run/router';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
 
 import { ApiProvider } from 'hooks/useApi';
@@ -24,6 +25,7 @@ const RootApp = ({ history }: Readonly<{ history: History }>) => {
                     }
                 </WebConfigProvider>
             </ApiProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );
 };

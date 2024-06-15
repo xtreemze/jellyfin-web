@@ -12,10 +12,9 @@ function enableAnimation() {
 }
 
 function enableRotation() {
-    return true;
-    // return !browser.tv
-    //         // Causes high cpu usage
-    //         && !browser.firefox;
+    return !browser.tv
+            // Causes high cpu usage
+            && !browser.firefox;
 }
 
 class Backdrop {
@@ -237,7 +236,7 @@ function startRotation(images, enableImageRotation) {
     currentRotationIndex = -1;
 
     if (images.length > 1 && enableImageRotation !== false && enableRotation()) {
-        rotationInterval = setInterval(onRotationInterval, 20000);
+        rotationInterval = setInterval(onRotationInterval, 24000);
     }
 
     onRotationInterval();
