@@ -151,7 +151,7 @@
     "EasyPasswordHelp": "Uw Easy-pincode wordt gebruikt voor offline toegang op ondersteunde apparaten en kan ook worden gebruikt voor eenvoudig aanmelden binnen het netwerk.",
     "Edit": "Bewerken",
     "EditImages": "Afbeeldingen bewerken",
-    "EditMetadata": "Metadata wijzigen",
+    "EditMetadata": "Metadata bewerken",
     "EditSubtitles": "Ondertiteling bewerken",
     "EnableBackdropsHelp": "Laat achtergrondafbeeldingen zien tijdens het bladeren door de bibliotheek.",
     "EnableCinemaMode": "Bioscoopmodus",
@@ -1893,5 +1893,8 @@
     "LibraryScanFanoutConcurrencyHelp": "Maximaal aantal gelijktijdige taken tijdens bibliotheekscans. Bij een instelling van 0 wordt een limiet gekozen gebaseerd op het aantal processorkernen in je systeem. WAARSCHUWING: een te hoge instelling kan problemen veroorzaken met netwerkbestandssystemen; verlaag dit getal als je problemen tegenkomt.",
     "LibraryScanFanoutConcurrency": "Limiet gelijktijdige bibiotheekscantaken",
     "LabelSelectPreferredTranscodeVideoAudioCodec": "Gewenste geluidscodec bij afspelen video",
-    "SelectPreferredTranscodeVideoAudioCodecHelp": "Selecteer de gewenste geluidscodec om naartoe te transcoderen bij video-inhoud. Als de voorkeurscodec niet wordt ondersteund, gebruikt de server de beste codec die wel beschikbaar is."
+    "SelectPreferredTranscodeVideoAudioCodecHelp": "Selecteer de gewenste geluidscodec om naartoe te transcoderen bij video-inhoud. Als de voorkeurscodec niet wordt ondersteund, gebruikt de server de beste codec die wel beschikbaar is.",
+    "Alternate": "Alternatief",
+    "AlternateDVD": "Alternatief dvd",
+    "Regional": "Regionaal"
 }
