@@ -124,8 +124,7 @@
     "usehooks-ts": "3.1.0",
     "wavesurfer.js": "7.7.15",
     "webcomponents.js": "0.7.24",
-    "whatwg-fetch": "3.6.20",
-    "workbox-precaching": "7.1.0"
+    "whatwg-fetch": "3.6.20"
   },
   "browserslist": [
     "last 2 Firefox versions",
