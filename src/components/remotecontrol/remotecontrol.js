@@ -534,11 +534,6 @@ export default function () {
                 const img = itemsContainer.querySelector(`.listItem[data-playlistItemId="${playlistItemId}"] .listItemImage`);
 
                 if (img) {
-                    img.scrollIntoView({
-                        block: 'center',
-                        inline: 'nearest',
-                        behavior: 'smooth'
-                    });
                     img.classList.remove('lazy');
                     img.classList.add('playlistIndexIndicatorImage');
                     img.classList.toggle('playlistIndexIndicatorPausedImage', playbackManager.paused());

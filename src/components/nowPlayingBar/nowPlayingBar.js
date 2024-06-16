@@ -586,7 +586,7 @@ function updateNowPlayingInfo(state) {
         nowPlayingTextElement.appendChild(secondaryText);
     }
 
-    const imgHeight = 96;
+    const imgHeight = 50;
 
     const url = nowPlayingItem ? (seriesImageUrl(nowPlayingItem, {
         height: imgHeight

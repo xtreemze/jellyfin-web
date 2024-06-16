@@ -55,14 +55,24 @@ const smoothScrollSettings = {
     behavior: 'smooth'
 } as ScrollIntoViewOptions;
 
-function scrollToActivePlaylsitItem() {
-    if (activePlaylistItem) {
-        activePlaylistItem.scrollIntoView(smoothScrollSettings);
+let scrollTimeout: number | NodeJS.Timeout | undefined;
+let scrollTimeout2: number | NodeJS.Timeout | undefined;
 
-        setTimeout(()=>{
-            document.body.scrollIntoView(smoothScrollSettings);
-        }, 1200);
-    }
+function scrollToActivePlaylistItem() {
+    clearTimeout(scrollTimeout);
+    clearTimeout(scrollTimeout2);
+
+    scrollTimeout = setTimeout(()=>{
+        findElements();
+
+        if (activePlaylistItem) {
+            activePlaylistItem.scrollIntoView(smoothScrollSettings);
+
+            scrollTimeout2 = setTimeout(()=>{
+                document.body.scrollIntoView(smoothScrollSettings);
+            }, 1200);
+        }
+    }, 500);
 }
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
@@ -74,6 +84,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     findElements();
     resetVisibility();
+    scrollToActivePlaylistItem();
 
     if (!mediaElement) return;
     const newSong = isNewSong(newSongDuration);
@@ -93,8 +104,6 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         waveSurferInstance.setScroll(legacy?.scrollPosition);
     }
 
-    scrollToActivePlaylsitItem();
-
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
         initializeStyle(minPxPerSec);
@@ -113,12 +122,6 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             }
             initializeStyle(currentZoom);
             waveSurferInstance.zoom(currentZoom);
-
-            if (inputSurfer) {
-                inputSurfer.addEventListener('touchstart', onTouchStart, { passive: true });
-                inputSurfer.addEventListener('touchmove', onTouchMove, { passive: true });
-                inputSurfer.addEventListener('touchend', onTouchEnd, { passive: true });
-            }
             waveSurferInstance.registerPlugin(
                 TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
             );
@@ -128,6 +131,11 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             waveSurferInstance.registerPlugin(
                 MiniMapPlugin.create(waveSurferChannelStyle.map)
             );
+            if (inputSurfer) {
+                inputSurfer.addEventListener('touchstart', onTouchStart, { passive: true });
+                inputSurfer.addEventListener('touchmove', onTouchMove, { passive: true });
+                inputSurfer.addEventListener('touchend', onTouchEnd, { passive: true });
+            }
         });
     });
 
@@ -246,13 +254,13 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
 
 function startTransition() {
     const classList = document.body.classList;
+    scrollToActivePlaylistItem();
 
     classList.add('transition');
 }
 
 function endTransition() {
     const classList = document.body.classList;
-
     classList.remove('transition');
 }
 
@@ -268,4 +276,4 @@ function resetVisibility() {
     if (barSurfer) barSurfer.hidden = true;
 }
 
-export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom };
+export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom, scrollToActivePlaylistItem };

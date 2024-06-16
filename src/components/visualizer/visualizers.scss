@@ -97,10 +97,6 @@ div.appfooter > div.nowPlayingBar {
     position: absolute;
 }
 
-.playlistSectionButton {
-    margin-top: 6rem;
-}
-
 div.infoContainer>.nowPlayingInfoContainerMedia>div,
 div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
     white-space: nowrap;
@@ -217,6 +213,12 @@ body:not(.transition).mouseIdle canvas#visualizer {
         right: 20vw;
         width: 60vw;
         max-width: unset;
+    }
+}
+
+@media (orientation: portrait) and (max-width: 1599px) {
+    .playlistSectionButton {
+        margin-top: 6rem;
     }
 }
 

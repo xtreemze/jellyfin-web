@@ -16,10 +16,6 @@ type VisualizerProps = {
     maxDecibels?: number;
 };
 
-// Ensure the global AudioContext is initialized
-// eslint-disable-next-line compat/compat
-window.myAudioContext = window.myAudioContext || new AudioContext();
-
 const Visualizer: React.FC<VisualizerProps> = ({
     audioContext = window.myAudioContext,
     mySourceNode = window.mySourceNode,
