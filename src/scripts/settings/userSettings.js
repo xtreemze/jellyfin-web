@@ -233,7 +233,7 @@ export class UserSettings {
             return this.set('fastFadein', val.toString(), false);
         }
 
-        return toBoolean(this.get('fastFadein', false), true);
+        return toBoolean(this.get('fastFadein', false), false);
     }
 
     /**
@@ -246,7 +246,7 @@ export class UserSettings {
             return this.set('blurhash', val.toString(), false);
         }
 
-        return toBoolean(this.get('blurhash', false), true);
+        return toBoolean(this.get('blurhash', false), false);
     }
 
     /**
