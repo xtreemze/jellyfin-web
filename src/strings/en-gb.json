@@ -19,7 +19,7 @@
     "LabelTextBackgroundColor": "Text background colour",
     "LabelTextColor": "Text colour",
     "NewCollectionHelp": "Collections allow you to create personalised groupings of films and other library content.",
-    "NoNewDevicesFound": "No new devices found. To add a new tuner, close this dialogueand enter the device information manually.",
+    "NoNewDevicesFound": "No new devices found. To add a new tuner, close this dialogue and enter the device information manually.",
     "OptionEnableExternalContentInSuggestionsHelp": "Allow internet trailers and live TV programmes to be included within suggested content.",
     "OptionIgnoreTranscodeByteRangeRequestsHelp": "These requests will be honored but will ignore the byte range header.",
     "PlaceFavoriteChannelsAtBeginning": "Place favourite channels at the beginning",
@@ -1600,7 +1600,7 @@
     "TypeOptionPluralMusicArtist": "Music Artists",
     "TypeOptionPluralMusicAlbum": "Music Albums",
     "TypeOptionPluralEpisode": "Episodes",
-    "TypeOptionPluralBoxSet": "Film Colections",
+    "TypeOptionPluralBoxSet": "Film Collections",
     "TypeOptionPluralBook": "Books",
     "TypeOptionPluralAudio": "Audios",
     "Print": "Print",
@@ -1894,5 +1894,8 @@
     "PlaylistPublicDescription": "Allow this playlist to be viewed by any logged in user.",
     "HeaderLyricDownloads": "Lyric Downloads",
     "SaveLyricsIntoMediaFolders": "Save lyrics into media folders",
-    "SaveLyricsIntoMediaFoldersHelp": "Storing lyrics next to audio files will allow them to be more easily managed."
+    "SaveLyricsIntoMediaFoldersHelp": "Storing lyrics next to audio files will allow them to be more easily managed.",
+    "Alternate": "Alternate",
+    "AlternateDVD": "Alternate DVD",
+    "Regional": "Regional"
 }
