@@ -45,6 +45,16 @@ function findElements() {
     if (activePlaylistItems) activePlaylistItem = activePlaylistItems[0] as HTMLElement;
 }
 
+function scrollPageToTop() {
+    requestAnimationFrame(() => {
+        document.body.scrollIntoView({
+            block: 'start',
+            inline: 'nearest',
+            behavior: 'smooth'
+        });
+    });
+}
+
 function isNewSong(newSongDuration: number) {
     return (newSongDuration !== Math.floor(savedDuration * 10000000));
 }
@@ -61,11 +71,13 @@ let scrollTimeout2: number | NodeJS.Timeout | undefined;
 function scrollToActivePlaylistItem() {
     clearTimeout(scrollTimeout);
     clearTimeout(scrollTimeout2);
-
+    if (barSurfer && barSurfer?.childElementCount > 0) return;
     scrollTimeout = setTimeout(()=>{
         findElements();
 
         if (activePlaylistItem) {
+            if (inputSurfer) inputSurfer.scrollIntoView(smoothScrollSettings);
+
             activePlaylistItem.scrollIntoView(smoothScrollSettings);
 
             scrollTimeout2 = setTimeout(()=>{
@@ -227,7 +239,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
-    if (inputSurfer) {
+    if (barSurfer?.childElementCount === 0) {
         startTransition();
 
         setTimeout(()=>{
@@ -256,6 +268,7 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
 
 function startTransition() {
     const classList = document.body.classList;
+
     scrollToActivePlaylistItem();
 
     classList.add('transition');
@@ -278,4 +291,4 @@ function resetVisibility() {
     if (barSurfer) barSurfer.hidden = true;
 }
 
-export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom, scrollToActivePlaylistItem };
+export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom, scrollToActivePlaylistItem, scrollPageToTop };

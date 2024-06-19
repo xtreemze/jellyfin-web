@@ -137,8 +137,7 @@ function slideDown(elem) {
         once: true
     });
 
-    if (!currentPlayer) return;
-    if (!currentPlayer.isLocalPlayer) return;
+    if (!currentPlayer?.isLocalPlayer) return;
 
     // When opening the same song, preserve the player legacy
     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
@@ -158,9 +157,6 @@ function slideUp(elem) {
     void elem.offsetWidth;
 
     elem.classList.remove('nowPlayingBar-hidden');
-
-    if (!currentPlayer) return;
-    if (!currentPlayer.isLocalPlayer) return;
 }
 
 function onPlayPauseClick() {

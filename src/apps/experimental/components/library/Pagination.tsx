@@ -8,16 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import globalize from 'scripts/globalize';
 import * as userSettings from 'scripts/settings/userSettings';
 import { LibraryViewSettings } from 'types/library';
-
-function scrollPageToTop() {
-    requestAnimationFrame(() => {
-        document.body.scrollIntoView({
-            block: 'start',
-            inline: 'nearest',
-            behavior: 'smooth'
-        });
-    });
-}
+import { scrollPageToTop } from 'components/visualizer/WaveSurfer';
 
 interface PaginationProps {
     libraryViewSettings: LibraryViewSettings;
