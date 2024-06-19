@@ -227,11 +227,13 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
-    startTransition();
+    if (inputSurfer) {
+        startTransition();
 
-    setTimeout(()=>{
-        endTransition();
-    }, 5000);
+        setTimeout(()=>{
+            endTransition();
+        }, 5000);
+    }
 
     const legacy = {
         peaks: savedPeaks,
