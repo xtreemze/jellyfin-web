@@ -89,6 +89,7 @@
 - [Pithaya](https://github.com/Pithaya)
 - [Peter Santos](https://github.com/prsantos-com)
 - [Carlos Velasco](https://github.com/xtreemze)
+- [Chaitanya Shahare](https://github.com/Chaitanya-Shahare)
 
 ## Emby Contributors
 

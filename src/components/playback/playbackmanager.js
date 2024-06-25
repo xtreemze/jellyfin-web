@@ -2296,7 +2296,7 @@ class PlaybackManager {
                     return playAfterBitrateDetect(bitrate, item, playOptions, onPlaybackStartedFn, prevSource)
                         .catch(onPlaybackRejection);
                 })
-                .finally(() => {
+                .catch(() => {
                     if (playOptions.fullscreen) {
                         loading.hide();
                     }
@@ -2354,8 +2354,6 @@ class PlaybackManager {
                     resolve();
                     return;
                 }
-
-                loading.hide();
 
                 const options = Object.assign({}, playOptions);
 
