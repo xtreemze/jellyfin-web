@@ -34,6 +34,15 @@ let mobileTouch = false;
 
 let initialDistance: number | null = null;
 const MIN_DELTA = 5; // Define a threshold for minimal significant distance change
+interface IEmby {
+    Page: {currentRouteInfo: { path: string }};
+}
+
+declare let window: Window & {Emby: IEmby};
+
+function isNowPlaying() {
+    return (window?.Emby?.Page?.currentRouteInfo.path === '/queue');
+}
 
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
@@ -71,7 +80,7 @@ let scrollTimeout2: number | NodeJS.Timeout | undefined;
 function scrollToActivePlaylistItem() {
     clearTimeout(scrollTimeout);
     clearTimeout(scrollTimeout2);
-    if (barSurfer && barSurfer?.childElementCount > 0) return;
+    if (!isNowPlaying()) return;
     scrollTimeout = setTimeout(()=>{
         findElements();
 
@@ -88,14 +97,13 @@ function scrollToActivePlaylistItem() {
 }
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
+    destroyWaveSurferInstance();
+    findElements();
     // Don't update if the tab is not in focus or the screen is off
     if (document.hidden || document.visibilityState !== 'visible') {
-        destroyWaveSurferInstance();
         return;
     }
 
-    findElements();
-    resetVisibility();
     scrollToActivePlaylistItem();
 
     if (!mediaElement) return;
@@ -124,10 +132,10 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     });
 
     waveSurferInstance.once('ready', (duration) => {
+        savedDuration = duration;
+        savedPeaks = waveSurferInstance.exportPeaks();
         requestAnimationFrame(() => {
             setVisibility();
-            savedDuration = duration;
-            savedPeaks = waveSurferInstance.exportPeaks();
             if (container === '#barSurfer') {
                 waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
                 return;
@@ -239,14 +247,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
-    if (barSurfer?.childElementCount === 0) {
-        startTransition();
-
-        setTimeout(()=>{
-            endTransition();
-        }, 5000);
-    }
-
+    resetVisibility();
     const legacy = {
         peaks: savedPeaks,
         duration: savedDuration,
@@ -254,14 +255,23 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         currentTime: waveSurferInstance?.getCurrentTime(),
         scrollPosition: waveSurferInstance?.getScroll()
     };
-    resetVisibility();
     if (waveSurferInstance) {
-        waveSurferInstance.unAll();
         waveSurferInstance.destroy();
+
+        if (barSurfer) barSurfer.innerHTML = '';
+        if (inputSurfer) inputSurfer.innerHTML = '';
     }
     if (legacy?.isPlaying) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         mediaElement?.play();
+    }
+
+    if (isNowPlaying()) {
+        startTransition();
+
+        setTimeout(()=>{
+            endTransition();
+        }, 5000);
     }
     return legacy;
 }

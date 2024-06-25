@@ -29,7 +29,7 @@ div#barSurfer,
 div#inputSurfer,
 div#inputSurfer ::part(wrapper),
 div#barSurfer ::part(wrapper),
-div.appfooter > div.nowPlayingBar {
+div.appfooter>div.nowPlayingBar {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -102,6 +102,7 @@ div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 30vh;
 }
 
 div.nowPlayingPageImageContainer {
@@ -160,12 +161,10 @@ button.button-submit.btnSave {
 div.skinBody>#musicPage,
 .page.mainAnimatedPage.libraryPage.withTabs {
     margin-top: 6rem !important;
-    scroll-behavior: smooth;
 }
 
 div.skinBody>#musicPage,
 div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.padded-left.padded-right.padded-bottom.focuscontainer-x.padPagination.MuiBox-root.css-0 {
-    scroll-behavior: smooth;
     padding-bottom: 12rem !important;
 }
 
@@ -185,11 +184,25 @@ body:not(.transition).mouseIdle canvas#visualizer {
     transition-delay: 20s;
 }
 
-@media (min-width: 690px) {
-    .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        width: 30%;
+@media (orientation: portrait) {
+    .playlistSectionButton {
+        margin-top: 6rem;
     }
 
+    .remoteControlContent{
+        height: 100%;
+    }
+
+    .nowPlayingInfoContainer {
+        align-items: center;
+        flex-direction: column !important;
+        height: calc(100% - 4.2em);
+        width: 100%;
+        display: flex;
+    }
+}
+
+@media (orientation: landscape) {
     #inputSurfer ::part(minimap) {
         position: fixed;
         left: 34vw;
@@ -214,59 +227,6 @@ body:not(.transition).mouseIdle canvas#visualizer {
         width: 60vw;
         max-width: unset;
     }
-}
-
-@media (orientation: portrait) and (max-width: 1599px) {
-    .playlistSectionButton {
-        margin-top: 6rem;
-    }
-}
-
-@media (orientation: landscape) and (max-width: 1599px) {
-    #nowPlayingPage .nowPlayingPageImageContainer {
-        width: 75vh;
-        max-width: 33.33vw;
-        position: relative;
-        bottom: unset;
-    }
-
-    #inputSurfer {
-        height: 100%;
-        max-height: 18vw;
-        margin: 0;
-        min-width: 60vw;
-        max-width: calc(94vw - 75vh);
-        top: 0;
-        position: relative;
-        bottom: unset;
-    }
-
-    .nowPlayingButtonsContainer {
-        bottom: unset;
-        position: unset;
-    }
-
-    .nowPlayingSecondaryButtons {
-        bottom: unset;
-        position: unset;
-    }
-
-    div.infoContainer {
-        position: relative;
-        bottom: unset;
-        left: 2rem;
-    }
-
-    #simpleSlider {
-        position: fixed;
-        bottom: -0.25rem;
-        z-index: 1;
-        width: 53%;
-        left: 22%;
-    }
-}
-
-@media(min-width:1600px) {
 
     body:not(.transition).mouseIdle canvas#visualizer {
         opacity: 0.25;
@@ -373,7 +333,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
 
     /* Base state: element is off-screen */
     .nowPlayingInfoControls>.infoContainer {
-        transform: translateX(-50vw);
+        transform: translateX(calc(-80vw - 6rem));
         transition: transform 4s ease-in-out;
     }
 
