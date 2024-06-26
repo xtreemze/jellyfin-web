@@ -17,6 +17,10 @@ div.nowPlayingBarTop {
     padding: 1rem 1rem;
 }
 
+header {
+    padding-top: env(safe-area-inset-top);
+}
+
 div#barSurfer ::part(wrapper) {
     display: block;
     width: 100vw;
@@ -189,7 +193,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
         margin-top: 6rem;
     }
 
-    .remoteControlContent{
+    .remoteControlContent {
         height: 100%;
     }
 
@@ -199,6 +203,13 @@ body:not(.transition).mouseIdle canvas#visualizer {
         height: calc(100% - 4.2em);
         width: 100%;
         display: flex;
+    }
+}
+
+@media (orientation: landscape) and (max-width:690px) {
+    body {
+
+        font-size: 50%;
     }
 }
 

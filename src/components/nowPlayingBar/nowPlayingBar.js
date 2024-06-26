@@ -116,10 +116,8 @@ function onSlideDownComplete() {
 }
 
 function toggleFullscreen() {
-    if (!document?.fullscreenElement && isMobileBrowser()) {
-        document.documentElement?.requestFullscreen({ navigationUI: 'hide' }).catch((err) => {
-            console.debug(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
-        });
+    if (currentPlayer && !document?.fullscreenElement && isMobileBrowser()) {
+        playbackManager.toggleFullscreen(currentPlayer);
     }
 }
 

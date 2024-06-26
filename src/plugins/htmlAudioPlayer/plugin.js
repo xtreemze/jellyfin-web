@@ -168,7 +168,6 @@ class HtmlAudioPlayer {
                         });
                         hls.loadSource(val);
                         hls.attachMedia(elem);
-
                         htmlMediaHelper.bindEventsToHlsPlayer(self, hls, elem, onError, resolve, reject);
 
                         self._hlsPlayer = hls;
@@ -280,11 +279,71 @@ class HtmlAudioPlayer {
             return elem;
         }
 
+        function createCrossfadeMediaElement() {
+            let elem = self._crossfadeMediaElement;
+
+            if (elem) {
+                return elem;
+            }
+
+            // const gainNode = self.gainNode;
+            // const audioCtx = window.myAudioContext;
+            // const sampleRate = window?.myAudioContext?.sampleRate;
+
+            // elem = self._mediaElement;
+            elem = self._mediaElement.cloneNode(true);
+            // const currentTime = self._mediaElement.currentTime;
+
+            elem.id = 'crossFadeMediaElement';
+            elem.volume = self._mediaElement.volume;
+            // elem.currentTime = self._mediaElement.currentTime;
+            elem.pause();
+            document.body.appendChild(elem);
+
+            self._crossfadeMediaElement = elem;
+            // unBindEvents(elem);
+
+            // self._mediaElement = null;
+            // window?.myAudioContex?.disconnect();
+            // self?.gainNode?.disconnect();
+            // self?.crossfadeGainNode?.disconnect();
+            // window?.mySourceNode?.disconnect();
+            const { gainNode, audioCtx } = addGainElement(elem);
+
+            // Schedule the crossfade curve
+            const duration = 5; // crossfade duration in seconds
+            const numSamples = duration * audioCtx.sampleRate;
+            // const numSamples = duration * sampleRate;
+            const fadeCurve = new Float32Array(numSamples);
+            for (let i = 0; i < numSamples; i++) {
+                const t = i / numSamples;
+                fadeCurve[i] = Math.cos(Math.PI / 2 * t);
+            }
+
+            const timeoutDuration = duration * 1000; // milliseconds
+            setTimeout(() => {
+                // Clean up and destroy the MediaElement here
+                elem.pause();
+                elem.remove();
+                self._crossfadeMediaElement = null;
+            }, timeoutDuration);
+
+            elem.play();
+            elem.currentTime = self._mediaElement.currentTime;
+            gainNode.gain.setValueCurveAtTime(fadeCurve, elem.currentTime, duration);
+            // gainNode.gain.setValueCurveAtTime(fadeCurve, audioCtx.currentTime, duration);
+            // self.crossfadeGainNode.gain.setValueCurveAtTime(fadeCurve, elem.currentTime, duration);
+
+            return elem;
+        }
+
+        window.crossFade = createCrossfadeMediaElement;
+
         function addGainElement(elem) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext; /* eslint-disable-line compat/compat */
-
                 const audioCtx = new AudioContext();
+
                 const source = audioCtx.createMediaElementSource(elem);
 
                 const gainNode = audioCtx.createGain();
@@ -292,11 +351,17 @@ class HtmlAudioPlayer {
                 source.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
 
-                self.gainNode = gainNode;
-
                 // For the visualizer
-                window.myAudioContext = audioCtx;
-                window.mySourceNode = source;
+
+                if (self._crossfadeMediaElement !== elem) {
+                    window.myAudioContext = audioCtx;
+                    window.mySourceNode = source;
+                    self.gainNode = gainNode;
+                } else {
+                    self.crossfadeGainNode = gainNode;
+                }
+
+                return { gainNode: gainNode, audioCtx: audioCtx };
             } catch (e) {
                 console.error('Web Audio API is not supported in this browser', e);
             }

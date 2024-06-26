@@ -686,6 +686,7 @@ function sortPlayerTargets(a, b) {
 class PlaybackManager {
     constructor() {
         const self = this;
+        window.playback = self;
 
         const players = [];
         let currentTargetInfo;
@@ -3022,7 +3023,7 @@ class PlaybackManager {
                 console.debug('playing next track');
 
                 const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
-
+                window.crossFade();
                 playInternal(newItemInfo.item, newItemPlayOptions, function () {
                     setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
                 }, getPreviousSource(player));

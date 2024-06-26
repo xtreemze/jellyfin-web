@@ -189,6 +189,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     function onTouchStart(e: TouchEvent): void {
         mobileTouch = true;
+        startTransition();
         if (e.touches.length === 1) {
             waveSurferInstance.setOptions({
                 autoCenter: false,
@@ -243,6 +244,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         initializeStyle(currentZoom);
 
         mobileTouch = false;
+        endTransition();
     }
 }
 
@@ -298,7 +300,7 @@ function setVisibility() {
 function resetVisibility() {
     if (simpleSlider) simpleSlider.hidden = false;
     if (inputSurfer) inputSurfer.hidden = true;
-    if (barSurfer) barSurfer.hidden = true;
+    if (barSurfer) barSurfer.hidden = false;
 }
 
 export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom, scrollToActivePlaylistItem, scrollPageToTop };
