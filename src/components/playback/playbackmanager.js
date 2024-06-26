@@ -3014,7 +3014,8 @@ class PlaybackManager {
 
         self.nextTrack = function (player) {
             player = player || self._currentPlayer;
-            window.crossFade();
+            if (!crossfading) window.crossFade();
+            crossfading = true;
             setTimeout(() => {
                 player = player || self._currentPlayer;
                 // Schedule the volume restore
@@ -3472,15 +3473,15 @@ class PlaybackManager {
         }
 
         function timeRunningOut(player) {
-            if (player.currentTime() < xDuration.fadeOut * 5000) return false;
+            if (player.currentTime() < xDuration.fadeOut * 4000) return false;
             return (player.duration() - player.currentTime()) < ((xDuration.fadeOut + xDuration.fadeIn) * 1000);
         }
 
         function onPlaybackTimeUpdate() {
             const player = this;
-            if (timeRunningOut(player) && !crossfading) {
-                crossfading = true;
+            if (!crossfading && timeRunningOut(player)) {
                 self.nextTrack();
+                crossfading = true;
             }
 
             sendProgressUpdate(player, 'timeupdate');

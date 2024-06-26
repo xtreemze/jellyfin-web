@@ -1,3 +1,4 @@
+import { restorePlayer } from 'plugins/htmlAudioPlayer/plugin';
 import React, { useEffect, useRef, useCallback } from 'react';
 
 declare global {
@@ -10,6 +11,7 @@ declare global {
 type VisualizerProps = {
     audioContext?: AudioContext;
     mySourceNode?: AudioNode;
+    mixerNode?: AudioNode;
     fftSize?: number;
     smoothingTimeConstant?: number;
     minDecibels?: number;
@@ -19,6 +21,7 @@ type VisualizerProps = {
 const Visualizer: React.FC<VisualizerProps> = ({
     audioContext = window.myAudioContext,
     mySourceNode = window.mySourceNode,
+    mixerNode = restorePlayer.mixerNode,
     fftSize = 16384,
     smoothingTimeConstant = 0.5,
     minDecibels = -102,
@@ -80,7 +83,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
         analyser.minDecibels = minDecibels;
         analyser.maxDecibels = maxDecibels;
 
-        mySourceNode.connect(analyser);
+        if (mixerNode) mixerNode.connect(analyser);
 
         const canvas = canvasRef.current;
         if (canvas) {
@@ -91,9 +94,9 @@ const Visualizer: React.FC<VisualizerProps> = ({
         }
 
         return () => {
-            mySourceNode.disconnect(analyser);
+            if (mixerNode) mixerNode.disconnect(analyser);
         };
-    }, [audioContext, mySourceNode, fftSize, smoothingTimeConstant, minDecibels, maxDecibels, draw]);
+    }, [audioContext, mySourceNode, mixerNode, fftSize, smoothingTimeConstant, minDecibels, maxDecibels, draw]);
 
     useEffect(() => {
         const resizeCanvas = () => {

@@ -16,7 +16,8 @@ export const xDuration = {
 export const restorePlayer = {
     gain: 1,
     gainNode: undefined,
-    mediaElement: undefined
+    mediaElement: undefined,
+    mixerNode: undefined
 };
 
 function getDefaultProfile() {
@@ -375,6 +376,12 @@ class HtmlAudioPlayer {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext; /* eslint-disable-line compat/compat */
                 const audioCtx = window.myAudioContext || new AudioContext();
+
+                if (!restorePlayer.mixerNode) {
+                    restorePlayer.mixerNode = audioCtx.createGain();
+                    restorePlayer.mixerNode.connect(audioCtx.destination);
+                }
+
                 // For the visualizer
                 if (self._crossfadeMediaElement !== elem) {
                     const source = window.mySourceNode || audioCtx.createMediaElementSource(elem);
@@ -382,7 +389,8 @@ class HtmlAudioPlayer {
                     const gainNode = audioCtx.createGain();
 
                     source.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
+                    gainNode.connect(restorePlayer.mixerNode);
+                    // gainNode.connect(audioCtx.destination);
 
                     window.myAudioContext = audioCtx;
                     window.mySourceNode = source;
@@ -390,15 +398,17 @@ class HtmlAudioPlayer {
                     return { gainNode: gainNode, audioCtx: audioCtx };
                 } else {
                     const source = audioCtx.createMediaElementSource(elem);
-                    // const source = self.XSourceNode || audioCtx.createMediaElementSource(elem);
 
                     const gainNode = audioCtx.createGain();
 
                     source.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
+                    gainNode.connect(restorePlayer.mixerNode);
+
+                    // gainNode.connect(audioCtx.destination);
 
                     self.XSourceNode = source;
                     self.crossfadeGainNode = gainNode;
+
                     return { gainNode: gainNode, audioCtx: audioCtx };
                 }
             } catch (e) {
