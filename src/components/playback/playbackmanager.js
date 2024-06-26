@@ -3012,22 +3012,23 @@ class PlaybackManager {
         }
 
         self.nextTrack = function (player) {
-            player = player || self._currentPlayer;
-            if (player && !enableLocalPlaylistManagement(player)) {
-                return player.nextTrack();
-            }
+            window.crossFade();
+            setTimeout(()=>{
+                player = player || self._currentPlayer;
+                if (player && !enableLocalPlaylistManagement(player)) {
+                    return player.nextTrack();
+                }
 
-            const newItemInfo = self._playQueueManager.getNextItemInfo();
+                const newItemInfo = self._playQueueManager.getNextItemInfo();
 
-            if (newItemInfo) {
-                console.debug('playing next track');
-
-                const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
-                window.crossFade();
-                playInternal(newItemInfo.item, newItemPlayOptions, function () {
-                    setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
-                }, getPreviousSource(player));
-            }
+                if (newItemInfo) {
+                    console.debug('playing next track');
+                    const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
+                    playInternal(newItemInfo.item, newItemPlayOptions, function () {
+                        setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
+                    }, getPreviousSource(player));
+                }
+            }, 310);
         };
 
         self.previousTrack = function (player) {

@@ -286,30 +286,21 @@ class HtmlAudioPlayer {
                 return elem;
             }
 
-            // const gainNode = self.gainNode;
-            // const audioCtx = window.myAudioContext;
-            // const sampleRate = window?.myAudioContext?.sampleRate;
-
-            // elem = self._mediaElement;
             elem = self._mediaElement.cloneNode(true);
-            // const currentTime = self._mediaElement.currentTime;
 
             elem.id = 'crossFadeMediaElement';
             elem.volume = self._mediaElement.volume;
-            // elem.currentTime = self._mediaElement.currentTime;
-            elem.pause();
             document.body.appendChild(elem);
+            elem.pause();
 
             self._crossfadeMediaElement = elem;
-            // unBindEvents(elem);
 
-            // self._mediaElement = null;
-            // window?.myAudioContex?.disconnect();
-            // self?.gainNode?.disconnect();
-            // self?.crossfadeGainNode?.disconnect();
-            // window?.mySourceNode?.disconnect();
             const { gainNode, audioCtx } = addGainElement(elem);
-
+            requestAnimationFrame(()=>{
+                elem.currentTime = self._mediaElement.currentTime + 0.31;
+                elem.play();
+                gainNode.gain.setValueCurveAtTime(fadeCurve, audioCtx.currentTime, duration);
+            });
             // Schedule the crossfade curve
             const duration = 5; // crossfade duration in seconds
             const numSamples = duration * audioCtx.sampleRate;
@@ -327,13 +318,6 @@ class HtmlAudioPlayer {
                 elem.remove();
                 self._crossfadeMediaElement = null;
             }, timeoutDuration);
-
-            elem.play();
-            elem.currentTime = self._mediaElement.currentTime;
-            gainNode.gain.setValueCurveAtTime(fadeCurve, elem.currentTime, duration);
-            // gainNode.gain.setValueCurveAtTime(fadeCurve, audioCtx.currentTime, duration);
-            // self.crossfadeGainNode.gain.setValueCurveAtTime(fadeCurve, elem.currentTime, duration);
-
             return elem;
         }
 
@@ -342,26 +326,33 @@ class HtmlAudioPlayer {
         function addGainElement(elem) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext; /* eslint-disable-line compat/compat */
-                const audioCtx = new AudioContext();
-
-                const source = audioCtx.createMediaElementSource(elem);
-
-                const gainNode = audioCtx.createGain();
-
-                source.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-
+                const audioCtx = window.myAudioContext || new AudioContext();
                 // For the visualizer
-
                 if (self._crossfadeMediaElement !== elem) {
+                    const source = window.mySourceNode || audioCtx.createMediaElementSource(elem);
+
+                    const gainNode = audioCtx.createGain();
+
+                    source.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+
                     window.myAudioContext = audioCtx;
                     window.mySourceNode = source;
                     self.gainNode = gainNode;
+                    return { gainNode: gainNode, audioCtx: audioCtx };
                 } else {
-                    self.crossfadeGainNode = gainNode;
-                }
+                    const source = audioCtx.createMediaElementSource(elem);
+                    // const source = self.XSourceNode || audioCtx.createMediaElementSource(elem);
 
-                return { gainNode: gainNode, audioCtx: audioCtx };
+                    const gainNode = audioCtx.createGain();
+
+                    source.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+
+                    self.XSourceNode = source;
+                    self.crossfadeGainNode = gainNode;
+                    return { gainNode: gainNode, audioCtx: audioCtx };
+                }
             } catch (e) {
                 console.error('Web Audio API is not supported in this browser', e);
             }
