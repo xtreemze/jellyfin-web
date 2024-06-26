@@ -1684,6 +1684,7 @@ class PlaybackManager {
 
         function changeStream(player, ticks, params) {
             if (canPlayerSeek(player) && params == null) {
+                window.crossFade();
                 player.currentTime(parseInt(ticks / 10000, 10));
                 return;
             }
@@ -3013,7 +3014,7 @@ class PlaybackManager {
 
         self.nextTrack = function (player) {
             window.crossFade();
-            setTimeout(()=>{
+            setTimeout(() => {
                 player = player || self._currentPlayer;
                 if (player && !enableLocalPlaylistManagement(player)) {
                     return player.nextTrack();

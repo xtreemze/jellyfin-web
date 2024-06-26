@@ -38,7 +38,7 @@ interface IEmby {
     Page: {currentRouteInfo: { path: string }};
 }
 
-declare let window: Window & {Emby: IEmby};
+declare let window: Window & {Emby: IEmby, crossFade: ()=> void};
 
 function isNowPlaying() {
     return (window?.Emby?.Page?.currentRouteInfo.path === '/queue');
@@ -129,6 +129,10 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         initializeStyle(minPxPerSec);
 
         currentZoom = minPxPerSec;
+    });
+
+    waveSurferInstance.on('seeking', ()=>{
+        window.crossFade();
     });
 
     waveSurferInstance.once('ready', (duration) => {
