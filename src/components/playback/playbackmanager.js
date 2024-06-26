@@ -1,7 +1,6 @@
 import { PlaybackErrorCode } from '@jellyfin/sdk/lib/generated-client/models/playback-error-code.js';
 import merge from 'lodash-es/merge';
 import Screenfull from 'screenfull';
-
 import Events from '../../utils/events.ts';
 import datetime from '../../scripts/datetime';
 import appSettings from '../../scripts/settings/appSettings';
@@ -19,12 +18,14 @@ import { includesAny } from '../../utils/container.ts';
 import { getItems } from '../../utils/jellyfin-apiclient/getItems.ts';
 import { getItemBackdropImageUrl } from '../../utils/jellyfin-apiclient/backdropImage';
 import { MediaType } from '@jellyfin/sdk/lib/generated-client/models/media-type';
-
 import { MediaError } from 'types/mediaError';
 import { getMediaError } from 'utils/mediaError';
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
+import { restorePlayer, xDuration } from 'plugins/htmlAudioPlayer/plugin.js';
 
 const UNLIMITED_ITEMS = -1;
+
+let crossfading = false;
 
 function enableLocalPlaylistManagement(player) {
     if (player.getPlaylist) {
@@ -1684,7 +1685,6 @@ class PlaybackManager {
 
         function changeStream(player, ticks, params) {
             if (canPlayerSeek(player) && params == null) {
-                window.crossFade();
                 player.currentTime(parseInt(ticks / 10000, 10));
                 return;
             }
@@ -3013,11 +3013,29 @@ class PlaybackManager {
         }
 
         self.nextTrack = function (player) {
+            player = player || self._currentPlayer;
             window.crossFade();
             setTimeout(() => {
                 player = player || self._currentPlayer;
+                // Schedule the volume restore
+                restorePlayer.gainNode.gain.setValueAtTime(0, 0);
+
                 if (player && !enableLocalPlaylistManagement(player)) {
-                    return player.nextTrack();
+                    player.nextTrack();
+
+                    restorePlayer.gain = restorePlayer.gainNode.gain.value;
+                    restorePlayer.gainNode.gain.setValueAtTime(0, 0);
+                    player.pause();
+
+                    setTimeout(() => {
+                        // self.seekMs(0);
+                        // Schedule the volume restore
+                        restorePlayer.gainNode.gain.setValueAtTime(restorePlayer.gain, 0);
+                        player.unpause();
+                        crossfading = false;
+                    }, xDuration.fadeOut * 800);
+
+                    return;
                 }
 
                 const newItemInfo = self._playQueueManager.getNextItemInfo();
@@ -3027,9 +3045,20 @@ class PlaybackManager {
                     const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
                     playInternal(newItemInfo.item, newItemPlayOptions, function () {
                         setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
+                        restorePlayer.gain = restorePlayer.gainNode.gain.value;
+                        restorePlayer.gainNode.gain.setValueAtTime(0, 0);
+                        player.pause();
+
+                        setTimeout(() => {
+                            // self.seekMs(0);
+                            // Schedule the volume restore
+                            restorePlayer.gainNode.gain.setValueAtTime(restorePlayer.gain, 0);
+                            player.unpause();
+                            crossfading = false;
+                        }, xDuration.fadeOut * 800);
                     }, getPreviousSource(player));
                 }
-            }, 310);
+            }, xDuration.currentFadeOut * 1000);
         };
 
         self.previousTrack = function (player) {
@@ -3442,8 +3471,18 @@ class PlaybackManager {
             }
         }
 
+        function timeRunningOut(player) {
+            if (player.currentTime() < xDuration.fadeOut * 5000) return false;
+            return (player.duration() - player.currentTime()) < ((xDuration.fadeOut + xDuration.fadeIn) * 1000);
+        }
+
         function onPlaybackTimeUpdate() {
             const player = this;
+            if (timeRunningOut(player) && !crossfading) {
+                crossfading = true;
+                self.nextTrack();
+            }
+
             sendProgressUpdate(player, 'timeupdate');
         }
 

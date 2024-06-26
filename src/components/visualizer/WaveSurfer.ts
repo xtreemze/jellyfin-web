@@ -97,6 +97,7 @@ function scrollToActivePlaylistItem() {
 }
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
+    findElements();
     destroyWaveSurferInstance();
     findElements();
     // Don't update if the tab is not in focus or the screen is off
@@ -131,19 +132,15 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         currentZoom = minPxPerSec;
     });
 
-    waveSurferInstance.on('seeking', ()=>{
-        window.crossFade();
-    });
-
     waveSurferInstance.once('ready', (duration) => {
+        setVisibility();
         savedDuration = duration;
         savedPeaks = waveSurferInstance.exportPeaks();
+        if (container === '#barSurfer') {
+            waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
+            return;
+        }
         requestAnimationFrame(() => {
-            setVisibility();
-            if (container === '#barSurfer') {
-                waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
-                return;
-            }
             initializeStyle(currentZoom);
             waveSurferInstance.zoom(currentZoom);
             waveSurferInstance.registerPlugin(
@@ -225,13 +222,11 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             const newZoom = currentZoom ** zoomFactor;
             if (newZoom >= maxZoom || newZoom <= minZoom) return;
 
-            requestAnimationFrame(() => {
-                // Debounce logic with time difference check
-                waveSurferInstance.zoom(newZoom);
-                currentZoom = newZoom ;
-                // Update the initial distance for the next move event
-                initialDistance = currentDistance;
-            });
+            // Debounce logic with time difference check
+            waveSurferInstance.zoom(newZoom);
+            currentZoom = newZoom ;
+            // Update the initial distance for the next move event
+            initialDistance = currentDistance;
         }
     }
 
@@ -263,9 +258,6 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
     };
     if (waveSurferInstance) {
         waveSurferInstance.destroy();
-
-        if (barSurfer) barSurfer.innerHTML = '';
-        if (inputSurfer) inputSurfer.innerHTML = '';
     }
     if (legacy?.isPlaying) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -302,9 +294,9 @@ function setVisibility() {
 }
 
 function resetVisibility() {
-    if (simpleSlider) simpleSlider.hidden = false;
     if (inputSurfer) inputSurfer.hidden = true;
-    if (barSurfer) barSurfer.hidden = false;
+    if (simpleSlider) simpleSlider.hidden = false;
+    if (barSurfer) barSurfer.hidden = true;
 }
 
 export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom, scrollToActivePlaylistItem, scrollPageToTop };

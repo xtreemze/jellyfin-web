@@ -7,6 +7,18 @@ import { PluginType } from '../../types/plugin.ts';
 import Events from '../../utils/events.ts';
 import { MediaError } from 'types/mediaError';
 
+export const xDuration = {
+    fadeIn: 1,
+    fadeOut: 6,
+    currentFadeOut: 1
+};
+
+export const restorePlayer = {
+    gain: 1,
+    gainNode: undefined,
+    mediaElement: undefined
+};
+
 function getDefaultProfile() {
     return profileBuilder({});
 }
@@ -285,39 +297,75 @@ class HtmlAudioPlayer {
             if (elem) {
                 return elem;
             }
-
+            self.resume();
             elem = self._mediaElement.cloneNode(true);
 
             elem.id = 'crossFadeMediaElement';
             elem.volume = self._mediaElement.volume;
-            document.body.appendChild(elem);
-            elem.pause();
 
             self._crossfadeMediaElement = elem;
 
             const { gainNode, audioCtx } = addGainElement(elem);
-            requestAnimationFrame(()=>{
-                elem.currentTime = self._mediaElement.currentTime + 0.31;
-                elem.play();
-                gainNode.gain.setValueCurveAtTime(fadeCurve, audioCtx.currentTime, duration);
-            });
-            // Schedule the crossfade curve
-            const duration = 5; // crossfade duration in seconds
-            const numSamples = duration * audioCtx.sampleRate;
-            // const numSamples = duration * sampleRate;
-            const fadeCurve = new Float32Array(numSamples);
-            for (let i = 0; i < numSamples; i++) {
-                const t = i / numSamples;
-                fadeCurve[i] = Math.cos(Math.PI / 2 * t);
+
+            restorePlayer.gainNode = self.gainNode;
+            restorePlayer.gain = self.gainNode.gain.value;
+
+            const numSamples = {
+                fadeIn: xDuration.fadeIn * audioCtx.sampleRate,
+                fadeOut: xDuration.fadeOut * audioCtx.sampleRate,
+                fadeCurrent: xDuration.currentFadeOut * audioCtx.sampleRate
+            };
+
+            const fadeCurve = {
+                in: new Float32Array(numSamples.fadeIn),
+                out: new Float32Array(numSamples.fadeOut),
+                currentOut: new Float32Array(numSamples.fadeCurrent)
+            };
+
+            for (let i = 0; i < numSamples.fadeIn; i++) {
+                const t = i / numSamples.fadeIn;
+                fadeCurve.in[i] = Math.sin(Math.PI / 2 * t);
             }
 
-            const timeoutDuration = duration * 1000; // milliseconds
+            for (let i = 0; i < numSamples.fadeOut; i++) {
+                const t = i / numSamples.fadeOut;
+                fadeCurve.out[i] = Math.cos(Math.PI / 2 * t);
+            }
+
+            for (let i = 0; i < numSamples.fadeCurrent; i++) {
+                const t = i / numSamples.fadeCurrent;
+                fadeCurve.currentOut[i] = Math.cos(Math.PI / 2 * t);
+            }
+
+            // Schedule the fadeout crossfade curve for now playing audio
+            self.gainNode.gain.setValueCurveAtTime(fadeCurve.currentOut, audioCtx.currentTime, xDuration.currentFadeOut);
+
+            document.body.appendChild(elem);
+
+            elem.currentTime = self._mediaElement.currentTime;
+            elem.play();
+            elem.currentTime = self._mediaElement.currentTime;
+
+            // Schedule the fadein crossfade curve
+            gainNode.gain.setValueCurveAtTime(fadeCurve.in, audioCtx.currentTime, xDuration.fadeIn);
+
+            requestAnimationFrame(() => {
+                elem.currentTime = self._mediaElement.currentTime;
+                requestAnimationFrame(() => {
+                    elem.currentTime = self._mediaElement.currentTime;
+                });
+            });
+            // Schedule the fadeout crossfade curve
+            gainNode.gain.setValueCurveAtTime(fadeCurve.out, audioCtx.currentTime + xDuration.fadeIn, xDuration.fadeOut);
+
+            const timeoutDuration = (xDuration.fadeIn + xDuration.fadeOut) * 1000; // milliseconds
             setTimeout(() => {
                 // Clean up and destroy the MediaElement here
                 elem.pause();
                 elem.remove();
                 self._crossfadeMediaElement = null;
             }, timeoutDuration);
+
             return elem;
         }
 
