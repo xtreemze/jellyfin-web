@@ -1,4 +1,4 @@
-import { restorePlayer } from 'plugins/htmlAudioPlayer/plugin';
+import { masterAudioOutput } from 'plugins/htmlAudioPlayer/plugin';
 import React, { useEffect, useRef, useCallback } from 'react';
 
 declare global {
@@ -21,7 +21,7 @@ type VisualizerProps = {
 const Visualizer: React.FC<VisualizerProps> = ({
     audioContext = window.myAudioContext,
     mySourceNode = window.mySourceNode,
-    mixerNode = restorePlayer.mixerNode,
+    mixerNode = masterAudioOutput.mixerNode,
     fftSize = 16384,
     smoothingTimeConstant = 0.5,
     minDecibels = -102,

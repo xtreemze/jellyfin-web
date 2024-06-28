@@ -8,15 +8,12 @@ import Events from '../../utils/events.ts';
 import { MediaError } from 'types/mediaError';
 
 export const xDuration = {
-    fadeIn: 1,
+    fadeIn: 0.8,
     fadeOut: 6,
-    currentFadeOut: 1
+    currentFadeOut: 0.8
 };
 
-export const restorePlayer = {
-    gain: 1,
-    gainNode: undefined,
-    mediaElement: undefined,
+export const masterAudioOutput = {
     mixerNode: undefined
 };
 
@@ -302,14 +299,10 @@ class HtmlAudioPlayer {
             elem = self._mediaElement.cloneNode(true);
 
             elem.id = 'crossFadeMediaElement';
-            elem.volume = self._mediaElement.volume;
 
             self._crossfadeMediaElement = elem;
 
             const { gainNode, audioCtx } = addGainElement(elem);
-
-            restorePlayer.gainNode = self.gainNode;
-            restorePlayer.gain = self.gainNode.gain.value;
 
             const numSamples = {
                 fadeIn: xDuration.fadeIn * audioCtx.sampleRate,
@@ -343,7 +336,7 @@ class HtmlAudioPlayer {
 
             document.body.appendChild(elem);
 
-            elem.currentTime = self._mediaElement.currentTime;
+            // elem.currentTime = self._mediaElement.currentTime;
             elem.play();
             elem.currentTime = self._mediaElement.currentTime;
 
@@ -356,12 +349,13 @@ class HtmlAudioPlayer {
                     elem.currentTime = self._mediaElement.currentTime;
                 });
             });
+
             // Schedule the fadeout crossfade curve
             gainNode.gain.setValueCurveAtTime(fadeCurve.out, audioCtx.currentTime + xDuration.fadeIn, xDuration.fadeOut);
 
             const timeoutDuration = (xDuration.fadeIn + xDuration.fadeOut) * 1000; // milliseconds
             setTimeout(() => {
-                // Clean up and destroy the MediaElement here
+                // Clean up and destroy the xfade MediaElement here
                 elem.pause();
                 elem.remove();
                 self._crossfadeMediaElement = null;
@@ -377,24 +371,24 @@ class HtmlAudioPlayer {
                 const AudioContext = window.AudioContext || window.webkitAudioContext; /* eslint-disable-line compat/compat */
                 const audioCtx = window.myAudioContext || new AudioContext();
 
-                if (!restorePlayer.mixerNode) {
-                    restorePlayer.mixerNode = audioCtx.createGain();
-                    restorePlayer.mixerNode.connect(audioCtx.destination);
+                if (!masterAudioOutput.mixerNode) {
+                    masterAudioOutput.mixerNode = audioCtx.createGain();
+                    masterAudioOutput.mixerNode.connect(audioCtx.destination);
                 }
 
-                // For the visualizer
+                // For the visualizer. The first one is for non-xfaded, the second one is for xfaded
                 if (self._crossfadeMediaElement !== elem) {
                     const source = window.mySourceNode || audioCtx.createMediaElementSource(elem);
 
                     const gainNode = audioCtx.createGain();
 
                     source.connect(gainNode);
-                    gainNode.connect(restorePlayer.mixerNode);
-                    // gainNode.connect(audioCtx.destination);
+                    gainNode.connect(masterAudioOutput.mixerNode);
 
                     window.myAudioContext = audioCtx;
                     window.mySourceNode = source;
                     self.gainNode = gainNode;
+
                     return { gainNode: gainNode, audioCtx: audioCtx };
                 } else {
                     const source = audioCtx.createMediaElementSource(elem);
@@ -402,12 +396,7 @@ class HtmlAudioPlayer {
                     const gainNode = audioCtx.createGain();
 
                     source.connect(gainNode);
-                    gainNode.connect(restorePlayer.mixerNode);
-
-                    // gainNode.connect(audioCtx.destination);
-
-                    self.XSourceNode = source;
-                    self.crossfadeGainNode = gainNode;
+                    gainNode.connect(masterAudioOutput.mixerNode);
 
                     return { gainNode: gainNode, audioCtx: audioCtx };
                 }

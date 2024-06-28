@@ -21,7 +21,7 @@ import { MediaType } from '@jellyfin/sdk/lib/generated-client/models/media-type'
 import { MediaError } from 'types/mediaError';
 import { getMediaError } from 'utils/mediaError';
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
-import { restorePlayer, xDuration } from 'plugins/htmlAudioPlayer/plugin.js';
+import { xDuration } from 'plugins/htmlAudioPlayer/plugin.js';
 
 const UNLIMITED_ITEMS = -1;
 
@@ -3012,30 +3012,33 @@ class PlaybackManager {
             };
         }
 
+        const webAudioSupported = ('AudioContext' in window || 'webkitAudioContext' in window);
+
         self.nextTrack = function (player) {
             player = player || self._currentPlayer;
-            if (!crossfading) window.crossFade();
-            crossfading = true;
+
+            let immediateOverride = 0;
+
+            if (this.isPlaying(player) && webAudioSupported && !crossfading) {
+                crossfading = true;
+                immediateOverride = null;
+                window.crossFade();
+            }
+
             setTimeout(() => {
                 player = player || self._currentPlayer;
-                // Schedule the volume restore
-                restorePlayer.gainNode.gain.setValueAtTime(0, 0);
 
                 if (player && !enableLocalPlaylistManagement(player)) {
                     player.nextTrack();
 
-                    restorePlayer.gain = restorePlayer.gainNode.gain.value;
-                    restorePlayer.gainNode.gain.setValueAtTime(0, 0);
-                    player.pause();
+                    if (crossfading) {
+                        player.pause();
 
-                    setTimeout(() => {
-                        // self.seekMs(0);
-                        // Schedule the volume restore
-                        restorePlayer.gainNode.gain.setValueAtTime(restorePlayer.gain, 0);
-                        player.unpause();
-                        crossfading = false;
-                    }, xDuration.fadeOut * 800);
-
+                        setTimeout(() => {
+                            player.unpause();
+                            crossfading = false;
+                        }, immediateOverride || xDuration.fadeOut * 500);
+                    }
                     return;
                 }
 
@@ -3046,20 +3049,18 @@ class PlaybackManager {
                     const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
                     playInternal(newItemInfo.item, newItemPlayOptions, function () {
                         setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
-                        restorePlayer.gain = restorePlayer.gainNode.gain.value;
-                        restorePlayer.gainNode.gain.setValueAtTime(0, 0);
-                        player.pause();
 
-                        setTimeout(() => {
-                            // self.seekMs(0);
-                            // Schedule the volume restore
-                            restorePlayer.gainNode.gain.setValueAtTime(restorePlayer.gain, 0);
-                            player.unpause();
-                            crossfading = false;
-                        }, xDuration.fadeOut * 800);
+                        if (crossfading) {
+                            player.pause();
+
+                            setTimeout(() => {
+                                player.unpause();
+                                crossfading = false;
+                            }, immediateOverride || xDuration.fadeOut * 500);
+                        }
                     }, getPreviousSource(player));
                 }
-            }, xDuration.currentFadeOut * 1000);
+            }, immediateOverride || xDuration.currentFadeOut * 1000);
         };
 
         self.previousTrack = function (player) {
@@ -3479,9 +3480,8 @@ class PlaybackManager {
 
         function onPlaybackTimeUpdate() {
             const player = this;
-            if (!crossfading && timeRunningOut(player)) {
+            if (webAudioSupported && !crossfading && timeRunningOut(player)) {
                 self.nextTrack();
-                crossfading = true;
             }
 
             sendProgressUpdate(player, 'timeupdate');
