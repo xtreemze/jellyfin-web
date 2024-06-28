@@ -3019,48 +3019,39 @@ class PlaybackManager {
 
             let immediateOverride = 0;
 
+            if (player && !enableLocalPlaylistManagement(player)) {
+                player.nextTrack();
+
+                return;
+            }
+
             if (this.isPlaying(player) && webAudioSupported && !crossfading) {
                 crossfading = true;
-                immediateOverride = null;
+                immediateOverride = 1;
                 window.crossFade();
             }
 
-            setTimeout(() => {
-                player = player || self._currentPlayer;
+            const newItemInfo = self._playQueueManager.getNextItemInfo();
 
-                if (player && !enableLocalPlaylistManagement(player)) {
-                    player.nextTrack();
+            if (newItemInfo) {
+                console.debug('playing next track');
+                const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
+                setTimeout(() => {
+                    playInternal(newItemInfo.item, newItemPlayOptions, function () {
+                        setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
+                    }, getPreviousSource(player));
 
                     if (crossfading) {
                         player.pause();
-
                         setTimeout(() => {
                             player.unpause();
                             crossfading = false;
-                        }, immediateOverride || xDuration.fadeOut * 500);
+                        }, xDuration.fadeIn * 1000);
                     }
-                    return;
-                }
-
-                const newItemInfo = self._playQueueManager.getNextItemInfo();
-
-                if (newItemInfo) {
-                    console.debug('playing next track');
-                    const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
-                    playInternal(newItemInfo.item, newItemPlayOptions, function () {
-                        setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
-
-                        if (crossfading) {
-                            player.pause();
-
-                            setTimeout(() => {
-                                player.unpause();
-                                crossfading = false;
-                            }, immediateOverride || xDuration.fadeOut * 500);
-                        }
-                    }, getPreviousSource(player));
-                }
-            }, immediateOverride || xDuration.currentFadeOut * 1000);
+                }, xDuration.sustain * 1000 * immediateOverride);
+            } else {
+                player.stop();
+            }
         };
 
         self.previousTrack = function (player) {
@@ -3474,7 +3465,7 @@ class PlaybackManager {
         }
 
         function timeRunningOut(player) {
-            if (player.currentTime() < xDuration.fadeOut * 4000) return false;
+            if (player.currentTime() < xDuration.fadeOut * 2000) return false;
             return (player.duration() - player.currentTime()) < ((xDuration.fadeOut + xDuration.fadeIn) * 1000);
         }
 

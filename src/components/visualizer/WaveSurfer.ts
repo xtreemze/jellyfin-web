@@ -4,6 +4,7 @@ import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import MiniMapPlugin from 'wavesurfer.js/dist/plugins/minimap';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
+import { disableControl } from 'plugins/htmlAudioPlayer/plugin';
 
 type WaveSurferLegacy = {
     peaks: number[][]
@@ -19,7 +20,7 @@ let activePlaylistItem: HTMLElement | null;
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
-let mediaElement: HTMLMediaElement | null;
+let mediaElement: HTMLMediaElement | undefined;
 
 let savedPeaks: number[][];
 let savedDuration = 0;
@@ -39,6 +40,8 @@ interface IEmby {
 }
 
 declare let window: Window & {Emby: IEmby, crossFade: ()=> void};
+
+export const purgatory: WaveSurfer[] = [];
 
 function isNowPlaying() {
     return (window?.Emby?.Page?.currentRouteInfo.path === '/queue');
@@ -99,7 +102,6 @@ function scrollToActivePlaylistItem() {
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
     findElements();
     destroyWaveSurferInstance();
-    findElements();
     // Don't update if the tab is not in focus or the screen is off
     if (document.hidden || document.visibilityState !== 'visible') {
         return;
@@ -117,13 +119,6 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         peaks: newSong ? undefined : legacy?.peaks,
         duration: newSong ? undefined : legacy?.duration
     });
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (legacy?.isPlaying === true) waveSurferInstance.play();
-
-    if (legacy?.isPlaying === false && legacy?.currentTime && legacy?.duration) {
-        waveSurferInstance.seekTo(legacy.currentTime / legacy.duration);
-        waveSurferInstance.setScroll(legacy?.scrollPosition);
-    }
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
@@ -140,27 +135,29 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
             return;
         }
-        requestAnimationFrame(() => {
-            initializeStyle(currentZoom);
-            waveSurferInstance.zoom(currentZoom);
-            waveSurferInstance.registerPlugin(
-                TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
-            );
-            waveSurferInstance.registerPlugin(
-                ZoomPlugin.create(waveSurferPluginOptions.zoomOptions)
-            );
-            waveSurferInstance.registerPlugin(
-                MiniMapPlugin.create(waveSurferChannelStyle.map)
-            );
-            if (inputSurfer) {
-                inputSurfer.addEventListener('touchstart', onTouchStart, { passive: true });
-                inputSurfer.addEventListener('touchmove', onTouchMove, { passive: true });
-                inputSurfer.addEventListener('touchend', onTouchEnd, { passive: true });
-            }
-        });
+        // requestAnimationFrame(() => {
+        initializeStyle(currentZoom);
+        waveSurferInstance.zoom(currentZoom);
+        waveSurferInstance.registerPlugin(
+            TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
+        );
+        waveSurferInstance.registerPlugin(
+            ZoomPlugin.create(waveSurferPluginOptions.zoomOptions)
+        );
+        waveSurferInstance.registerPlugin(
+            MiniMapPlugin.create(waveSurferChannelStyle.map)
+        );
+        if (inputSurfer) {
+            inputSurfer.addEventListener('touchstart', onTouchStart, { passive: true });
+            inputSurfer.addEventListener('touchmove', onTouchMove, { passive: true });
+            inputSurfer.addEventListener('touchend', onTouchEnd, { passive: true });
+        }
+        // });s
     });
 
     waveSurferInstance.once('destroy', () => {
+        resetVisibility();
+
         if (!inputSurfer) return;
         inputSurfer.removeEventListener('touchstart', onTouchStart);
         inputSurfer.removeEventListener('touchmove', onTouchMove);
@@ -248,7 +245,8 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
-    resetVisibility();
+    if (!waveSurferInstance) resetVisibility();
+
     const legacy = {
         peaks: savedPeaks,
         duration: savedDuration,
@@ -257,7 +255,13 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         scrollPosition: waveSurferInstance?.getScroll()
     };
     if (waveSurferInstance) {
-        waveSurferInstance.destroy();
+        const victim = purgatory.shift();
+        if (victim) {
+            disableControl(true);
+            victim.destroy();
+            disableControl(false);
+        }
+        purgatory.push(waveSurferInstance);
     }
     if (legacy?.isPlaying) {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises

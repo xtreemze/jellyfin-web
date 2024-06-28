@@ -8,9 +8,9 @@ import Events from '../../utils/events.ts';
 import { MediaError } from 'types/mediaError';
 
 export const xDuration = {
-    fadeIn: 0.8,
-    fadeOut: 6,
-    currentFadeOut: 0.8
+    fadeIn: 1,
+    fadeOut: 10,
+    sustain: 5
 };
 
 export const masterAudioOutput = {
@@ -19,6 +19,25 @@ export const masterAudioOutput = {
 
 function getDefaultProfile() {
     return profileBuilder({});
+}
+
+let originalPause;
+
+export function disableControl(override = false) {
+    if (!originalPause) return;
+    const elements = document.getElementsByTagName('audio');
+
+    if (!override && elements.length) {
+        [...elements].forEach((element) => {
+            element.pause = originalPause;
+        });
+    } else {
+        [...elements].forEach((element) => {
+            element.pause = () => {
+                return null;
+            };
+        });
+    }
 }
 
 let fadeTimeout;
@@ -265,7 +284,7 @@ class HtmlAudioPlayer {
         function createMediaElement() {
             let elem = self._mediaElement;
 
-            if (elem) {
+            if (elem && elem.id === 'currentMediaElement') {
                 return elem;
             }
 
@@ -276,6 +295,7 @@ class HtmlAudioPlayer {
                 elem.classList.add('mediaPlayerAudio');
                 elem.id = 'currentMediaElement';
                 elem.classList.add('hide');
+                elem.autoplay = false;
 
                 document.body.appendChild(elem);
             }
@@ -290,78 +310,41 @@ class HtmlAudioPlayer {
         }
 
         function createCrossfadeMediaElement() {
-            let elem = self._crossfadeMediaElement;
-
-            if (elem) {
-                return elem;
-            }
-            self.resume();
-            elem = self._mediaElement.cloneNode(true);
-
+            const elem = document.getElementById('currentMediaElement');
+            unBindEvents(self._mediaElement);
+            elem.classList.remove('mediaPlayerAudio');
             elem.id = 'crossFadeMediaElement';
 
-            self._crossfadeMediaElement = elem;
-
-            const { gainNode, audioCtx } = addGainElement(elem);
+            const gainNode = self.gainNode;
+            const audioCtx = window.myAudioContext;
 
             const numSamples = {
-                fadeIn: xDuration.fadeIn * audioCtx.sampleRate,
-                fadeOut: xDuration.fadeOut * audioCtx.sampleRate,
-                fadeCurrent: xDuration.currentFadeOut * audioCtx.sampleRate
+                fadeOut: xDuration.fadeOut * audioCtx.sampleRate
             };
 
             const fadeCurve = {
-                in: new Float32Array(numSamples.fadeIn),
-                out: new Float32Array(numSamples.fadeOut),
-                currentOut: new Float32Array(numSamples.fadeCurrent)
+                out: new Float32Array(numSamples.fadeOut)
             };
-
-            for (let i = 0; i < numSamples.fadeIn; i++) {
-                const t = i / numSamples.fadeIn;
-                fadeCurve.in[i] = Math.sin(Math.PI / 2 * t);
-            }
 
             for (let i = 0; i < numSamples.fadeOut; i++) {
                 const t = i / numSamples.fadeOut;
                 fadeCurve.out[i] = Math.cos(Math.PI / 2 * t);
             }
 
-            for (let i = 0; i < numSamples.fadeCurrent; i++) {
-                const t = i / numSamples.fadeCurrent;
-                fadeCurve.currentOut[i] = Math.cos(Math.PI / 2 * t);
-            }
-
-            // Schedule the fadeout crossfade curve for now playing audio
-            self.gainNode.gain.setValueCurveAtTime(fadeCurve.currentOut, audioCtx.currentTime, xDuration.currentFadeOut);
-
-            document.body.appendChild(elem);
-
-            // elem.currentTime = self._mediaElement.currentTime;
-            elem.play();
-            elem.currentTime = self._mediaElement.currentTime;
-
-            // Schedule the fadein crossfade curve
-            gainNode.gain.setValueCurveAtTime(fadeCurve.in, audioCtx.currentTime, xDuration.fadeIn);
-
-            requestAnimationFrame(() => {
-                elem.currentTime = self._mediaElement.currentTime;
-                requestAnimationFrame(() => {
-                    elem.currentTime = self._mediaElement.currentTime;
-                });
-            });
-
             // Schedule the fadeout crossfade curve
-            gainNode.gain.setValueCurveAtTime(fadeCurve.out, audioCtx.currentTime + xDuration.fadeIn, xDuration.fadeOut);
+            gainNode.gain.setValueCurveAtTime(fadeCurve.out, audioCtx.currentTime, xDuration.fadeOut);
 
-            const timeoutDuration = (xDuration.fadeIn + xDuration.fadeOut) * 1000; // milliseconds
+            const timeoutDuration = (xDuration.fadeOut + xDuration.sustain) * 1000; // milliseconds
+
+            originalPause = elem.pause;
+
             setTimeout(() => {
                 // Clean up and destroy the xfade MediaElement here
                 elem.pause();
                 elem.remove();
-                self._crossfadeMediaElement = null;
             }, timeoutDuration);
 
-            return elem;
+            return createMediaElement();
         }
 
         window.crossFade = createCrossfadeMediaElement;
@@ -371,35 +354,26 @@ class HtmlAudioPlayer {
                 const AudioContext = window.AudioContext || window.webkitAudioContext; /* eslint-disable-line compat/compat */
                 const audioCtx = window.myAudioContext || new AudioContext();
 
+                if (!window.myAudioContext) window.myAudioContext = audioCtx;
+
                 if (!masterAudioOutput.mixerNode) {
                     masterAudioOutput.mixerNode = audioCtx.createGain();
                     masterAudioOutput.mixerNode.connect(audioCtx.destination);
                 }
 
                 // For the visualizer. The first one is for non-xfaded, the second one is for xfaded
-                if (self._crossfadeMediaElement !== elem) {
-                    const source = window.mySourceNode || audioCtx.createMediaElementSource(elem);
+                const source = audioCtx.createMediaElementSource(elem);
 
-                    const gainNode = audioCtx.createGain();
+                const gainNode = audioCtx.createGain();
 
-                    source.connect(gainNode);
-                    gainNode.connect(masterAudioOutput.mixerNode);
+                source.connect(gainNode);
+                gainNode.connect(masterAudioOutput.mixerNode);
 
-                    window.myAudioContext = audioCtx;
-                    window.mySourceNode = source;
+                if (elem && elem.id === 'currentMediaElement') {
                     self.gainNode = gainNode;
-
-                    return { gainNode: gainNode, audioCtx: audioCtx };
-                } else {
-                    const source = audioCtx.createMediaElementSource(elem);
-
-                    const gainNode = audioCtx.createGain();
-
-                    source.connect(gainNode);
-                    gainNode.connect(masterAudioOutput.mixerNode);
-
-                    return { gainNode: gainNode, audioCtx: audioCtx };
                 }
+
+                return { gainNode: gainNode, audioCtx: audioCtx };
             } catch (e) {
                 console.error('Web Audio API is not supported in this browser', e);
             }
