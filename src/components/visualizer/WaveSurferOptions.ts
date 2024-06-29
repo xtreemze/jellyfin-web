@@ -169,7 +169,7 @@ const surferOptions = {
     dragToSeek: false,
     interact: true,
     normalize: false,
-    autoplay: true,
+    autoplay: false,
     backend: 'MediaElement',
     hideScrollbar: true,
     autoScroll: false,
@@ -189,7 +189,7 @@ const waveSurferPluginOptions = {
     zoomOptions:  {
         scale: 0.25,
         maxZoom: 8000,
-        deltaThreshold: 5
+        deltaThreshold: 10
     }
 };
 

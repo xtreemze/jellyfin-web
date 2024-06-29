@@ -3015,13 +3015,15 @@ class PlaybackManager {
         const webAudioSupported = ('AudioContext' in window || 'webkitAudioContext' in window);
 
         self.nextTrack = function (player) {
+            if (crossfading) return;
+
             player = player || self._currentPlayer;
 
             let immediateOverride = 0;
 
-            if (this.isPlaying(player) && webAudioSupported && !crossfading) {
-                crossfading = true;
+            if (this.isPlaying(player) && webAudioSupported) {
                 immediateOverride = 1;
+                crossfading = true;
                 window.crossFade();
             }
 
@@ -3030,9 +3032,9 @@ class PlaybackManager {
                     player.nextTrack();
 
                     if (crossfading) {
-                        player.pause();
+                        window.playback.pause();
                         setTimeout(() => {
-                            player.unpause();
+                            window.playback.unpause();
                             crossfading = false;
                         }, xDuration.fadeIn * 1000);
                     }
@@ -3051,9 +3053,9 @@ class PlaybackManager {
                     }, getPreviousSource(player));
 
                     if (crossfading) {
-                        player.pause();
+                        window.playback.pause();
                         setTimeout(() => {
-                            player.unpause();
+                            window.playback.unpause();
                             crossfading = false;
                         }, xDuration.fadeIn * 1000);
                     }
@@ -3474,13 +3476,13 @@ class PlaybackManager {
         }
 
         function timeRunningOut(player) {
-            if (player.currentTime() < xDuration.fadeOut * 2000) return false;
+            if (!webAudioSupported || player.currentTime() < xDuration.fadeOut * 2000) return false;
             return (player.duration() - player.currentTime()) < ((xDuration.fadeOut + xDuration.fadeIn) * 1000);
         }
 
         function onPlaybackTimeUpdate() {
             const player = this;
-            if (webAudioSupported && !crossfading && timeRunningOut(player)) {
+            if (timeRunningOut(player)) {
                 self.nextTrack();
             }
 

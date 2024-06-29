@@ -8,9 +8,9 @@ import Events from '../../utils/events.ts';
 import { MediaError } from 'types/mediaError';
 
 export const xDuration = {
-    fadeIn: 1,
+    fadeIn: 5,
     fadeOut: 10,
-    sustain: 5
+    sustain: 1
 };
 
 export const masterAudioOutput = {
@@ -157,7 +157,7 @@ class HtmlAudioPlayer {
                     const gainValue = Math.pow(10, normalizationGain / 20);
 
                     // Apply the makeup gain
-                    const makeupGain = 12;
+                    const makeupGain = 16;
                     const makeupGainValue = Math.pow(10, makeupGain / 20);
 
                     // Set the final gain value
@@ -311,7 +311,6 @@ class HtmlAudioPlayer {
 
         function createCrossfadeMediaElement() {
             const elem = document.getElementById('currentMediaElement');
-            unBindEvents(self._mediaElement);
             elem.classList.remove('mediaPlayerAudio');
             elem.id = 'crossFadeMediaElement';
 
@@ -332,11 +331,15 @@ class HtmlAudioPlayer {
             }
 
             // Schedule the fadeout crossfade curve
-            gainNode.gain.setValueCurveAtTime(fadeCurve.out, audioCtx.currentTime, xDuration.fadeOut);
+            gainNode.gain.setValueCurveAtTime(fadeCurve.out, audioCtx.currentTime + xDuration.fadeIn, xDuration.fadeOut);
 
-            const timeoutDuration = (xDuration.fadeOut + xDuration.sustain) * 1000; // milliseconds
+            const timeoutDuration = (xDuration.fadeOut + xDuration.fadeIn + xDuration.sustain) * 1000; // milliseconds
 
             originalPause = elem.pause;
+
+            setTimeout(()=>{
+                unBindEvents(elem);
+            }, (xDuration.sustain + xDuration.fadeIn) * 1000);
 
             setTimeout(() => {
                 // Clean up and destroy the xfade MediaElement here
