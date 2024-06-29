@@ -25,7 +25,7 @@ import { xDuration } from 'plugins/htmlAudioPlayer/plugin.js';
 
 const UNLIMITED_ITEMS = -1;
 
-let crossfading = false;
+export let crossfading = false;
 
 function enableLocalPlaylistManagement(player) {
     if (player.getPlaylist) {
@@ -2302,6 +2302,10 @@ class PlaybackManager {
                     if (playOptions.fullscreen) {
                         loading.hide();
                     }
+                }).finally(()=>{
+                    if (crossfading) {
+                        window.playback.pause();
+                    }
                 });
         }
 
@@ -3032,11 +3036,10 @@ class PlaybackManager {
                     player.nextTrack();
 
                     if (crossfading) {
-                        window.playback.pause();
                         setTimeout(() => {
                             window.playback.unpause();
                             crossfading = false;
-                        }, xDuration.fadeIn * 1000);
+                        }, xDuration.fadeIn * 1000 * immediateOverride);
                     }
                 }, xDuration.sustain * 1000 * immediateOverride);
                 return;
@@ -3053,11 +3056,10 @@ class PlaybackManager {
                     }, getPreviousSource(player));
 
                     if (crossfading) {
-                        window.playback.pause();
                         setTimeout(() => {
                             window.playback.unpause();
                             crossfading = false;
-                        }, xDuration.fadeIn * 1000);
+                        }, xDuration.fadeIn * 1000 * immediateOverride);
                     }
                 }, xDuration.sustain * 1000 * immediateOverride);
             } else {

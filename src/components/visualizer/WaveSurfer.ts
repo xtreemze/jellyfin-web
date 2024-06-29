@@ -43,7 +43,7 @@ declare let window: Window & {Emby: IEmby, crossFade: ()=> void};
 
 export const purgatory: WaveSurfer[] = [];
 
-function isNowPlaying() {
+export function isNowPlaying() {
     return (window?.Emby?.Page?.currentRouteInfo.path === '/queue');
 }
 
@@ -96,7 +96,7 @@ function scrollToActivePlaylistItem() {
                 document.body.scrollIntoView(smoothScrollSettings);
             }, 1200);
         }
-    }, 500);
+    }, 4300);
 }
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {

@@ -6,11 +6,13 @@ import { getIncludeCorsCredentials } from '../../scripts/settings/webSettings';
 import { PluginType } from '../../types/plugin.ts';
 import Events from '../../utils/events.ts';
 import { MediaError } from 'types/mediaError';
+import { destroyWaveSurferInstance, isNowPlaying, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
+import { playbackManager } from 'components/playback/playbackmanager';
 
 export const xDuration = {
-    fadeIn: 5,
-    fadeOut: 10,
-    sustain: 1
+    fadeIn: 4.8,
+    sustain: 0.2,
+    fadeOut: 10
 };
 
 export const masterAudioOutput = {
@@ -310,6 +312,13 @@ class HtmlAudioPlayer {
         }
 
         function createCrossfadeMediaElement() {
+            const disposeElement = document.getElementById('crossFadeMediaElement');
+            if (disposeElement) {
+                destroyWaveSurferInstance();
+                disposeElement.pause();
+                disposeElement.remove();
+            }
+
             const elem = document.getElementById('currentMediaElement');
             elem.classList.remove('mediaPlayerAudio');
             elem.id = 'crossFadeMediaElement';
@@ -325,27 +334,32 @@ class HtmlAudioPlayer {
                 out: new Float32Array(numSamples.fadeOut)
             };
 
+            const currentGain = gainNode.gain.value;
+
             for (let i = 0; i < numSamples.fadeOut; i++) {
                 const t = i / numSamples.fadeOut;
-                fadeCurve.out[i] = Math.cos(Math.PI / 2 * t);
+                fadeCurve.out[i] = currentGain * Math.cos(Math.PI / 2 * t);
             }
 
             // Schedule the fadeout crossfade curve
-            gainNode.gain.setValueCurveAtTime(fadeCurve.out, audioCtx.currentTime + xDuration.fadeIn, xDuration.fadeOut);
-
-            const timeoutDuration = (xDuration.fadeOut + xDuration.fadeIn + xDuration.sustain) * 1000; // milliseconds
+            gainNode.gain.setValueCurveAtTime(fadeCurve.out, audioCtx.currentTime, xDuration.fadeOut);
 
             originalPause = elem.pause;
 
-            setTimeout(()=>{
+            setTimeout(() => {
+                // This destroys the wavesurfer on the fade out track when the new track starts
                 unBindEvents(elem);
+                const legacy = destroyWaveSurferInstance();
+                if (isNowPlaying()) {
+                    waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
+                }
             }, (xDuration.sustain + xDuration.fadeIn) * 1000);
 
             setTimeout(() => {
                 // Clean up and destroy the xfade MediaElement here
                 elem.pause();
                 elem.remove();
-            }, timeoutDuration);
+            }, (xDuration.fadeOut) * 1000);
 
             return createMediaElement();
         }

@@ -20,21 +20,21 @@ const Visualizer: React.FC<VisualizerProps> = ({
     audioContext = window.myAudioContext,
     mixerNode = masterAudioOutput.mixerNode,
     fftSize = 16384,
-    smoothingTimeConstant = 0.5,
+    smoothingTimeConstant = 0.3,
     minDecibels = -102,
     maxDecibels = 102
 }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     const draw = useCallback((analyser: AnalyserNode, ctx: CanvasRenderingContext2D, defaultBarHeight: number) => {
-        const isLandscape = window.innerWidth > window.innerHeight;
+        const isLandscape = false; //window.innerWidth > window.innerHeight;
         const numberOfBars = Math.floor((isLandscape ? window.innerHeight : window.innerWidth) / 32);
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
         analyser.getByteFrequencyData(frequencyData);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = 'rgb(94, 65, 145)';
+        ctx.fillStyle = 'rgb(30, 210, 75)';
 
         const minFrequency = 20; // Minimum frequency we care about (20 Hz)
         const maxFrequency = analyser.context.sampleRate / 2; // Maximum frequency (Nyquist frequency)
