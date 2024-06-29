@@ -3019,16 +3019,25 @@ class PlaybackManager {
 
             let immediateOverride = 0;
 
-            if (player && !enableLocalPlaylistManagement(player)) {
-                player.nextTrack();
-
-                return;
-            }
-
             if (this.isPlaying(player) && webAudioSupported && !crossfading) {
                 crossfading = true;
                 immediateOverride = 1;
                 window.crossFade();
+            }
+
+            if (player && !enableLocalPlaylistManagement(player)) {
+                setTimeout(() => {
+                    player.nextTrack();
+
+                    if (crossfading) {
+                        player.pause();
+                        setTimeout(() => {
+                            player.unpause();
+                            crossfading = false;
+                        }, xDuration.fadeIn * 1000);
+                    }
+                }, xDuration.sustain * 1000 * immediateOverride);
+                return;
             }
 
             const newItemInfo = self._playQueueManager.getNextItemInfo();

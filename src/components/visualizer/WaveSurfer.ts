@@ -25,16 +25,16 @@ let mediaElement: HTMLMediaElement | undefined;
 let savedPeaks: number[][];
 let savedDuration = 0;
 
-const maxZoom = 8000;
+const maxZoom = 5000;
 const minZoom = 1;
-const doubleChannelZoom = 150;
-const wholeSongZoom = 50;
+const doubleChannelZoom = 130;
+const wholeSongZoom = 70;
 let currentZoom = 100;
 
 let mobileTouch = false;
 
 let initialDistance: number | null = null;
-const MIN_DELTA = 5; // Define a threshold for minimal significant distance change
+const MIN_DELTA = 10; // Define a threshold for minimal significant distance change
 interface IEmby {
     Page: {currentRouteInfo: { path: string }};
 }

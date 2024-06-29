@@ -206,10 +206,9 @@ body:not(.transition).mouseIdle canvas#visualizer {
     }
 }
 
-@media (orientation: landscape) and (max-width:690px) {
-    body {
-
-        font-size: 50%;
+@media (orientation: landscape) and (max-width:1399px) {
+    html {
+        font-size: 1vw;
     }
 }
 

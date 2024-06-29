@@ -4,13 +4,11 @@ import React, { useEffect, useRef, useCallback } from 'react';
 declare global {
     interface Window {
         myAudioContext: AudioContext;
-        mySourceNode: AudioNode;
     }
 }
 
 type VisualizerProps = {
     audioContext?: AudioContext;
-    mySourceNode?: AudioNode;
     mixerNode?: AudioNode;
     fftSize?: number;
     smoothingTimeConstant?: number;
@@ -20,7 +18,6 @@ type VisualizerProps = {
 
 const Visualizer: React.FC<VisualizerProps> = ({
     audioContext = window.myAudioContext,
-    mySourceNode = window.mySourceNode,
     mixerNode = masterAudioOutput.mixerNode,
     fftSize = 16384,
     smoothingTimeConstant = 0.5,
@@ -74,7 +71,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
     }, []);
 
     useEffect(() => {
-        if (!audioContext || !mySourceNode) return;
+        if (!audioContext) return;
 
         const analyser = audioContext.createAnalyser();
 
@@ -96,7 +93,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
         return () => {
             if (mixerNode) mixerNode.disconnect(analyser);
         };
-    }, [audioContext, mySourceNode, mixerNode, fftSize, smoothingTimeConstant, minDecibels, maxDecibels, draw]);
+    }, [audioContext, mixerNode, fftSize, smoothingTimeConstant, minDecibels, maxDecibels, draw]);
 
     useEffect(() => {
         const resizeCanvas = () => {
