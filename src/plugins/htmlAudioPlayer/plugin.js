@@ -24,6 +24,7 @@ function getDefaultProfile() {
 }
 
 let originalPause;
+let volume = 85;
 
 export function disableControl(override = false) {
     if (!originalPause) return;
@@ -166,7 +167,7 @@ class HtmlAudioPlayer {
                     self.gainNode.gain.setValueAtTime(0, window.myAudioContext.currentTime);
                     self.gainNode.gain.exponentialRampToValueAtTime(
                         gainValue * makeupGainValue,
-                        window.myAudioContext.currentTime + 0.03);
+                        window.myAudioContext.currentTime + 0.9);
                 } else {
                     self.gainNode.gain.value = 1;
                 }
@@ -378,7 +379,9 @@ class HtmlAudioPlayer {
 
                 if (!masterAudioOutput.mixerNode) {
                     masterAudioOutput.mixerNode = audioCtx.createGain();
+                    masterAudioOutput.mixerNode.gain.value = 0;
                     masterAudioOutput.mixerNode.connect(audioCtx.destination);
+                    masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(volume / 100, 1);
                 }
 
                 // For the visualizer. The first one is for non-xfaded, the second one is for xfaded
@@ -607,34 +610,42 @@ class HtmlAudioPlayer {
     }
 
     setVolume(val) {
-        if (masterAudioOutput.mixerNode) {
-            masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
+        const audioCtx = window.myAudioContext;
+        if (masterAudioOutput.mixerNode && audioCtx) {
+            masterAudioOutput.mixerNode.gain.setTargetAtTime(
                 val / 100,
-                window.myAudioContext.currentTime + 1
+                audioCtx.currentTime + 0.9,
+                0.6
             );
-            return;
-        }
-        const mediaElement = this._mediaElement;
-        if (mediaElement) {
-            mediaElement.volume = Math.pow(val / 100, 3);
+            volume = Math.max(val, 1);
+        } else {
+            const mediaElement = this._mediaElement;
+            if (mediaElement) {
+                mediaElement.volume = Math.pow(val / 100, 3);
+            }
         }
     }
 
     getVolume() {
-        const mediaElement = this._mediaElement;
-        if (masterAudioOutput.mixerNode) {
-            return masterAudioOutput.mixerNode.gain.value;
+        const audioCtx = window.myAudioContext;
+
+        if (masterAudioOutput.mixerNode && audioCtx) {
+            return volume;
         }
+
+        const mediaElement = this._mediaElement;
         if (mediaElement) {
             return Math.min(Math.round(Math.pow(mediaElement.volume, 1 / 3) * 100), 100);
         }
     }
 
     volumeUp() {
-        if (masterAudioOutput.mixerNode) {
+        const audioCtx = window.myAudioContext;
+
+        if (masterAudioOutput.mixerNode && audioCtx) {
             masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
-                this.getVolume() + 0.1,
-                window.myAudioContext.currentTime + 0.03
+                this.getVolume() + 0.05,
+                audioCtx.currentTime + 1
             );
             return;
         }
@@ -642,10 +653,12 @@ class HtmlAudioPlayer {
     }
 
     volumeDown() {
-        if (masterAudioOutput.mixerNode) {
+        const audioCtx = window.myAudioContext;
+
+        if (masterAudioOutput.mixerNode && window.myAudioContext) {
             masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
-                this.getVolume() - 0.1,
-                window.myAudioContext.currentTime + 0.03
+                this.getVolume() - 0.05,
+                audioCtx.currentTime + 1
             );
             return;
         }
@@ -653,6 +666,15 @@ class HtmlAudioPlayer {
     }
 
     setMute(mute) {
+        const audioCtx = window.myAudioContext;
+
+        if (masterAudioOutput.mixerNode && audioCtx) {
+            masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
+                mute ? 0.01 : volume / 100,
+                audioCtx.currentTime + 1
+            );
+            return;
+        }
         const mediaElement = this._mediaElement;
         if (mediaElement) {
             mediaElement.muted = mute;
@@ -660,6 +682,11 @@ class HtmlAudioPlayer {
     }
 
     isMuted() {
+        const audioCtx = window.myAudioContext;
+
+        if (masterAudioOutput.mixerNode && audioCtx) {
+            return masterAudioOutput.mixerNode.gain.value < 0.02;
+        }
         const mediaElement = this._mediaElement;
         if (mediaElement) {
             return mediaElement.muted;
