@@ -10,9 +10,9 @@ import { destroyWaveSurferInstance, isNowPlaying, waveSurferInitialization } fro
 import { playbackManager } from 'components/playback/playbackmanager';
 
 export const xDuration = {
-    fadeIn: 4.8,
-    sustain: 0.2,
-    fadeOut: 10
+    fadeIn: 1,
+    sustain: 5,
+    fadeOut: 9
 };
 
 export const masterAudioOutput = {
@@ -163,7 +163,10 @@ class HtmlAudioPlayer {
                     const makeupGainValue = Math.pow(10, makeupGain / 20);
 
                     // Set the final gain value
-                    self.gainNode.gain.value = gainValue * makeupGainValue;
+                    self.gainNode.gain.setValueAtTime(0, window.myAudioContext.currentTime);
+                    self.gainNode.gain.exponentialRampToValueAtTime(
+                        gainValue * makeupGainValue,
+                        window.myAudioContext.currentTime + 0.03);
                 } else {
                     self.gainNode.gain.value = 1;
                 }
@@ -604,6 +607,13 @@ class HtmlAudioPlayer {
     }
 
     setVolume(val) {
+        if (masterAudioOutput.mixerNode) {
+            masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
+                val / 100,
+                window.myAudioContext.currentTime + 1
+            );
+            return;
+        }
         const mediaElement = this._mediaElement;
         if (mediaElement) {
             mediaElement.volume = Math.pow(val / 100, 3);
@@ -612,16 +622,33 @@ class HtmlAudioPlayer {
 
     getVolume() {
         const mediaElement = this._mediaElement;
+        if (masterAudioOutput.mixerNode) {
+            return masterAudioOutput.mixerNode.gain.value;
+        }
         if (mediaElement) {
             return Math.min(Math.round(Math.pow(mediaElement.volume, 1 / 3) * 100), 100);
         }
     }
 
     volumeUp() {
+        if (masterAudioOutput.mixerNode) {
+            masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
+                this.getVolume() + 0.1,
+                window.myAudioContext.currentTime + 0.03
+            );
+            return;
+        }
         this.setVolume(Math.min(this.getVolume() + 2, 100));
     }
 
     volumeDown() {
+        if (masterAudioOutput.mixerNode) {
+            masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
+                this.getVolume() - 0.1,
+                window.myAudioContext.currentTime + 0.03
+            );
+            return;
+        }
         this.setVolume(Math.max(this.getVolume() - 2, 0));
     }
 
