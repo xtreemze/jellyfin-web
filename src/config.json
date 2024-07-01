@@ -1,6 +1,6 @@
 {
-  "includeCorsCredentials": false,
-  "multiserver": false,
+  "includeCorsCredentials": true,
+  "multiserver": true,
   "themes": [
     {
       "name": "Blue Radiance",
@@ -13,34 +13,18 @@
       "color": "#202020"
     },
     {
-      "name": "Light",
-      "id": "light",
-      "color": "#303030"
-    },
-    {
       "name": "Purple Haze",
       "id": "purplehaze",
       "color": "#000420",
       "default": true
     }
   ],
-  "menuLinks": [
-    {
-      "name": "Local Server",
-      "url": "http://192.168.0.199"
-    },
-    {
-      "name": "Internet Server",
-      "url": "https://80.217.111.124"
-    }
-  ],
   "servers": [],
-  "plugins": [
-    "playAccessValidation/plugin",
-    "htmlAudioPlayer/plugin",
-    "htmlVideoPlayer/plugin",
-    "sessionPlayer/plugin",
-    "syncPlay/plugin",
-    "chromecastPlayer/plugin"
-  ]
-}
+    "plugins": [
+      "playAccessValidation/plugin",
+      "htmlAudioPlayer/plugin",
+      "htmlVideoPlayer/plugin",
+      "sessionPlayer/plugin",
+      "syncPlay/plugin"
+    ]
+  }

@@ -1,18 +1,18 @@
 {
     "name": "Jellyfin",
-    "description": "The Free Software Media System",
+    "description": "Media System",
     "lang": "en-US",
     "orientation": "any",
     "short_name": "Jellyfin",
-    "start_url": "index.html",
+    "start_url": "/web/index.html",
     "theme_color": "#101010",
-    "id": "/web/index.html",
+    "id": "2activedesign.com",
     "background_color": "#101010",
     "display_override": [
         "fullscreen",
         "window-controls-overlay"
     ],
-    "display": "fullscreen",
+    "display": "standalone",
     "icons": [
         {
             "sizes": "72x72",

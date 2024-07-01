@@ -3,20 +3,23 @@ import { appHost } from '../../components/apphost';
 import * as htmlMediaHelper from '../../components/htmlMediaHelper';
 import profileBuilder from '../../scripts/browserDeviceProfile';
 import { getIncludeCorsCredentials } from '../../scripts/settings/webSettings';
-import { PluginType } from '../../types/plugin.ts';
-import Events from '../../utils/events.ts';
+import { PluginType } from '../../types/plugin';
+import Events from '../../utils/events';
 import { MediaError } from 'types/mediaError';
 import { destroyWaveSurferInstance, isNowPlaying, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 import { playbackManager } from 'components/playback/playbackmanager';
 
 export const xDuration = {
-    fadeIn: 1,
-    sustain: 5,
+    fadeIn: 2,
+    sustain: 4,
     fadeOut: 9
 };
 
+const dbBoost = 2;
+
 export const masterAudioOutput = {
-    mixerNode: undefined
+    mixerNode: undefined,
+    makeupGain: Math.pow(10, dbBoost / 20) // gain: 2
 };
 
 function getDefaultProfile() {
@@ -24,7 +27,19 @@ function getDefaultProfile() {
 }
 
 let originalPause;
-let volume = 85;
+
+function applyDbReduction(originalVolume, reductionDb) {
+    // Convert the original volume to a linear scale of 0 to 1
+    const originalLinear = originalVolume / 100;
+
+    // Calculate the new volume
+    const newLinear = originalLinear * Math.pow(10, -reductionDb / 20);
+
+    // Convert back to a scale of 0 to 100
+    return newLinear * 100;
+}
+
+let volume = applyDbReduction(100, dbBoost);
 
 export function disableControl(override = false) {
     if (!originalPause) return;
@@ -159,14 +174,10 @@ class HtmlAudioPlayer {
                     // Calculate the normalization gain
                     const gainValue = Math.pow(10, normalizationGain / 20);
 
-                    // Apply the makeup gain
-                    const makeupGain = 16;
-                    const makeupGainValue = Math.pow(10, makeupGain / 20);
-
                     // Set the final gain value
                     self.gainNode.gain.setValueAtTime(0, window.myAudioContext.currentTime);
                     self.gainNode.gain.exponentialRampToValueAtTime(
-                        gainValue * makeupGainValue,
+                        gainValue,
                         window.myAudioContext.currentTime + 0.9);
                 } else {
                     self.gainNode.gain.value = 1;
@@ -319,7 +330,7 @@ class HtmlAudioPlayer {
             const disposeElement = document.getElementById('crossFadeMediaElement');
             if (disposeElement) {
                 destroyWaveSurferInstance();
-                disposeElement.pause();
+                // disposeElement.pause();
                 disposeElement.remove();
             }
 
@@ -361,7 +372,7 @@ class HtmlAudioPlayer {
 
             setTimeout(() => {
                 // Clean up and destroy the xfade MediaElement here
-                elem.pause();
+                // elem.pause();
                 elem.remove();
             }, (xDuration.fadeOut) * 1000);
 
@@ -381,7 +392,8 @@ class HtmlAudioPlayer {
                     masterAudioOutput.mixerNode = audioCtx.createGain();
                     masterAudioOutput.mixerNode.gain.value = 0;
                     masterAudioOutput.mixerNode.connect(audioCtx.destination);
-                    masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(volume / 100, 1);
+                    masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
+                        (volume / 100) * masterAudioOutput.makeupGain, 1);
                 }
 
                 // For the visualizer. The first one is for non-xfaded, the second one is for xfaded
@@ -612,12 +624,24 @@ class HtmlAudioPlayer {
     setVolume(val) {
         const audioCtx = window.myAudioContext;
         if (masterAudioOutput.mixerNode && audioCtx) {
+            // Apply the makeup gain
+            const gainValue = (val / 100);
+
             masterAudioOutput.mixerNode.gain.setTargetAtTime(
-                val / 100,
-                audioCtx.currentTime + 0.9,
-                0.6
+                gainValue * masterAudioOutput.makeupGain,
+                audioCtx.currentTime + 0.6,
+                0.3
             );
             volume = Math.max(val, 1);
+            const muteButton = document.querySelector('.buttonMute');
+            const muteButtonIcon = muteButton?.querySelector('.material-icons');
+            muteButtonIcon?.classList.remove('volume_off', 'volume_up');
+            muteButtonIcon?.classList.add('volume_up');
+
+            const volumeSlider = document.querySelector('.nowPlayingVolumeSlider');
+            if (volumeSlider && !volumeSlider.dragging) {
+                volumeSlider.level = volume;
+            }
         } else {
             const mediaElement = this._mediaElement;
             if (mediaElement) {
@@ -670,9 +694,13 @@ class HtmlAudioPlayer {
 
         if (masterAudioOutput.mixerNode && audioCtx) {
             masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
-                mute ? 0.01 : volume / 100,
+                mute ? 0.01 : (volume / 100) * masterAudioOutput.makeupGain,
                 audioCtx.currentTime + 1
             );
+            const muteButton = document.querySelector('.buttonMute');
+            const muteButtonIcon = muteButton?.querySelector('.material-icons');
+            muteButtonIcon?.classList.remove('volume_off', 'volume_up');
+            muteButtonIcon?.classList.add(mute ? 'volume_off' : 'volume_up');
             return;
         }
         const mediaElement = this._mediaElement;
