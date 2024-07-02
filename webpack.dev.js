@@ -18,10 +18,10 @@ module.exports = merge(common, {
         ]
     },
     devServer: {
-        compress: true,
+        compress: false,
         client: {
             overlay: {
-                errors: true,
+                errors: false,
                 warnings: false
             }
         }
