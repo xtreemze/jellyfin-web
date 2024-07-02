@@ -964,7 +964,7 @@ class ChromecastPlayer {
         let state = this.lastPlayerData || {};
         state = state.PlayState || {};
 
-        return state.VolumeLevel == null ? 80 : state.VolumeLevel;
+        return state.VolumeLevel == null ? 100 : state.VolumeLevel;
     }
 
     isPlaying(mediaType) {
