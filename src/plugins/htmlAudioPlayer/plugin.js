@@ -10,8 +10,8 @@ import { destroyWaveSurferInstance, isNowPlaying, waveSurferInitialization } fro
 import { playbackManager } from 'components/playback/playbackmanager';
 
 export const xDuration = {
-    fadeIn: 2,
-    sustain: 4,
+    fadeIn: 3,
+    sustain: 3,
     fadeOut: 9
 };
 

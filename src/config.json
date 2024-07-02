@@ -1,5 +1,5 @@
 {
-  "includeCorsCredentials": true,
+  "includeCorsCredentials": false,
   "multiserver": true,
   "themes": [
     {
@@ -19,6 +19,7 @@
       "default": true
     }
   ],
+  "menuLinks": [],
   "servers": [],
     "plugins": [
       "playAccessValidation/plugin",

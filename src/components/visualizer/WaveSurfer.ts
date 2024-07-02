@@ -103,13 +103,15 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     findElements();
     destroyWaveSurferInstance();
     // Don't update if the tab is not in focus or the screen is off
-    if (document.hidden || document.visibilityState !== 'visible') {
+    if (document.hidden
+        || document.visibilityState !== 'visible'
+        || ( !inputSurfer && !barSurfer)
+        || !mediaElement) {
         return;
     }
 
     scrollToActivePlaylistItem();
 
-    if (!mediaElement) return;
     const newSong = isNewSong(newSongDuration);
     console.debug('wavesurfer created. New song:', newSong, newSongDuration, Math.floor(savedDuration * 10000000));
 
