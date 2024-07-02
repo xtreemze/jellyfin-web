@@ -654,7 +654,7 @@ class HtmlAudioPlayer {
         const audioCtx = window.myAudioContext;
 
         if (masterAudioOutput.mixerNode && audioCtx) {
-            return volume;
+            return Math.min(Math.round(volume), 100);
         }
 
         const mediaElement = this._mediaElement;
@@ -698,6 +698,7 @@ class HtmlAudioPlayer {
                 audioCtx.currentTime + 1
             );
             const muteButton = document.querySelector('.buttonMute');
+            if (!muteButton) return;
             const muteButtonIcon = muteButton?.querySelector('.material-icons');
             muteButtonIcon?.classList.remove('volume_off', 'volume_up');
             muteButtonIcon?.classList.add(mute ? 'volume_off' : 'volume_up');
