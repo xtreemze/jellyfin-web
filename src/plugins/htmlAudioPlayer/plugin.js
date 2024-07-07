@@ -10,9 +10,9 @@ import { destroyWaveSurferInstance, isNowPlaying, waveSurferInitialization } fro
 import { playbackManager } from 'components/playback/playbackmanager';
 
 export const xDuration = {
-    fadeIn: 2,
-    sustain: 3,
-    fadeOut: 9
+    fadeIn: 3.7,
+    sustain: 0.3,
+    fadeOut: 12
 };
 
 const dbBoost = 2;
@@ -352,7 +352,8 @@ class HtmlAudioPlayer {
                 // This destroys the wavesurfer on the fade out track when the new track starts
                 unBindEvents(elem);
                 const legacy = destroyWaveSurferInstance();
-                if (isNowPlaying()) {
+                const nowPlaying = isNowPlaying();
+                if (nowPlaying) {
                     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
                 }
             }, (xDuration.sustain + xDuration.fadeIn) * 1000);
@@ -371,14 +372,36 @@ class HtmlAudioPlayer {
 
         function prevNextDisable(disable = false) {
             const btnPreviousTrack = document.querySelector('.btnPreviousTrack');
+            const previousTrackBtn = document.querySelector('.previousTrackButton');
             const btnNextTrack = document.querySelector('.btnNextTrack');
+            const nextTrackBtn = document.querySelector('.nextTrackButton');
+            const btnPlayPause = document.querySelector('.btnPlayPause');
+            const playPauseButton = document.querySelector('.playPauseButton');
+            const stopButton = document.querySelector('.stopButton');
+            const btnStop = document.querySelector('.btnStop');
+            if (btnStop) {
+                btnStop.disabled = disable;
+            }
+            if (stopButton) {
+                stopButton.disabled = disable;
+            }
+            if (btnPlayPause) {
+                btnPlayPause.disabled = disable;
+            }
+            if (playPauseButton) {
+                playPauseButton.disabled = disable;
+            }
             if (btnPreviousTrack) {
-                btnPreviousTrack.classList.remove('hide');
                 btnPreviousTrack.disabled = disable;
             }
+            if (previousTrackBtn) {
+                previousTrackBtn.disabled = disable;
+            }
             if (btnNextTrack) {
-                btnNextTrack.classList.remove('hide');
                 btnNextTrack.disabled = disable;
+            }
+            if (nextTrackBtn) {
+                nextTrackBtn.disabled = disable;
             }
         }
 
