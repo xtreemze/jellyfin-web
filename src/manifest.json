@@ -4,15 +4,15 @@
     "lang": "en-US",
     "orientation": "any",
     "short_name": "Jellyfin",
-    "start_url": "/web/index.html",
+    "start_url": "/web/#/home.html",
     "theme_color": "#101010",
-    "id": "2activedesign.com",
+    "id": "Jellyfin",
     "background_color": "#101010",
     "display_override": [
         "fullscreen",
         "window-controls-overlay"
     ],
-    "display": "standalone",
+    "display": "fullscreen",
     "icons": [
         {
             "sizes": "72x72",

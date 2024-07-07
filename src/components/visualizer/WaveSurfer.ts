@@ -96,7 +96,7 @@ function scrollToActivePlaylistItem() {
                 document.body.scrollIntoView(smoothScrollSettings);
             }, 1200);
         }
-    }, 4300);
+    }, 300);
 }
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
