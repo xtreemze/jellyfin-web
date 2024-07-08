@@ -364,7 +364,6 @@ class HtmlAudioPlayer {
                 if (nowPlaying) {
                     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
                 }
-                prevNextDisable(false);
             }, (xDuration.sustain + xDuration.fadeIn) * 1000);
 
             setTimeout(() => {
@@ -372,7 +371,9 @@ class HtmlAudioPlayer {
                 setTimeout(()=>{
                     // Clean up and destroy the xfade MediaElement here
                     elem.pause();
+                    masterAudioOutput.mixerNode.disconnect(gainNode);
                     elem.remove();
+                    prevNextDisable(false);
                 }, 2000);
             }, (xDuration.fadeOut) * 1000);
 
