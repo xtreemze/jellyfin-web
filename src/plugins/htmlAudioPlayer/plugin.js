@@ -10,8 +10,8 @@ import { destroyWaveSurferInstance, isNowPlaying, waveSurferInitialization } fro
 import { playbackManager } from 'components/playback/playbackmanager';
 
 export const xDuration = {
-    fadeIn: 3.7,
-    sustain: 0.3,
+    fadeIn: 0.1,
+    sustain: 5.2,
     fadeOut: 12
 };
 
@@ -19,7 +19,7 @@ const dbBoost = 2;
 
 export const masterAudioOutput = {
     mixerNode: undefined,
-    makeupGain: Math.pow(10, dbBoost / 20), // gain: 2
+    makeupGain: Math.pow(10, dbBoost / 20),
     muted: false
 };
 
@@ -61,7 +61,16 @@ export function disableControl(override = false) {
 
 let fadeTimeout;
 function fade(instance, elem, startingVolume) {
-    instance._isFadingOut = true;
+    if (masterAudioOutput.mixerNode) {
+        return new Promise(function (resolve) {
+            instance._isFadingOut = true;
+            window.crossFade();
+            setTimeout(() => {
+                instance._isFadingOut = false;
+                resolve();
+            }, (xDuration.fadeOut + 3) * 1000);
+        });
+    }
 
     // Need to record the starting volume on each pass rather than querying elem.volume
     // This is due to iOS safari not allowing volume changes and always returning the system volume value
@@ -176,7 +185,6 @@ class HtmlAudioPlayer {
                     const gainValue = Math.pow(10, normalizationGain / 20);
 
                     // Set the final gain value
-                    self.gainNode.gain.setValueAtTime(0, window.myAudioContext.currentTime);
                     self.gainNode.gain.exponentialRampToValueAtTime(
                         gainValue,
                         window.myAudioContext.currentTime + 0.1);
@@ -356,13 +364,16 @@ class HtmlAudioPlayer {
                 if (nowPlaying) {
                     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
                 }
+                prevNextDisable(false);
             }, (xDuration.sustain + xDuration.fadeIn) * 1000);
 
             setTimeout(() => {
-                // Clean up and destroy the xfade MediaElement here
-                elem.pause();
-                elem.remove();
-                prevNextDisable(false);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2);
+                setTimeout(()=>{
+                    // Clean up and destroy the xfade MediaElement here
+                    elem.pause();
+                    elem.remove();
+                }, 2000);
             }, (xDuration.fadeOut) * 1000);
 
             prevNextDisable(true);
@@ -426,6 +437,7 @@ class HtmlAudioPlayer {
                 const source = audioCtx.createMediaElementSource(elem);
 
                 const gainNode = audioCtx.createGain();
+                gainNode.gain.setValueAtTime(0, window.myAudioContext.currentTime);
 
                 source.connect(gainNode);
                 gainNode.connect(masterAudioOutput.mixerNode);

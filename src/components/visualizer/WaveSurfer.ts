@@ -101,8 +101,12 @@ function scrollToActivePlaylistItem() {
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
     findElements();
-    destroyWaveSurferInstance();
+
+    if (container !== ('#' + barSurfer?.id) && container !== ('#' + inputSurfer?.id)) {
+        return;
+    }
     // Don't update if the tab is not in focus or the screen is off
+    destroyWaveSurferInstance();
     if (document.hidden
         || document.visibilityState !== 'visible'
         || ( !inputSurfer && !barSurfer)
