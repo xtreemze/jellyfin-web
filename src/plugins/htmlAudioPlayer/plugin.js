@@ -6,8 +6,9 @@ import { getIncludeCorsCredentials } from '../../scripts/settings/webSettings';
 import { PluginType } from '../../types/plugin';
 import Events from '../../utils/events';
 import { MediaError } from 'types/mediaError';
-import { destroyWaveSurferInstance, isNowPlaying, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
-import { playbackManager } from 'components/playback/playbackmanager';
+import {
+    destroyWaveSurferInstance
+} from 'components/visualizer/WaveSurfer';
 
 export const xDuration = {
     fadeIn: 0.01,
@@ -360,16 +361,12 @@ class HtmlAudioPlayer {
             setTimeout(() => {
                 // This destroys the wavesurfer on the fade out track when the new track starts
                 unBindEvents(elem);
-                const legacy = destroyWaveSurferInstance();
-                const nowPlaying = isNowPlaying();
-                if (nowPlaying) {
-                    waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
-                }
+                destroyWaveSurferInstance();
             }, (xDuration.sustain + xDuration.fadeIn) * 1000);
 
             setTimeout(() => {
                 gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2);
-                setTimeout(()=>{
+                setTimeout(() => {
                     // Clean up and destroy the xfade MediaElement here
                     elem.pause();
                     gainNode.disconnect();
