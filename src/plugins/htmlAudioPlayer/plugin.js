@@ -10,8 +10,8 @@ import { destroyWaveSurferInstance, isNowPlaying, waveSurferInitialization } fro
 import { playbackManager } from 'components/playback/playbackmanager';
 
 export const xDuration = {
-    fadeIn: 0.1,
-    sustain: 5.2,
+    fadeIn: 0.01,
+    sustain: 5.4,
     fadeOut: 12
 };
 
@@ -347,7 +347,8 @@ class HtmlAudioPlayer {
             elem.classList.remove('mediaPlayerAudio');
             elem.id = 'crossFadeMediaElement';
 
-            const gainNode = self.gainNode;
+            let gainNode = self.gainNode;
+            self.gainNode = null;
             const audioCtx = window.myAudioContext;
 
             // Schedule the fadeout crossfade curve
@@ -371,7 +372,8 @@ class HtmlAudioPlayer {
                 setTimeout(()=>{
                     // Clean up and destroy the xfade MediaElement here
                     elem.pause();
-                    masterAudioOutput.mixerNode.disconnect(gainNode);
+                    gainNode.disconnect();
+                    gainNode = null;
                     elem.remove();
                     prevNextDisable(false);
                 }, 2000);
