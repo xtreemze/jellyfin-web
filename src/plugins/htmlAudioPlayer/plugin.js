@@ -6,9 +6,7 @@ import { getIncludeCorsCredentials } from '../../scripts/settings/webSettings';
 import { PluginType } from '../../types/plugin';
 import Events from '../../utils/events';
 import { MediaError } from 'types/mediaError';
-import {
-    destroyWaveSurferInstance
-} from 'components/visualizer/WaveSurfer';
+import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 
 export const xDuration = {
     fadeIn: 0.01,
@@ -343,6 +341,12 @@ class HtmlAudioPlayer {
                 // disposeElement.pause();
                 disposeElement.remove();
             }
+            let enableVisualizer;
+            import('../../scripts/settings/userSettings').then((userSettings) => {
+                enableVisualizer = userSettings.enableVisualizer();
+            });
+
+            if (!enableVisualizer) return createMediaElement();
 
             const elem = document.getElementById('currentMediaElement');
             elem.classList.remove('mediaPlayerAudio');
