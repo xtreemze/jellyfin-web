@@ -3481,7 +3481,7 @@ class PlaybackManager {
         }
 
         function timeRunningOut(player) {
-            if (!webAudioSupported || player.currentTime() < xDuration.fadeOut * 1000) return false;
+            if (!webAudioSupported || !userSettings.enableVisualizer() || player.currentTime() < xDuration.fadeOut * 1000) return false;
             return (player.duration() - player.currentTime()) < ((xDuration.fadeOut + xDuration.fadeIn) * 1000);
         }
 
