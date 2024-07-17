@@ -60,7 +60,12 @@ export function disableControl(override = false) {
 
 let fadeTimeout;
 function fade(instance, elem, startingVolume) {
-    if (masterAudioOutput.mixerNode) {
+    let enableVisualizer = false;
+    import('../../scripts/settings/userSettings').then((userSettings) => {
+        enableVisualizer = userSettings.enableVisualizer() || false;
+    });
+
+    if (masterAudioOutput.mixerNode && enableVisualizer) {
         return new Promise(function (resolve) {
             instance._isFadingOut = true;
             window.crossFade();
@@ -341,12 +346,6 @@ class HtmlAudioPlayer {
                 // disposeElement.pause();
                 disposeElement.remove();
             }
-            let enableVisualizer;
-            import('../../scripts/settings/userSettings').then((userSettings) => {
-                enableVisualizer = userSettings.enableVisualizer();
-            });
-
-            if (!enableVisualizer) return createMediaElement();
 
             const elem = document.getElementById('currentMediaElement');
             elem.classList.remove('mediaPlayerAudio');

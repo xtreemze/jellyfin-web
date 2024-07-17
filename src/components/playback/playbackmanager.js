@@ -3026,7 +3026,7 @@ class PlaybackManager {
 
             let immediateOverride = 0;
 
-            if (this.isPlaying(player) && webAudioSupported) {
+            if (this.isPlaying(player) && webAudioSupported && userSettings.enableVisualizer()) {
                 immediateOverride = 1;
                 crossfading = true;
                 window.crossFade();
