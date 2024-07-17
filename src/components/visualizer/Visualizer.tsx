@@ -1,6 +1,5 @@
 import { masterAudioOutput } from 'plugins/htmlAudioPlayer/plugin';
 import React, { useEffect, useRef, useCallback } from 'react';
-
 declare global {
     interface Window {
         myAudioContext: AudioContext;

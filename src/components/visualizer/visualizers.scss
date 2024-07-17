@@ -1,8 +1,8 @@
-#inputSurfer[hidden],
-#barSurfer[hidden] ::part(wrapper),
 #barSurfer>div.mdl-slider-background-flex-container,
 #barSurfer>input.nowPlayingBarPositionSlider,
-#barSurfer>div.sliderBubbleTrack {
+#barSurfer>div.sliderBubbleTrack
+#inputSurfer[hidden],
+#barSurfer[hidden] ::part(wrapper) {
     display: none;
 }
 

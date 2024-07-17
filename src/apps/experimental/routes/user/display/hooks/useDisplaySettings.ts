@@ -82,6 +82,7 @@ async function loadDisplaySettings({
         disableCustomCss: Boolean(settings.disableCustomCss()),
         displayMissingEpisodes: user?.Configuration?.DisplayMissingEpisodes ?? false,
         enableBlurHash: Boolean(settings.enableBlurhash()),
+        enableVisualizer: Boolean(settings.enableVisualizer()),
         enableFasterAnimation: Boolean(settings.enableFastFadein()),
         enableItemDetailsBanner: Boolean(settings.detailsBanner()),
         enableLibraryBackdrops: Boolean(settings.enableBackdrops()),
@@ -90,7 +91,7 @@ async function loadDisplaySettings({
         enableRewatchingInNextUp: Boolean(settings.enableRewatchingInNextUp()),
         episodeImagesInNextUp: Boolean(settings.useEpisodeImagesInNextUpAndResume()),
         language: settings.language() || 'auto',
-        layout: layoutManager.getSavedLayout() || 'experimental',
+        layout: layoutManager.getSavedLayout() || 'auto',
         libraryPageSize: settings.libraryPageSize(),
         maxDaysForNextUp: settings.maxDaysForNextUp(),
         screensaver: settings.screensaver() || 'none',
@@ -127,6 +128,7 @@ async function saveDisplaySettings({
     userSettings.dateTimeLocale(normalizeValue(newDisplaySettings.dateTimeLocale));
     userSettings.disableCustomCss(newDisplaySettings.disableCustomCss);
     userSettings.enableBlurhash(newDisplaySettings.enableBlurHash);
+    userSettings.enableVisualizer(newDisplaySettings.enableVisualizer);
     userSettings.enableFastFadein(newDisplaySettings.enableFasterAnimation);
     userSettings.detailsBanner(newDisplaySettings.enableItemDetailsBanner);
     userSettings.enableBackdrops(newDisplaySettings.enableLibraryBackdrops);

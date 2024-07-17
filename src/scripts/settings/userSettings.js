@@ -250,6 +250,19 @@ export class UserSettings {
     }
 
     /**
+     * Get or set 'Visualizer' state.
+     * @param {boolean|undefined} [val] - Flag to enable 'Visualizer' or undefined.
+     * @return {boolean} 'Visualizer' state.
+     */
+    enableVisualizer(val) {
+        if (val !== undefined) {
+            return this.set('visualizer', val.toString(), false);
+        }
+
+        return toBoolean(this.get('visualizer', false), false);
+    }
+
+    /**
      * Get or set 'Backdrops' state.
      * @param {boolean|undefined} [val] - Flag to enable 'Backdrops' or undefined.
      * @return {boolean} 'Backdrops' state.
@@ -647,6 +660,7 @@ export const enableThemeSongs = currentSettings.enableThemeSongs.bind(currentSet
 export const enableThemeVideos = currentSettings.enableThemeVideos.bind(currentSettings);
 export const enableFastFadein = currentSettings.enableFastFadein.bind(currentSettings);
 export const enableBlurhash = currentSettings.enableBlurhash.bind(currentSettings);
+export const enableVisualizer = currentSettings.enableVisualizer.bind(currentSettings);
 export const enableBackdrops = currentSettings.enableBackdrops.bind(currentSettings);
 export const detailsBanner = currentSettings.detailsBanner.bind(currentSettings);
 export const useEpisodeImagesInNextUpAndResume = currentSettings.useEpisodeImagesInNextUpAndResume.bind(currentSettings);
