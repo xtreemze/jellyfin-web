@@ -3026,7 +3026,7 @@ class PlaybackManager {
 
             let immediateOverride = 0;
 
-            if (this.isPlaying(player) && webAudioSupported && userSettings.enableVisualizer()) {
+            if (this.isPlaying(player) && webAudioSupported && xDuration.enabled) {
                 immediateOverride = 1;
                 crossfading = true;
                 window.crossFade();
@@ -3481,7 +3481,7 @@ class PlaybackManager {
         }
 
         function timeRunningOut(player) {
-            if (!webAudioSupported || !userSettings.enableVisualizer() || player.currentTime() < xDuration.fadeOut * 1000) return false;
+            if (!webAudioSupported || !xDuration.enabled || player.currentTime() < xDuration.fadeOut * 1000) return false;
             return (player.duration() - player.currentTime()) < ((xDuration.fadeOut + xDuration.fadeIn) * 1000);
         }
 

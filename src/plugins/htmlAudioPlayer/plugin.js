@@ -8,11 +8,37 @@ import Events from '../../utils/events';
 import { MediaError } from 'types/mediaError';
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 
+export function setXDuration(crossfadeDuration) {
+    if (crossfadeDuration < 0) xDuration.enabled = false;
+
+    if (crossfadeDuration > 0) {
+        xDuration.enabled = true;
+
+        xDuration.fadeOut = crossfadeDuration * 2;
+        xDuration.fadeIn = crossfadeDuration / 50;
+        xDuration.sustain = crossfadeDuration - xDuration.fadeIn;
+    }
+
+    if (crossfadeDuration === 0) {
+        xDuration.enabled = true;
+        const minimalValue = 0.01;
+
+        xDuration.fadeOut = minimalValue * 2;
+        xDuration.fadeIn = minimalValue;
+        xDuration.sustain = 0;
+    }
+}
+
 export const xDuration = {
     fadeIn: 0.01,
     sustain: 5.4,
-    fadeOut: 12
+    fadeOut: 12,
+    enabled: true
 };
+
+import('../../scripts/settings/userSettings').then((userSettings) => {
+    setXDuration(userSettings.crossfadeDuration());
+});
 
 const dbBoost = 2;
 
@@ -60,12 +86,7 @@ export function disableControl(override = false) {
 
 let fadeTimeout;
 function fade(instance, elem, startingVolume) {
-    let enableVisualizer = false;
-    import('../../scripts/settings/userSettings').then((userSettings) => {
-        enableVisualizer = userSettings.enableVisualizer() || false;
-    });
-
-    if (masterAudioOutput.mixerNode && enableVisualizer) {
+    if (masterAudioOutput.mixerNode && xDuration.enabled) {
         return new Promise(function (resolve) {
             instance._isFadingOut = true;
             window.crossFade();
@@ -330,7 +351,9 @@ class HtmlAudioPlayer {
                 document.body.appendChild(elem);
             }
 
-            elem.volume = htmlMediaHelper.getSavedVolume();
+            if (!xDuration.enabled) {
+                elem.volume = htmlMediaHelper.getSavedVolume();
+            }
 
             self._mediaElement = elem;
 
@@ -664,6 +687,8 @@ class HtmlAudioPlayer {
 
     setVolume(val) {
         const audioCtx = window.myAudioContext;
+        const mediaElement = this._mediaElement;
+
         if (masterAudioOutput.mixerNode && audioCtx) {
             // Apply the makeup gain
             const gainValue = (val / 100);
@@ -687,11 +712,8 @@ class HtmlAudioPlayer {
                 volumeSlider.level = volume;
             }
             masterAudioOutput.muted = false;
-        } else {
-            const mediaElement = this._mediaElement;
-            if (mediaElement) {
-                mediaElement.volume = Math.pow(val / 100, 3);
-            }
+        } else if (mediaElement) {
+            mediaElement.volume = Math.pow(val / 100, 3);
         }
     }
 

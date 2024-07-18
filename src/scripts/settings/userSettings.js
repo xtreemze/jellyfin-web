@@ -2,6 +2,7 @@ import appSettings from './appSettings';
 import browser from '../browser';
 import Events from '../../utils/events.ts';
 import { toBoolean } from '../../utils/string.ts';
+import { setXDuration } from 'plugins/htmlAudioPlayer/plugin';
 
 function onSaveTimeout() {
     const self = this;
@@ -169,6 +170,20 @@ export class UserSettings {
         }
 
         return this.get('selectAudioNormalization', false) || 'AlbumGain';
+    }
+
+    /**
+     * Get or set 'CrossfadeDuration' state.
+     * @param {number|undefined} val - Flag to set duration for crossfade or disable with a negative value
+     * @return {number} crossfade duration in seconds
+     */
+    crossfadeDuration(val) {
+        if (val !== undefined) {
+            setXDuration(val);
+            return this.set('crossfadeDuration', val, false);
+        }
+
+        return this.get('crossfadeDuration', false);
     }
 
     /**
@@ -654,6 +669,7 @@ export const allowedAudioChannels = currentSettings.allowedAudioChannels.bind(cu
 export const preferFmp4HlsContainer = currentSettings.preferFmp4HlsContainer.bind(currentSettings);
 export const enableCinemaMode = currentSettings.enableCinemaMode.bind(currentSettings);
 export const selectAudioNormalization = currentSettings.selectAudioNormalization.bind(currentSettings);
+export const crossfadeDuration = currentSettings.crossfadeDuration.bind(currentSettings);
 export const enableNextVideoInfoOverlay = currentSettings.enableNextVideoInfoOverlay.bind(currentSettings);
 export const enableVideoRemainingTime = currentSettings.enableVideoRemainingTime.bind(currentSettings);
 export const enableThemeSongs = currentSettings.enableThemeSongs.bind(currentSettings);
