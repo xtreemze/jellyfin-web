@@ -16,8 +16,8 @@ import './AppOverrides.scss';
 import Visualizer from 'components/visualizer/Visualizer';
 import * as userSettings from '../../scripts/settings/userSettings';
 
-const AppLayout = () => {
-    const [isDrawerActive, setIsDrawerActive] = useState(false);
+export const Component = () => {
+    const [ isDrawerActive, setIsDrawerActive ] = useState(false);
     const { user } = useApi();
     const location = useLocation();
     const enableVisualizer = userSettings.enableVisualizer();
@@ -74,5 +74,3 @@ const AppLayout = () => {
         </Box>
     );
 };
-
-export default AppLayout;

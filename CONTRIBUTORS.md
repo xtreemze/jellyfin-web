@@ -90,6 +90,7 @@
 - [Peter Santos](https://github.com/prsantos-com)
 - [Carlos Velasco](https://github.com/xtreemze)
 - [Chaitanya Shahare](https://github.com/Chaitanya-Shahare)
+- [Venkat Karasani](https://github.com/venkat-karasani)
 
 ## Emby Contributors
 

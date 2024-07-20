@@ -12,23 +12,20 @@ import { useApi } from 'hooks/useApi';
 
 import AppTabs from './components/AppTabs';
 import AppDrawer from './components/drawer/AppDrawer';
+import { DASHBOARD_APP_PATHS } from './routes/routes';
 
 import './AppOverrides.scss';
 
-interface AppLayoutProps {
-    drawerlessPaths: string[]
-}
+const DRAWERLESS_PATHS = [ DASHBOARD_APP_PATHS.MetadataManager ];
 
-const AppLayout: FC<AppLayoutProps> = ({
-    drawerlessPaths
-}) => {
+export const Component: FC = () => {
     const [ isDrawerActive, setIsDrawerActive ] = useState(false);
     const location = useLocation();
     const { user } = useApi();
 
     const isMediumScreen = useMediaQuery((t: Theme) => t.breakpoints.up('md'));
     const isDrawerAvailable = Boolean(user)
-        && !drawerlessPaths.some(path => location.pathname.startsWith(`/${path}`));
+        && !DRAWERLESS_PATHS.some(path => location.pathname.startsWith(`/${path}`));
     const isDrawerOpen = isDrawerActive && isDrawerAvailable;
 
     const onToggleDrawer = useCallback(() => {
@@ -80,5 +77,3 @@ const AppLayout: FC<AppLayoutProps> = ({
         </Box>
     );
 };
-
-export default AppLayout;
