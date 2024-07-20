@@ -1,5 +1,4 @@
 import WaveSurfer from 'wavesurfer.js';
-import './visualizers.scss';
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import MiniMapPlugin from 'wavesurfer.js/dist/plugins/minimap';

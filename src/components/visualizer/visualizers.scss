@@ -1,7 +1,6 @@
 #barSurfer>div.mdl-slider-background-flex-container,
 #barSurfer>input.nowPlayingBarPositionSlider,
-#barSurfer>div.sliderBubbleTrack
-#inputSurfer[hidden],
+#barSurfer>div.sliderBubbleTrack #inputSurfer[hidden],
 #barSurfer[hidden] ::part(wrapper) {
     display: none;
 }
@@ -138,7 +137,7 @@ body.mouseIdle {
 div>form>div>button,
 button.button-submit.btnSave {
     position: fixed !important;
-    bottom: 6rem;
+    bottom: 9rem;
     right: 2rem;
     width: 20% !important;
     min-width: 12rem;
@@ -188,7 +187,11 @@ body:not(.transition).mouseIdle canvas#visualizer {
     transition-delay: 20s;
 }
 
-@media (orientation: portrait) {
+@media (orientation: portrait) and (max-width: 915px) {
+    #nowPlayingPage {
+        top: 100vh;
+    }
+
     .playlistSectionButton {
         margin-top: 6rem;
     }
@@ -206,13 +209,7 @@ body:not(.transition).mouseIdle canvas#visualizer {
     }
 }
 
-@media (orientation: landscape) and (max-width:1399px) {
-    html {
-        font-size: 1vw !important;
-    }
-}
-
-@media (orientation: landscape) {
+@media (orientation: landscape) and (min-width: 915px) {
     #inputSurfer ::part(minimap) {
         position: fixed;
         left: 34vw;
@@ -294,24 +291,29 @@ body:not(.transition).mouseIdle canvas#visualizer {
         transition: opacity 1.4s ease-in-out;
     }
 
-    #playlist>div.listItem:hover>div.listViewUserDataButtons,
-    div.playlistSection>div.playlistSectionButton,
-    #playlist>div.listItem:hover>div.listItemImage.itemAction.lazy,
-    #playlist>div.listItem:hover>span {
-        opacity: 1;
+    #playlist div>div.listViewUserDataButtons,
+    #nowPlayingPage div.playlistSection div.playlistSectionButton,
+    #playlist button div.listItemImage.lazy,
+    #playlist div.listItem>div.listItemImage.itemAction,
+    #playlist div>span {
+        opacity: 0;
+        animation: none;
     }
 
-    #playlist>div>div.listViewUserDataButtons,
-    div.playlistSection>div.playlistSectionButton,
-    #playlist>div.listItem div.listItemImage.itemAction.lazy,
-    #playlist>div>span {
-        opacity: 0;
+    #playlist div.listItem:hover div.listViewUserDataButtons,
+    #playlist button:hover div.listItemImage,
+    #playlist div.listItem:hover>div.listItemImage.itemAction,
+    #playlist div.listItem>div.listItemImage.itemAction.playlistIndexIndicatorImage,
+    #playlist button div.playlistIndexIndicatorImage,
+    #nowPlayingPage div.playlistSection div:hover.playlistSectionButton,
+    #playlist div.listItem:hover>span {
+        opacity: 1;
     }
 
     div#playlist {
         background-color: unset;
-        padding-top: 12rem;
-        padding-bottom: 12rem;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
         scrollbar-width: none;
         position: unset;
         z-index: unset;
@@ -416,11 +418,6 @@ body:not(.transition).mouseIdle canvas#visualizer {
         width: calc(100%/5);
     }
 
-    #playlist>div .listItemImage.itemAction.lazy {
-        opacity: 0;
-        animation: none;
-    }
-
     div.playlistSection {
         bottom: 12rem;
         font-size: .75em;
@@ -486,9 +483,9 @@ body:not(.transition).mouseIdle canvas#visualizer {
         font-size: 0.6em;
     }
 
-    #playlist>button {
-        height: 1.5rem;
-    }
+    // #playlist>button {
+    //     height: 1.5rem;
+    // }
 
     .listItemImage.playlistIndexIndicatorImage {
         background-size: 2em !important;

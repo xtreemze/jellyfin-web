@@ -9,35 +9,27 @@ import { MediaError } from 'types/mediaError';
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 
 export function setXDuration(crossfadeDuration) {
-    if (crossfadeDuration < 0) xDuration.enabled = false;
-
-    if (crossfadeDuration > 0) {
-        xDuration.enabled = true;
-
-        xDuration.fadeOut = crossfadeDuration * 2;
-        xDuration.fadeIn = crossfadeDuration / 50;
-        xDuration.sustain = crossfadeDuration - xDuration.fadeIn;
+    if (crossfadeDuration < 0) {
+        xDuration.enabled = false;
+        return;
     }
 
-    if (crossfadeDuration === 0) {
-        xDuration.enabled = true;
-        const minimalValue = 0.01;
+    xDuration.enabled = true;
 
-        xDuration.fadeOut = minimalValue * 2;
-        xDuration.fadeIn = minimalValue;
-        xDuration.sustain = 0;
-    }
+    xDuration.fadeOut = crossfadeDuration * 2.222;
+    xDuration.fadeIn = crossfadeDuration / 50;
+    xDuration.sustain = crossfadeDuration - xDuration.fadeIn;
 }
 
 export const xDuration = {
-    fadeIn: 0.01,
-    sustain: 5.4,
-    fadeOut: 12,
+    fadeIn: 0.25,
+    sustain: 0.25,
+    fadeOut: 1,
     enabled: true
 };
 
 import('../../scripts/settings/userSettings').then((userSettings) => {
-    setXDuration(userSettings.crossfadeDuration());
+    setXDuration(userSettings.crossfadeDuration() || 0.5);
 });
 
 const dbBoost = 2;

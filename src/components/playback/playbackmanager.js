@@ -3060,7 +3060,7 @@ class PlaybackManager {
                     if (crossfading) {
                         setTimeout(() => {
                             // self.seekPercent(0, player);
-                            // window.playback.unpause();
+                            window.playback.unpause();
                             crossfading = false;
                         }, xDuration.fadeIn * 1000 * immediateOverride);
                     }
