@@ -2302,12 +2302,12 @@ class PlaybackManager {
                     if (playOptions.fullscreen) {
                         loading.hide();
                     }
+                })
+                .finally(() => {
+                    if (crossfading) {
+                        window.playback.unpause();
+                    }
                 });
-            // .finally(()=>{
-            //     if (crossfading) {
-            //         window.playback.pause();
-            //     }
-            // });
         }
 
         function cancelPlayback() {
@@ -3037,9 +3037,10 @@ class PlaybackManager {
                     player.nextTrack();
 
                     if (crossfading) {
-                        window.playback.pause();
                         setTimeout(() => {
+                            // self.seekPercent(0, player);
                             window.playback.unpause();
+                            window.playback.unpause(player);
                             crossfading = false;
                         }, xDuration.fadeIn * 1000 * immediateOverride);
                     }
@@ -3056,13 +3057,12 @@ class PlaybackManager {
                     playInternal(newItemInfo.item, newItemPlayOptions, function () {
                         setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
                     }, getPreviousSource(player));
-                    // self.seekPercent(50, player);
 
                     if (crossfading) {
-                        window.playback.pause();
                         setTimeout(() => {
                             // self.seekPercent(0, player);
                             window.playback.unpause();
+                            window.playback.unpause(player);
                             crossfading = false;
                         }, xDuration.fadeIn * 1000 * immediateOverride);
                     }

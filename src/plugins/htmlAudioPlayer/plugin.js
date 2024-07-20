@@ -14,10 +14,10 @@ export function setXDuration(crossfadeDuration) {
         return;
     }
 
-    if (crossfadeDuration < 0.5) {
+    if (crossfadeDuration < 0.51) {
         xDuration.enabled = true;
         xDuration.fadeOut = crossfadeDuration * 2;
-        xDuration.fadeIn = 0;
+        xDuration.fadeIn = 0.01;
         xDuration.sustain = crossfadeDuration;
 
         return;
@@ -26,20 +26,20 @@ export function setXDuration(crossfadeDuration) {
     xDuration.enabled = true;
 
     xDuration.fadeOut = crossfadeDuration * 2.222;
-    xDuration.fadeIn = crossfadeDuration / 50;
+    xDuration.fadeIn = Math.max(crossfadeDuration / 50, 0.01);
     xDuration.sustain = crossfadeDuration - xDuration.fadeIn;
 }
 
 export const xDuration = {
-    fadeIn: 0.2,
-    sustain: 0.2,
-    fadeOut: 0.4,
+    fadeIn: 0,
+    sustain: 0.5,
+    fadeOut: 1,
     enabled: true
 };
 
 import('../../scripts/settings/userSettings').then((userSettings) => {
     const savedDuration = userSettings.crossfadeDuration();
-    if (!savedDuration) userSettings.crossfadeDuration(0.4);
+    if (!savedDuration) userSettings.crossfadeDuration(0.5);
 });
 
 const dbBoost = 2;
@@ -380,7 +380,7 @@ class HtmlAudioPlayer {
             self.gainNode = null;
             const audioCtx = window.myAudioContext;
 
-            if (xDuration.fadeIn !== 0) {
+            if (xDuration.fadeIn > 0.01) {
                 // Schedule the fadeout crossfade curve
                 gainNode.gain.linearRampToValueAtTime(gainNode.gain.value, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + xDuration.fadeOut);

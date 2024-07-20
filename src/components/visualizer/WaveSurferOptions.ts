@@ -151,10 +151,10 @@ const waveSurferChannelStyle = {
         dragToSeek: false,
         splitChannels: barStyles.coloredCenteredOverlay } as Partial<WaveSurferOptions>,
     map: {
-        barWidth: 4,
-        barGap: 2,
+        barWidth: 2,
+        barGap: 1,
         cursorColor: color.cursor,
-        cursorWidth: 12,
+        cursorWidth: 2,
         autoScroll: false,
         autoCenter: false,
         sampleRate: 3000,
