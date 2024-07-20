@@ -181,7 +181,7 @@
     "CoverArtist": "Cover artist",
     "Creator": "Creator",
     "CrossfadeDuration": "Crossfade Duration",
-    "CrossfadeDurationHelp": "Set the overlap between tracks in seconds. 0 is gapless and -0.01 disables the crossfader.",
+    "CrossfadeDurationHelp": "Set the overlap between tracks in seconds. 0.4 is gapless and 0 disables the crossfader.",
     "CriticRating": "Critics rating",
     "Cursive": "Cursive",
     "DailyAt": "Daily at {0}",

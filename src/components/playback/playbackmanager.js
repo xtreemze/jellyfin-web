@@ -3037,6 +3037,7 @@ class PlaybackManager {
                     player.nextTrack();
 
                     if (crossfading) {
+                        window.playback.pause();
                         setTimeout(() => {
                             window.playback.unpause();
                             crossfading = false;
@@ -3058,6 +3059,7 @@ class PlaybackManager {
                     // self.seekPercent(50, player);
 
                     if (crossfading) {
+                        window.playback.pause();
                         setTimeout(() => {
                             // self.seekPercent(0, player);
                             window.playback.unpause();

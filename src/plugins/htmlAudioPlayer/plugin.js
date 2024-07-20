@@ -9,8 +9,17 @@ import { MediaError } from 'types/mediaError';
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 
 export function setXDuration(crossfadeDuration) {
-    if (crossfadeDuration < 0) {
+    if (crossfadeDuration < 0.01) {
         xDuration.enabled = false;
+        return;
+    }
+
+    if (crossfadeDuration < 0.5) {
+        xDuration.enabled = true;
+        xDuration.fadeOut = crossfadeDuration * 2;
+        xDuration.fadeIn = 0;
+        xDuration.sustain = crossfadeDuration;
+
         return;
     }
 
@@ -22,14 +31,15 @@ export function setXDuration(crossfadeDuration) {
 }
 
 export const xDuration = {
-    fadeIn: 0.25,
-    sustain: 0.25,
-    fadeOut: 1,
+    fadeIn: 0.2,
+    sustain: 0.2,
+    fadeOut: 0.4,
     enabled: true
 };
 
 import('../../scripts/settings/userSettings').then((userSettings) => {
-    setXDuration(userSettings.crossfadeDuration() || 0.5);
+    const savedDuration = userSettings.crossfadeDuration();
+    if (!savedDuration) userSettings.crossfadeDuration(0.4);
 });
 
 const dbBoost = 2;
@@ -370,20 +380,21 @@ class HtmlAudioPlayer {
             self.gainNode = null;
             const audioCtx = window.myAudioContext;
 
-            // Schedule the fadeout crossfade curve
-            gainNode.gain.linearRampToValueAtTime(gainNode.gain.value, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + xDuration.fadeOut);
-
-            originalPause = elem.pause;
+            if (xDuration.fadeIn !== 0) {
+                // Schedule the fadeout crossfade curve
+                gainNode.gain.linearRampToValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + xDuration.fadeOut);
+            }
 
             setTimeout(() => {
                 // This destroys the wavesurfer on the fade out track when the new track starts
                 unBindEvents(elem);
+                originalPause = elem.pause;
                 destroyWaveSurferInstance();
             }, (xDuration.sustain + xDuration.fadeIn) * 1000);
 
             setTimeout(() => {
-                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.01);
                 setTimeout(() => {
                     // Clean up and destroy the xfade MediaElement here
                     elem.pause();
@@ -391,7 +402,7 @@ class HtmlAudioPlayer {
                     gainNode = null;
                     elem.remove();
                     prevNextDisable(false);
-                }, 2000);
+                }, 10);
             }, (xDuration.fadeOut) * 1000);
 
             prevNextDisable(true);
