@@ -2021,7 +2021,6 @@ class PlaybackManager {
         self.getItemsForPlayback = getItemsForPlayback;
 
         self.play = function (options) {
-            xDuration.t0 = performance.now(); // Record the start time
             window.crossFade();
 
             normalizePlayOptions(options);
@@ -2394,7 +2393,6 @@ class PlaybackManager {
         }
 
         function sendPlaybackListToPlayer(player, items, deviceProfile, apiClient, mediaSourceId, options) {
-            console.log('#### send playback list');
             return setStreamUrls(items, deviceProfile, options.maxBitrate, apiClient, options.startPosition).then(function () {
                 loading.hide();
 
@@ -2921,6 +2919,8 @@ class PlaybackManager {
         };
 
         self.setCurrentPlaylistItem = function (playlistItemId, player) {
+            window.crossFade();
+
             player = player || self._currentPlayer;
             if (player && !enableLocalPlaylistManagement(player)) {
                 return player.setCurrentPlaylistItem(playlistItemId);
@@ -3030,6 +3030,8 @@ class PlaybackManager {
         const webAudioSupported = ('AudioContext' in window || 'webkitAudioContext' in window);
 
         self.nextTrack = function (player) {
+            window.crossFade();
+
             player = player || self._currentPlayer;
 
             if (player && !enableLocalPlaylistManagement(player)) {

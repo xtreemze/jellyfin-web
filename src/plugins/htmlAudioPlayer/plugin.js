@@ -372,6 +372,8 @@ class HtmlAudioPlayer {
         }
 
         function createCrossfadeMediaElement() {
+            xDuration.t0 = performance.now(); // Record the start time
+
             const elem = document.getElementById('currentMediaElement');
             if (!elem) return;
 
