@@ -2021,6 +2021,9 @@ class PlaybackManager {
         self.getItemsForPlayback = getItemsForPlayback;
 
         self.play = function (options) {
+            xDuration.t0 = performance.now(); // Record the start time
+            window.crossFade();
+
             normalizePlayOptions(options);
 
             if (self._currentPlayer) {
@@ -2055,7 +2058,6 @@ class PlaybackManager {
                         .then((items) => getAdditionalParts(items))
                         .then(function (allItems) {
                             const flattened = allItems.flatMap(i => i);
-                            console.log('#### getItemsForPlayback');
                             return playWithIntros(flattened, options);
                         });
                 });
@@ -2275,9 +2277,6 @@ class PlaybackManager {
         }
 
         function playInternal(item, playOptions, onPlaybackStartedFn, prevSource) {
-            const t0 = performance.now(); // Record the start time
-            window.crossFade();
-
             if (item.IsPlaceHolder) {
                 loading.hide();
                 showPlaybackInfoErrorMessage(self, 'PlaybackErrorPlaceHolder');
@@ -2306,8 +2305,7 @@ class PlaybackManager {
                 .catch(onInterceptorRejection)
                 .then(() => detectBitrate(apiClient, item, mediaType))
                 .then((bitrate) => {
-                    const t1 = performance.now(); // Record the end time
-                    const elapsedTime = t1 - t0; // Calculate the elapsed time
+                    const elapsedTime = performance.now() - xDuration.t0; // Calculate the elapsed time
 
                     setTimeout(() => {
                         return playAfterBitrateDetect(bitrate, item, playOptions, onPlaybackStartedFn, prevSource)

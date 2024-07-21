@@ -26,7 +26,7 @@ export function setXDuration(crossfadeDuration) {
     }
 
     xDuration.enabled = true;
-    xDuration.fadeOut = crossfadeDuration * 3;
+    xDuration.fadeOut = crossfadeDuration * 2.2;
     xDuration.disableFade = false;
     xDuration.sustain = crossfadeDuration;
 }
@@ -35,7 +35,8 @@ export const xDuration = {
     disableFade: true,
     sustain: 0.5,
     fadeOut: 1,
-    enabled: true
+    enabled: true,
+    t0: performance.now()
 };
 
 const dbBoost = 2;
@@ -203,19 +204,24 @@ class HtmlAudioPlayer {
                         ?? options.item.NormalizationGain;
                 }
 
+                self.gainNode.gain.linearRampToValueAtTime(
+                    0.01,
+                    window.myAudioContext.currentTime
+                );
+
                 if (normalizationGain) {
                     // Calculate the normalization gain
                     const gainValue = Math.pow(10, normalizationGain / 20);
 
                     // Set the final gain value
-                    self.gainNode.gain.linearRampToValueAtTime(
+                    self.gainNode.gain.exponentialRampToValueAtTime(
                         gainValue,
-                        xDuration.sustain
+                        window.myAudioContext.currentTime + (xDuration.sustain / 12)
                     );
                 } else {
-                    self.gainNode.gain.linearRampToValueAtTime(
+                    self.gainNode.gain.exponentialRampToValueAtTime(
                         1,
-                        xDuration.sustain
+                        window.myAudioContext.currentTime + (xDuration.sustain / 12)
                     );
                 }
             }).catch((err) => {
