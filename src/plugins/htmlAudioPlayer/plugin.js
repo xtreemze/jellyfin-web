@@ -366,15 +366,17 @@ class HtmlAudioPlayer {
         }
 
         function createCrossfadeMediaElement() {
+            const elem = document.getElementById('currentMediaElement');
+            if (!elem) return;
+
+            unBindEvents(elem);
+
             const disposeElement = document.getElementById('crossFadeMediaElement');
             if (disposeElement) {
                 destroyWaveSurferInstance();
-                disposeElement.remove();
             }
 
             prevNextDisable(true);
-
-            const elem = document.getElementById('currentMediaElement');
             elem.classList.remove('mediaPlayerAudio');
             elem.id = 'crossFadeMediaElement';
 
@@ -391,9 +393,8 @@ class HtmlAudioPlayer {
             setTimeout(() => {
                 // This destroys the wavesurfer on the fade out track when the new track starts
                 originalPause = elem.pause;
-                unBindEvents(elem);
                 destroyWaveSurferInstance();
-            }, xDuration.sustain * 1000);
+            }, xDuration.sustain * 990);
 
             setTimeout(() => {
                 gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);

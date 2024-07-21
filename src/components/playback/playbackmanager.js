@@ -2031,6 +2031,9 @@ class PlaybackManager {
                 if (!self._currentPlayer.isLocalPlayer) {
                     return self._currentPlayer.play(options);
                 }
+
+                console.log('#### play start crossfade');
+                window.crossFade();
             }
 
             if (options.fullscreen) {
@@ -2048,7 +2051,6 @@ class PlaybackManager {
                 if (!options.serverId) {
                     throw new Error('serverId required!');
                 }
-
                 return getItemsForPlayback(options.serverId, {
                     Ids: options.ids.join(',')
                 }).then(function (result) {
@@ -2056,6 +2058,7 @@ class PlaybackManager {
                         .then((items) => getAdditionalParts(items))
                         .then(function (allItems) {
                             const flattened = allItems.flatMap(i => i);
+                            console.log('#### getItemsForPlayback');
                             return playWithIntros(flattened, options);
                         });
                 });
@@ -2256,12 +2259,14 @@ class PlaybackManager {
                 introPlayOptions.items = items;
                 introPlayOptions.startIndex = playStartIndex;
 
-                return playInternal(items[playStartIndex], introPlayOptions, function () {
-                    self._playQueueManager.setPlaylist(items);
+                setTimeout(()=>{
+                    return playInternal(items[playStartIndex], introPlayOptions, function () {
+                        self._playQueueManager.setPlaylist(items);
 
-                    setPlaylistState(items[playStartIndex].PlaylistItemId, playStartIndex);
-                    loading.hide();
-                });
+                        setPlaylistState(items[playStartIndex].PlaylistItemId, playStartIndex);
+                        loading.hide();
+                    });
+                }, xDuration.sustain * 1000);
             });
         }
 
@@ -2307,11 +2312,6 @@ class PlaybackManager {
                 .catch(() => {
                     if (playOptions.fullscreen) {
                         loading.hide();
-                    }
-                })
-                .finally(() => {
-                    if (crossfading) {
-                        window.playback.unpause();
                     }
                 });
         }
@@ -2391,6 +2391,7 @@ class PlaybackManager {
         }
 
         function sendPlaybackListToPlayer(player, items, deviceProfile, apiClient, mediaSourceId, options) {
+            console.log('#### send playback list');
             return setStreamUrls(items, deviceProfile, options.maxBitrate, apiClient, options.startPosition).then(function () {
                 loading.hide();
 
