@@ -6,7 +6,7 @@ import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from '
 import { disableControl } from 'plugins/htmlAudioPlayer/plugin';
 
 type WaveSurferLegacy = {
-    peaks: number[][]
+    peaks?: number[][]
     duration: number
     isPlaying: boolean
     currentTime: number
@@ -21,7 +21,6 @@ let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
 let mediaElement: HTMLMediaElement | undefined;
 
-let savedPeaks: number[][];
 let savedDuration = 0;
 
 const maxZoom = waveSurferPluginOptions.zoomOptions.maxZoom;
@@ -31,6 +30,8 @@ const wholeSongZoom = 70;
 let currentZoom = 100;
 
 let mobileTouch = false;
+
+let savedPeaks: number[][];
 
 let initialDistance: number | null = null;
 const MIN_DELTA = waveSurferPluginOptions.zoomOptions.deltaThreshold; // Define a threshold for minimal significant distance change
@@ -121,7 +122,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
         media: mediaElement,
         container: container,
-        peaks: newSong ? undefined : legacy?.peaks,
+        peaks: newSong ? undefined : savedPeaks || legacy?.peaks,
         duration: newSong ? undefined : legacy?.duration
     });
 
@@ -253,7 +254,7 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
     if (!waveSurferInstance) resetVisibility();
 
     const legacy = {
-        peaks: savedPeaks,
+        // peaks: savedPeaks,
         duration: savedDuration,
         isPlaying: waveSurferInstance?.isPlaying(),
         currentTime: waveSurferInstance?.getCurrentTime(),
