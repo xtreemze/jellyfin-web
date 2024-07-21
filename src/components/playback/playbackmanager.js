@@ -25,7 +25,7 @@ import { xDuration } from 'plugins/htmlAudioPlayer/plugin.js';
 
 const UNLIMITED_ITEMS = -1;
 
-export let crossfading = false;
+export const crossfading = false;
 
 function enableLocalPlaylistManagement(player) {
     if (player.getPlaylist) {
@@ -2031,9 +2031,6 @@ class PlaybackManager {
                 if (!self._currentPlayer.isLocalPlayer) {
                     return self._currentPlayer.play(options);
                 }
-
-                console.log('#### play start crossfade');
-                window.crossFade();
             }
 
             if (options.fullscreen) {
@@ -2278,6 +2275,9 @@ class PlaybackManager {
         }
 
         function playInternal(item, playOptions, onPlaybackStartedFn, prevSource) {
+            const t0 = performance.now(); // Record the start time
+            window.crossFade();
+
             if (item.IsPlaceHolder) {
                 loading.hide();
                 showPlaybackInfoErrorMessage(self, 'PlaybackErrorPlaceHolder');
@@ -2306,8 +2306,13 @@ class PlaybackManager {
                 .catch(onInterceptorRejection)
                 .then(() => detectBitrate(apiClient, item, mediaType))
                 .then((bitrate) => {
-                    return playAfterBitrateDetect(bitrate, item, playOptions, onPlaybackStartedFn, prevSource)
-                        .catch(onPlaybackRejection);
+                    const t1 = performance.now(); // Record the end time
+                    const elapsedTime = t1 - t0; // Calculate the elapsed time
+
+                    setTimeout(() => {
+                        return playAfterBitrateDetect(bitrate, item, playOptions, onPlaybackStartedFn, prevSource)
+                            .catch(onPlaybackRejection);
+                    }, Math.max(0, xDuration.sustain * 1000 - elapsedTime));
                 })
                 .catch(() => {
                     if (playOptions.fullscreen) {
@@ -3027,31 +3032,10 @@ class PlaybackManager {
         const webAudioSupported = ('AudioContext' in window || 'webkitAudioContext' in window);
 
         self.nextTrack = function (player) {
-            if (crossfading) return;
-
             player = player || self._currentPlayer;
 
-            let immediateOverride = 0;
-
-            if (this.isPlaying(player) && webAudioSupported && xDuration.enabled) {
-                immediateOverride = 1;
-                crossfading = true;
-                window.crossFade();
-            }
-
             if (player && !enableLocalPlaylistManagement(player)) {
-                setTimeout(() => {
-                    player.nextTrack();
-
-                    if (crossfading) {
-                        // setTimeout(() => {
-                        // self.seekPercent(0, player);
-                        // window.playback.unpause();
-                        // window.playback.unpause(player);
-                        crossfading = false;
-                        // }, xDuration.fadeIn * 1000 * immediateOverride);
-                    }
-                }, xDuration.sustain * 1000 * immediateOverride);
+                player.nextTrack();
                 return;
             }
 
@@ -3060,20 +3044,9 @@ class PlaybackManager {
             if (newItemInfo) {
                 console.debug('playing next track');
                 const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
-                setTimeout(() => {
-                    playInternal(newItemInfo.item, newItemPlayOptions, function () {
-                        setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
-                    }, getPreviousSource(player));
-
-                    if (crossfading) {
-                        // setTimeout(() => {
-                        // self.seekPercent(0, player);
-                        // window.playback.unpause();
-                        // window.playback.unpause(player);
-                        crossfading = false;
-                        // }, xDuration.fadeIn * 1000 * immediateOverride);
-                    }
-                }, xDuration.sustain * 1000 * immediateOverride);
+                playInternal(newItemInfo.item, newItemPlayOptions, function () {
+                    setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
+                }, getPreviousSource(player));
             } else {
                 player.stop();
             }
