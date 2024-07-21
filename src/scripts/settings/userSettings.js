@@ -180,10 +180,10 @@ export class UserSettings {
     crossfadeDuration(val) {
         if (val !== undefined) {
             setXDuration(val);
-            return this.set('crossfadeDuration', val, false);
+            return this.set('crossfadeDuration', val.toString(), true);
         }
 
-        return this.get('crossfadeDuration', false);
+        return parseFloat(this.get('crossfadeDuration', true) || 0.5);
     }
 
     /**

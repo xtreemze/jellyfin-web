@@ -11,6 +11,9 @@ import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 export function setXDuration(crossfadeDuration) {
     if (crossfadeDuration < 0.01) {
         xDuration.enabled = false;
+        xDuration.fadeOut = 0;
+        xDuration.disableFade = true;
+        xDuration.sustain = 0;
         return;
     }
 
@@ -19,28 +22,21 @@ export function setXDuration(crossfadeDuration) {
         xDuration.fadeOut = crossfadeDuration * 2;
         xDuration.disableFade = true;
         xDuration.sustain = crossfadeDuration;
-
         return;
     }
 
     xDuration.enabled = true;
-
-    xDuration.fadeOut = crossfadeDuration * 2.222;
+    xDuration.fadeOut = crossfadeDuration * 3;
     xDuration.disableFade = false;
     xDuration.sustain = crossfadeDuration;
 }
 
 export const xDuration = {
-    fadeIn: 0,
+    disableFade: true,
     sustain: 0.5,
     fadeOut: 1,
     enabled: true
 };
-
-import('../../scripts/settings/userSettings').then((userSettings) => {
-    const savedDuration = userSettings.crossfadeDuration();
-    if (!savedDuration) userSettings.crossfadeDuration(0.5);
-});
 
 const dbBoost = 2;
 
@@ -212,11 +208,15 @@ class HtmlAudioPlayer {
                     const gainValue = Math.pow(10, normalizationGain / 20);
 
                     // Set the final gain value
-                    self.gainNode.gain.exponentialRampToValueAtTime(
+                    self.gainNode.gain.linearRampToValueAtTime(
                         gainValue,
-                        window.myAudioContext.currentTime + 0.1);
+                        xDuration.sustain
+                    );
                 } else {
-                    self.gainNode.gain.value = 1;
+                    self.gainNode.gain.linearRampToValueAtTime(
+                        1,
+                        xDuration.sustain
+                    );
                 }
             }).catch((err) => {
                 console.error('Failed to add/change gainNode', err);
@@ -369,9 +369,10 @@ class HtmlAudioPlayer {
             const disposeElement = document.getElementById('crossFadeMediaElement');
             if (disposeElement) {
                 destroyWaveSurferInstance();
-                // disposeElement.pause();
                 disposeElement.remove();
             }
+
+            prevNextDisable(true);
 
             const elem = document.getElementById('currentMediaElement');
             elem.classList.remove('mediaPlayerAudio');
@@ -395,17 +396,15 @@ class HtmlAudioPlayer {
             }, xDuration.sustain * 1000);
 
             setTimeout(() => {
-                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.01);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
                 setTimeout(() => {
                     // Clean up and destroy the xfade MediaElement here
                     gainNode.disconnect();
                     gainNode = null;
                     elem.remove();
                     prevNextDisable(false);
-                }, 10);
+                }, 1015);
             }, xDuration.fadeOut * 1000);
-
-            prevNextDisable(true);
 
             return createMediaElement();
         }
@@ -456,23 +455,25 @@ class HtmlAudioPlayer {
 
                 if (!masterAudioOutput.mixerNode) {
                     masterAudioOutput.mixerNode = audioCtx.createGain();
-                    masterAudioOutput.mixerNode.gain.value = 0;
                     masterAudioOutput.mixerNode.connect(audioCtx.destination);
-                    masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
-                        (volume / 100) * masterAudioOutput.makeupGain, 0.2);
+                    masterAudioOutput.mixerNode.gain.value = (volume / 100) * masterAudioOutput.makeupGain;
                 }
 
                 // For the visualizer. The first one is for non-xfaded, the second one is for xfaded
                 const source = audioCtx.createMediaElementSource(elem);
 
                 const gainNode = audioCtx.createGain();
-                gainNode.gain.setValueAtTime(0, window.myAudioContext.currentTime);
+                gainNode.gain.value = 0;
 
                 source.connect(gainNode);
                 gainNode.connect(masterAudioOutput.mixerNode);
 
                 if (elem && elem.id === 'currentMediaElement') {
                     self.gainNode = gainNode;
+                    import('../../scripts/settings/userSettings').then((userSettings) => {
+                        const savedDuration = userSettings.crossfadeDuration();
+                        setXDuration(savedDuration);
+                    });
                 }
 
                 return { gainNode: gainNode, audioCtx: audioCtx };
@@ -762,6 +763,7 @@ class HtmlAudioPlayer {
     setMute(mute) {
         const audioCtx = window.myAudioContext;
         if (masterAudioOutput.mixerNode && audioCtx) {
+            masterAudioOutput.mixerNode.gain.value = 0;
             masterAudioOutput.mixerNode.gain.cancelScheduledValues(audioCtx.currentTime);
             if (mute) {
                 masterAudioOutput.mixerNode.gain.linearRampToValueAtTime(
