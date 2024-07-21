@@ -17,7 +17,7 @@ export function setXDuration(crossfadeDuration) {
     if (crossfadeDuration < 0.51) {
         xDuration.enabled = true;
         xDuration.fadeOut = crossfadeDuration * 2;
-        xDuration.fadeIn = 0.01;
+        xDuration.disableFade = true;
         xDuration.sustain = crossfadeDuration;
 
         return;
@@ -26,8 +26,8 @@ export function setXDuration(crossfadeDuration) {
     xDuration.enabled = true;
 
     xDuration.fadeOut = crossfadeDuration * 2.222;
-    xDuration.fadeIn = Math.max(crossfadeDuration / 50, 0.01);
-    xDuration.sustain = crossfadeDuration - xDuration.fadeIn;
+    xDuration.disableFade = false;
+    xDuration.sustain = crossfadeDuration;
 }
 
 export const xDuration = {
@@ -380,7 +380,7 @@ class HtmlAudioPlayer {
             self.gainNode = null;
             const audioCtx = window.myAudioContext;
 
-            if (xDuration.fadeIn > 0.01) {
+            if (!xDuration.disableFade) {
                 // Schedule the fadeout crossfade curve
                 gainNode.gain.linearRampToValueAtTime(gainNode.gain.value, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + xDuration.fadeOut);
@@ -388,22 +388,21 @@ class HtmlAudioPlayer {
 
             setTimeout(() => {
                 // This destroys the wavesurfer on the fade out track when the new track starts
-                unBindEvents(elem);
                 originalPause = elem.pause;
+                unBindEvents(elem);
                 destroyWaveSurferInstance();
-            }, (xDuration.sustain + xDuration.fadeIn) * 1000);
+            }, xDuration.sustain * 1000);
 
             setTimeout(() => {
                 gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.01);
                 setTimeout(() => {
                     // Clean up and destroy the xfade MediaElement here
-                    elem.pause();
                     gainNode.disconnect();
                     gainNode = null;
                     elem.remove();
                     prevNextDisable(false);
                 }, 10);
-            }, (xDuration.fadeOut) * 1000);
+            }, xDuration.fadeOut * 1000);
 
             prevNextDisable(true);
 

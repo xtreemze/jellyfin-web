@@ -3037,12 +3037,12 @@ class PlaybackManager {
                     player.nextTrack();
 
                     if (crossfading) {
-                        setTimeout(() => {
-                            // self.seekPercent(0, player);
-                            window.playback.unpause();
-                            window.playback.unpause(player);
-                            crossfading = false;
-                        }, xDuration.fadeIn * 1000 * immediateOverride);
+                        // setTimeout(() => {
+                        // self.seekPercent(0, player);
+                        // window.playback.unpause();
+                        // window.playback.unpause(player);
+                        crossfading = false;
+                        // }, xDuration.fadeIn * 1000 * immediateOverride);
                     }
                 }, xDuration.sustain * 1000 * immediateOverride);
                 return;
@@ -3059,12 +3059,12 @@ class PlaybackManager {
                     }, getPreviousSource(player));
 
                     if (crossfading) {
-                        setTimeout(() => {
-                            // self.seekPercent(0, player);
-                            window.playback.unpause();
-                            window.playback.unpause(player);
-                            crossfading = false;
-                        }, xDuration.fadeIn * 1000 * immediateOverride);
+                        // setTimeout(() => {
+                        // self.seekPercent(0, player);
+                        // window.playback.unpause();
+                        // window.playback.unpause(player);
+                        crossfading = false;
+                        // }, xDuration.fadeIn * 1000 * immediateOverride);
                     }
                 }, xDuration.sustain * 1000 * immediateOverride);
             } else {
@@ -3484,7 +3484,7 @@ class PlaybackManager {
 
         function timeRunningOut(player) {
             if (!webAudioSupported || !xDuration.enabled || player.currentTime() < xDuration.fadeOut * 1000) return false;
-            return (player.duration() - player.currentTime()) < ((xDuration.fadeOut + xDuration.fadeIn) * 1000);
+            return (player.duration() - player.currentTime()) < ((xDuration.fadeOut) * 1000);
         }
 
         function onPlaybackTimeUpdate() {
