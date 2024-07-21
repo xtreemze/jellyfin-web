@@ -91,6 +91,7 @@
 - [Carlos Velasco](https://github.com/xtreemze)
 - [Chaitanya Shahare](https://github.com/Chaitanya-Shahare)
 - [Venkat Karasani](https://github.com/venkat-karasani)
+- [Connor Smith](https://github.com/ConnorS1110)
 
 ## Emby Contributors
 

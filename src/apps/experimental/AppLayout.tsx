@@ -31,7 +31,7 @@ export const Component = () => {
     }, [isDrawerActive, setIsDrawerActive]);
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ position: 'relative', display: 'flex' }}>
             <ElevationScroll elevate={false}>
                 <AppBar
                     position='fixed'
