@@ -13,7 +13,7 @@ import AppToolbar from './components/AppToolbar';
 import AppDrawer, { isDrawerPath } from './components/drawers/AppDrawer';
 
 import './AppOverrides.scss';
-import Visualizer from 'components/visualizer/Visualizer';
+import Visualizer from 'components/visualizer/FrequencyAnalyzer';
 import * as userSettings from '../../scripts/settings/userSettings';
 
 export const Component = () => {

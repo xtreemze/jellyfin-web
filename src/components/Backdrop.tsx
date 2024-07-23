@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import React, { useEffect } from 'react';
-import Visualizer from './visualizer/Visualizer';
+import Visualizer from './visualizer/FrequencyAnalyzer';
 import * as userSettings from '../scripts/settings/userSettings';
 
 const Backdrop = () => {
