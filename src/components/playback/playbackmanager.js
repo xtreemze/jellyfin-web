@@ -21,7 +21,7 @@ import { MediaType } from '@jellyfin/sdk/lib/generated-client/models/media-type'
 import { MediaError } from 'types/mediaError';
 import { getMediaError } from 'utils/mediaError';
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
-import { xDuration } from 'plugins/htmlAudioPlayer/plugin.js';
+import { hijackMediaElementForCrossfade, xDuration } from 'components/audioEngine/crossfader.logic';
 
 const UNLIMITED_ITEMS = -1;
 
@@ -2021,7 +2021,7 @@ class PlaybackManager {
         self.getItemsForPlayback = getItemsForPlayback;
 
         self.play = function (options) {
-            window.crossFade();
+            hijackMediaElementForCrossfade();
 
             normalizePlayOptions(options);
 
@@ -2919,7 +2919,7 @@ class PlaybackManager {
         };
 
         self.setCurrentPlaylistItem = function (playlistItemId, player) {
-            window.crossFade();
+            hijackMediaElementForCrossfade();
 
             player = player || self._currentPlayer;
             if (player && !enableLocalPlaylistManagement(player)) {
@@ -3030,7 +3030,7 @@ class PlaybackManager {
         const webAudioSupported = ('AudioContext' in window || 'webkitAudioContext' in window);
 
         self.nextTrack = function (player) {
-            window.crossFade();
+            hijackMediaElementForCrossfade();
 
             player = player || self._currentPlayer;
 
@@ -3463,8 +3463,10 @@ class PlaybackManager {
         }
 
         function timeRunningOut(player) {
-            if (!webAudioSupported || !xDuration.enabled || player.currentTime() < xDuration.fadeOut * 1000) return false;
-            return (player.duration() - player.currentTime()) < ((xDuration.fadeOut) * 1000);
+            const currentTime = player.currentTime();
+
+            if (!webAudioSupported || !xDuration.enabled || xDuration.busy || currentTime < xDuration.fadeOut * 1001) return false;
+            return (player.duration() - currentTime) <= (xDuration.fadeOut * 1000);
         }
 
         function onPlaybackTimeUpdate() {

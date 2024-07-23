@@ -1,6 +1,6 @@
 import Events from '../../utils/events.ts';
 import { toBoolean } from '../../utils/string.ts';
-import { setXDuration } from 'plugins/htmlAudioPlayer/plugin';
+import { setXDuration } from 'components/audioEngine/crossfader.logic';
 import browser from '../browser';
 import appSettings from './appSettings';
 
@@ -183,7 +183,7 @@ export class UserSettings {
             return this.set('crossfadeDuration', val.toString(), true);
         }
 
-        return parseFloat(this.get('crossfadeDuration', true) || 0.5);
+        return parseFloat(this.get('crossfadeDuration', true) || 0);
     }
 
     /**

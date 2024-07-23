@@ -3,7 +3,6 @@ import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import MiniMapPlugin from 'wavesurfer.js/dist/plugins/minimap';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
-import { disableControl } from 'plugins/htmlAudioPlayer/plugin';
 import { scrollToActivePlaylistItem, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 
 type WaveSurferLegacy = {
@@ -200,8 +199,8 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
 
     // Improves initial display when there's a match
     const legacy = {
-        peaks: waveSurferInstance?.exportPeaks(),
-        duration: waveSurferInstance?.getDuration(),
+        peaks: savedPeaks,
+        duration: savedDuration,
         isPlaying: waveSurferInstance?.isPlaying(),
         currentTime: waveSurferInstance?.getCurrentTime(),
         scrollPosition: waveSurferInstance?.getScroll()
@@ -210,9 +209,9 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         // Cleans up multiple existing instances
         const victim = purgatory.shift();
         if (victim) {
-            disableControl(true);
+            // disableControl(true);
             victim.destroy();
-            disableControl(false);
+            // disableControl(false);
         }
         purgatory.push(waveSurferInstance);
     }
