@@ -145,7 +145,7 @@ const waveSurferChannelStyle = {
         cursorWidth: 18,
         autoScroll: false,
         autoCenter: false,
-        sampleRate: 3000,
+        sampleRate: 6000,
         minPxPerSec: 1,
         interact: true,
         dragToSeek: false,

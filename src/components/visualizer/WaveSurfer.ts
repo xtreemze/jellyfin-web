@@ -4,9 +4,10 @@ import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import MiniMapPlugin from 'wavesurfer.js/dist/plugins/minimap';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
 import { disableControl } from 'plugins/htmlAudioPlayer/plugin';
+import { scrollToActivePlaylistItem, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 
 type WaveSurferLegacy = {
-    peaks?: number[][]
+    peaks: number[][]
     duration: number
     isPlaying: boolean
     currentTime: number
@@ -15,88 +16,36 @@ type WaveSurferLegacy = {
 
 let waveSurferInstance: WaveSurfer;
 
-let activePlaylistItem: HTMLElement | null;
 let inputSurfer: HTMLElement | null;
 let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
 let mediaElement: HTMLMediaElement | undefined;
 
-let savedDuration = 0;
-
 const maxZoom = waveSurferPluginOptions.zoomOptions.maxZoom;
 const minZoom = 1;
 const doubleChannelZoom = 130;
 const wholeSongZoom = 70;
-let currentZoom = 100;
+let currentZoom = 105;
 
 let mobileTouch = false;
 
+let savedDuration = 0;
 let savedPeaks: number[][];
 
 let initialDistance: number | null = null;
 const MIN_DELTA = waveSurferPluginOptions.zoomOptions.deltaThreshold; // Define a threshold for minimal significant distance change
-interface IEmby {
-    Page: {currentRouteInfo: { path: string }};
-}
-
-declare let window: Window & {Emby: IEmby, crossFade: ()=> void};
 
 export const purgatory: WaveSurfer[] = [];
-
-export function isNowPlaying() {
-    return (window?.Emby?.Page?.currentRouteInfo.path === '/queue');
-}
 
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
     simpleSlider = document.getElementById('simpleSlider');
     barSurfer = document.getElementById('barSurfer');
     mediaElement = document.getElementById('currentMediaElement') as HTMLMediaElement || null;
-
-    const activePlaylistItems = document.getElementsByClassName('playlistIndexIndicatorImage');
-    if (activePlaylistItems) activePlaylistItem = activePlaylistItems[0] as HTMLElement;
-}
-
-function scrollPageToTop() {
-    requestAnimationFrame(() => {
-        document.body.scrollIntoView({
-            block: 'start',
-            inline: 'nearest',
-            behavior: 'smooth'
-        });
-    });
 }
 
 function isNewSong(newSongDuration: number) {
     return (newSongDuration !== Math.floor(savedDuration * 10000000));
-}
-
-const smoothScrollSettings = {
-    block: 'center',
-    inline: 'nearest',
-    behavior: 'smooth'
-} as ScrollIntoViewOptions;
-
-let scrollTimeout: number | NodeJS.Timeout | undefined;
-let scrollTimeout2: number | NodeJS.Timeout | undefined;
-
-function scrollToActivePlaylistItem() {
-    clearTimeout(scrollTimeout);
-    clearTimeout(scrollTimeout2);
-    if (!isNowPlaying()) return;
-    scrollTimeout = setTimeout(()=>{
-        findElements();
-
-        if (activePlaylistItem) {
-            if (inputSurfer) inputSurfer.scrollIntoView(smoothScrollSettings);
-
-            activePlaylistItem.scrollIntoView(smoothScrollSettings);
-
-            scrollTimeout2 = setTimeout(()=>{
-                document.body.scrollIntoView(smoothScrollSettings);
-            }, 1200);
-        }
-    }, 300);
 }
 
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
@@ -114,16 +63,13 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         return;
     }
 
-    scrollToActivePlaylistItem();
-
     const newSong = isNewSong(newSongDuration);
-    console.debug('wavesurfer created. New song:', newSong, newSongDuration, Math.floor(savedDuration * 10000000));
 
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
         media: mediaElement,
         container: container,
-        peaks: newSong ? undefined : savedPeaks || legacy?.peaks,
-        duration: newSong ? undefined : legacy?.duration
+        peaks: newSong ? undefined : savedPeaks,
+        duration: newSong ? undefined : savedDuration
     });
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
@@ -141,7 +87,6 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
             return;
         }
-        // requestAnimationFrame(() => {
         initializeStyle(currentZoom);
         waveSurferInstance.zoom(currentZoom);
         waveSurferInstance.registerPlugin(
@@ -158,7 +103,6 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             inputSurfer.addEventListener('touchmove', onTouchMove, { passive: true });
             inputSurfer.addEventListener('touchend', onTouchEnd, { passive: true });
         }
-        // });s
     });
 
     waveSurferInstance.once('destroy', () => {
@@ -193,7 +137,9 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     function onTouchStart(e: TouchEvent): void {
         mobileTouch = true;
-        startTransition();
+
+        triggerSongInfoDisplay();
+
         if (e.touches.length === 1) {
             waveSurferInstance.setOptions({
                 autoCenter: false,
@@ -246,21 +192,22 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         initializeStyle(currentZoom);
 
         mobileTouch = false;
-        endTransition();
     }
 }
 
 function destroyWaveSurferInstance(): WaveSurferLegacy {
     if (!waveSurferInstance) resetVisibility();
 
+    // Improves initial display when there's a match
     const legacy = {
-        // peaks: savedPeaks,
-        duration: savedDuration,
+        peaks: waveSurferInstance?.exportPeaks(),
+        duration: waveSurferInstance?.getDuration(),
         isPlaying: waveSurferInstance?.isPlaying(),
         currentTime: waveSurferInstance?.getCurrentTime(),
         scrollPosition: waveSurferInstance?.getScroll()
     };
     if (waveSurferInstance) {
+        // Cleans up multiple existing instances
         const victim = purgatory.shift();
         if (victim) {
             disableControl(true);
@@ -274,27 +221,9 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         mediaElement?.play();
     }
 
-    if (isNowPlaying()) {
-        startTransition();
+    triggerSongInfoDisplay();
 
-        setTimeout(()=>{
-            endTransition();
-        }, 5000);
-    }
     return legacy;
-}
-
-function startTransition() {
-    const classList = document.body.classList;
-
-    scrollToActivePlaylistItem();
-
-    classList.add('transition');
-}
-
-function endTransition() {
-    const classList = document.body.classList;
-    classList.remove('transition');
 }
 
 function setVisibility() {
@@ -309,4 +238,4 @@ function resetVisibility() {
     if (barSurfer) barSurfer.hidden = true;
 }
 
-export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom, scrollToActivePlaylistItem, scrollPageToTop };
+export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom, scrollToActivePlaylistItem };

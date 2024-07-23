@@ -213,6 +213,8 @@ const config = {
                     path.resolve(__dirname, 'node_modules/swiper'),
                     path.resolve(__dirname, 'node_modules/usehooks-ts'),
                     path.resolve(__dirname, 'node_modules/wavesurfer.js'),
+                    path.resolve(__dirname, 'node_modules/butterchurn'),
+                    path.resolve(__dirname, 'node_modules/butterchurn-presets'),
                     path.resolve(__dirname, 'src')
                 ],
                 use: [{

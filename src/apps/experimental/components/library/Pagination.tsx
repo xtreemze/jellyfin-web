@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import globalize from 'scripts/globalize';
 import * as userSettings from 'scripts/settings/userSettings';
 import { LibraryViewSettings } from 'types/library';
-import { scrollPageToTop } from 'components/visualizer/WaveSurfer';
+import { scrollPageToTop } from 'components/sitbackMode/sitback.logic';
 
 interface PaginationProps {
     libraryViewSettings: LibraryViewSettings;
@@ -32,21 +32,21 @@ const Pagination: FC<PaginationProps> = ({
     const showControls = limit > 0 && limit < totalRecordCount;
 
     const onNextPageClick = useCallback(() => {
+        scrollPageToTop();
         const newIndex = startIndex + limit;
         setLibraryViewSettings((prevState) => ({
             ...prevState,
             StartIndex: newIndex
         }));
-        scrollPageToTop();
     }, [limit, setLibraryViewSettings, startIndex]);
 
     const onPreviousPageClick = useCallback(() => {
+        scrollPageToTop();
         const newIndex = Math.max(0, startIndex - limit);
         setLibraryViewSettings((prevState) => ({
             ...prevState,
             StartIndex: newIndex
         }));
-        scrollPageToTop();
     }, [limit, setLibraryViewSettings, startIndex]);
 
     return (
