@@ -1,4 +1,3 @@
-
 export const visualizerSettings = {
     butterchurn: {
         enabled: false,

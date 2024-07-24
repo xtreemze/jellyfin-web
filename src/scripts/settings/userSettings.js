@@ -190,7 +190,7 @@ export class UserSettings {
     /**
      * Get or set 'Visualizer' state.
      * @param {string|undefined} val - Flag to set Visualizer state
-     * @return {string} crossfade duration in seconds
+     * @return {typeof visualizerSettings} parsed visualizer settings object
      */
     visualizerConfiguration(val) {
         if (val !== undefined) {
@@ -198,7 +198,7 @@ export class UserSettings {
             return this.set('visualizerConfiguration', getVisualizerSettings(), true);
         }
 
-        return parseFloat(this.get('visualizerConfiguration', true) || getVisualizerSettings());
+        return JSON.parse(this.get('visualizerConfiguration', true)) || getVisualizerSettings();
     }
 
     /**
