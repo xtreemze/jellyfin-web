@@ -16,6 +16,10 @@ div.nowPlayingBarTop {
     padding: 1rem 1rem;
 }
 
+html.layout-desktop, .scrollY {
+    scrollbar-width: none;
+}
+
 header {
     padding-top: env(safe-area-inset-top);
 }
