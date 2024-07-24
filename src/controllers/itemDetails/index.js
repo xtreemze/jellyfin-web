@@ -534,7 +534,9 @@ function reloadFromItem(instance, page, params, item, user) {
     // Start rendering the artwork first
     renderImage(page, item, apiClient);
     // Save some screen real estate in TV mode
-    renderLogo(page, item, apiClient);
+    if (!layoutManager.tv) {
+        renderLogo(page, item, apiClient);
+    }
     // Render the mobile header backdrop
     if (layoutManager.mobile) {
         renderHeaderBackdrop(page, item, apiClient);

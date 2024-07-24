@@ -24,13 +24,13 @@ function fade(instance, elem, startingVolume) {
             setTimeout(() => {
                 instance._isFadingOut = false;
                 resolve();
-            }, (xDuration.fadeOut + 3) * 1000);
+            }, xDuration.fadeOut * 1000);
         });
     }
 
     // Need to record the starting volume on each pass rather than querying elem.volume
     // This is due to iOS safari not allowing volume changes and always returning the system volume value
-    const newVolume = Math.max(0, startingVolume - 0.01);
+    const newVolume = Math.max(0, startingVolume - 0.15);
     console.debug('fading volume to ' + newVolume);
     elem.volume = newVolume;
 
@@ -43,7 +43,7 @@ function fade(instance, elem, startingVolume) {
         cancelFadeTimeout();
         fadeTimeout = setTimeout(function () {
             fade(instance, elem, newVolume).then(resolve, reject);
-        }, 20);
+        }, 100);
     });
 }
 
@@ -58,14 +58,14 @@ function cancelFadeTimeout() {
 function supportsFade() {
     // Not working on tizen.
     // We could possibly enable on other tv's, but all smart tv browsers tend to be pretty primitive
-    return true;
+    return !browser.tv;
 }
 
 function requireHlsPlayer(callback) {
     import('hls.js/dist/hls.js').then(({ default: hls }) => {
         hls.DefaultConfig.lowLatencyMode = false;
         hls.DefaultConfig.backBufferLength = Infinity;
-        hls.DefaultConfig.liveBackBufferLength = 1000 * 60 * 12;
+        hls.DefaultConfig.liveBackBufferLength = 90;
         window.Hls = hls;
         callback();
     });
@@ -188,6 +188,7 @@ class HtmlAudioPlayer {
                         });
                         hls.loadSource(val);
                         hls.attachMedia(elem);
+
                         htmlMediaHelper.bindEventsToHlsPlayer(self, hls, elem, onError, resolve, reject);
 
                         self._hlsPlayer = hls;
@@ -286,7 +287,6 @@ class HtmlAudioPlayer {
                 elem.classList.add('mediaPlayerAudio');
                 elem.id = 'currentMediaElement';
                 elem.classList.add('hide');
-                elem.autoplay = false;
 
                 document.body.appendChild(elem);
             }
@@ -657,11 +657,11 @@ class HtmlAudioPlayer {
         if (mediaElement) {
             if (document.AirPlayEnabled) {
                 if (isEnabled) {
-                    mediaElement.requestAirPlay().catch(function (err) {
+                    mediaElement.requestAirPlay().catch(function(err) {
                         console.error('Error requesting AirPlay', err);
                     });
                 } else {
-                    document.exitAirPLay().catch(function (err) {
+                    document.exitAirPLay().catch(function(err) {
                         console.error('Error exiting AirPlay', err);
                     });
                 }

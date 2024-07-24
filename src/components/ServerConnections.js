@@ -9,7 +9,7 @@ import appSettings from '../scripts/settings/appSettings';
 
 const normalizeImageOptions = options => {
     if (!options.quality && (options.maxWidth || options.width || options.maxHeight || options.height || options.fillWidth || options.fillHeight)) {
-        options.quality = 96;
+        options.quality = 90;
     }
 };
 

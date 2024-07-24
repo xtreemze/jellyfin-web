@@ -169,7 +169,7 @@ const surferOptions = {
     dragToSeek: false,
     interact: true,
     normalize: false,
-    autoplay: false,
+    autoplay: true,
     // backend: 'WebAudio',
     backend: 'MediaElement',
     hideScrollbar: true,

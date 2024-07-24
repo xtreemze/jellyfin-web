@@ -35,7 +35,8 @@ export const xDuration = {
 };
 
 export function hijackMediaElementForCrossfade() {
-    console.log('###', xDuration);
+    // @ts-ignore
+    window.prompt(window.playback.getPlayerState(window.playback.getPlayers()[1]));
     xDuration.t0 = performance.now(); // Record the start time
 
     const hijackedPlayer = document.getElementById('currentMediaElement') as HTMLMediaElement;
@@ -128,6 +129,11 @@ let unbindCallback = () => {
 export function initializeMasterAudio(unbind: any) {
     unbindCallback = unbind;
 
+    const webAudioSupported = ('AudioContext' in window || 'webkitAudioContext' in window);
+
+    if (!webAudioSupported) {
+        throw new Error('WebAudio not supported');
+    }
     // eslint-disable-next-line compat/compat, @typescript-eslint/no-explicit-any
     const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
     const audioCtx = masterAudioOutput.audioContext || new AudioContext();
@@ -145,3 +151,11 @@ export function initializeMasterAudio(unbind: any) {
             .setValueAtTime((masterAudioOutput.volume / 100) * masterAudioOutput.makeupGain, audioCtx.currentTime);
     }
 }
+
+export function timeRunningOut(player: any) {
+    const currentTime = player.currentTime();
+
+    if (!masterAudioOutput.audioContext || !xDuration.enabled || xDuration.busy || currentTime < xDuration.fadeOut * 1001) return false;
+    return (player.duration() - currentTime) <= (xDuration.fadeOut * 1000);
+}
+

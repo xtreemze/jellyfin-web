@@ -21,11 +21,9 @@ import { MediaType } from '@jellyfin/sdk/lib/generated-client/models/media-type'
 import { MediaError } from 'types/mediaError';
 import { getMediaError } from 'utils/mediaError';
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
-import { hijackMediaElementForCrossfade, xDuration } from 'components/audioEngine/crossfader.logic';
+import { hijackMediaElementForCrossfade, timeRunningOut, xDuration } from 'components/audioEngine/crossfader.logic';
 
 const UNLIMITED_ITEMS = -1;
-
-export const crossfading = false;
 
 function enableLocalPlaylistManagement(player) {
     if (player.getPlaylist) {
@@ -564,7 +562,7 @@ function isHostReachable(mediaSource, apiClient) {
         if (endpointInfo.IsInNetwork) {
             if (!endpointInfo.IsLocal) {
                 const path = (mediaSource.Path || '').toLowerCase();
-                if (path.indexOf('localhost') !== -1 || path.indexOf('127.0.0.1') !== -1 || path.indexOf('192.168.') !== -1) {
+                if (path.indexOf('localhost') !== -1 || path.indexOf('127.0.0.1') !== -1) {
                     // This will only work if the app is on the same machine as the server
                     return Promise.resolve(false);
                 }
@@ -2050,6 +2048,7 @@ class PlaybackManager {
                 if (!options.serverId) {
                     throw new Error('serverId required!');
                 }
+
                 return getItemsForPlayback(options.serverId, {
                     Ids: options.ids.join(',')
                 }).then(function (result) {
@@ -2257,14 +2256,14 @@ class PlaybackManager {
                 introPlayOptions.items = items;
                 introPlayOptions.startIndex = playStartIndex;
 
-                setTimeout(()=>{
+                setTimeout(() => {
                     return playInternal(items[playStartIndex], introPlayOptions, function () {
                         self._playQueueManager.setPlaylist(items);
 
                         setPlaylistState(items[playStartIndex].PlaylistItemId, playStartIndex);
                         loading.hide();
                     });
-                }, xDuration.sustain * 1000);
+                }, Math.max(xDuration.sustain * 1000), 5);
             });
         }
 
@@ -2309,7 +2308,7 @@ class PlaybackManager {
                     setTimeout(() => {
                         return playAfterBitrateDetect(bitrate, item, playOptions, onPlaybackStartedFn, prevSource)
                             .catch(onPlaybackRejection);
-                    }, Math.max(0, xDuration.sustain * 1000 - elapsedTime));
+                    }, Math.max(5, xDuration.sustain * 1000 - elapsedTime));
                 })
                 .catch(() => {
                     if (playOptions.fullscreen) {
@@ -3027,28 +3026,24 @@ class PlaybackManager {
             };
         }
 
-        const webAudioSupported = ('AudioContext' in window || 'webkitAudioContext' in window);
-
         self.nextTrack = function (player) {
             hijackMediaElementForCrossfade();
 
             player = player || self._currentPlayer;
-
             if (player && !enableLocalPlaylistManagement(player)) {
-                player.nextTrack();
-                return;
+                return player.nextTrack();
             }
 
             const newItemInfo = self._playQueueManager.getNextItemInfo();
 
             if (newItemInfo) {
                 console.debug('playing next track');
+
                 const newItemPlayOptions = newItemInfo.item.playOptions || getDefaultPlayOptions();
+
                 playInternal(newItemInfo.item, newItemPlayOptions, function () {
                     setPlaylistState(newItemInfo.item.PlaylistItemId, newItemInfo.index);
                 }, getPreviousSource(player));
-            } else {
-                player.stop();
             }
         };
 
@@ -3460,13 +3455,6 @@ class PlaybackManager {
                 Events.off(player, 'stopped', onPlaybackStopped);
                 Events.on(player, 'stopped', onPlaybackStopped);
             }
-        }
-
-        function timeRunningOut(player) {
-            const currentTime = player.currentTime();
-
-            if (!webAudioSupported || !xDuration.enabled || xDuration.busy || currentTime < xDuration.fadeOut * 1001) return false;
-            return (player.duration() - currentTime) <= (xDuration.fadeOut * 1000);
         }
 
         function onPlaybackTimeUpdate() {

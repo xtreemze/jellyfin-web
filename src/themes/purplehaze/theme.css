@@ -594,7 +594,7 @@ a[data-role=button] {
 
 .layout-desktop,
 .scrollY {
-    scrollbar-width: none;
+    scrollbar-width: thin;
     scrollbar-color: #888 rgba(59, 59, 59, 0.5);
 }
 

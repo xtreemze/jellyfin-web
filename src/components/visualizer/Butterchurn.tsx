@@ -27,8 +27,8 @@ const ButterchurnVisualizer: React.FC<ButterchurnVisualizerProps> = ({
         const visualizer = butterchurn.createVisualizer(audioContext, canvasRef.current, {
             width: window.innerWidth,
             height: window.innerHeight,
-            pixelRatio: window.devicePixelRatio / 4 || 1,
-            textureRatio: (1 / 4)
+            pixelRatio: window.devicePixelRatio / 8 || 0.25,
+            textureRatio: (1 / 8)
         });
 
         // Connect your audio source (e.g., mixerNode) to the visualizer

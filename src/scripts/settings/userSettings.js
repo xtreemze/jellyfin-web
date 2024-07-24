@@ -248,7 +248,7 @@ export class UserSettings {
             return this.set('fastFadein', val.toString(), false);
         }
 
-        return toBoolean(this.get('fastFadein', false), false);
+        return toBoolean(this.get('fastFadein', false), true);
     }
 
     /**
@@ -261,7 +261,7 @@ export class UserSettings {
             return this.set('blurhash', val.toString(), false);
         }
 
-        return toBoolean(this.get('blurhash', false), false);
+        return toBoolean(this.get('blurhash', false), true);
     }
 
     /**
@@ -287,7 +287,7 @@ export class UserSettings {
             return this.set('enableBackdrops', val.toString(), false);
         }
 
-        return toBoolean(this.get('enableBackdrops', false), true);
+        return toBoolean(this.get('enableBackdrops', false), false);
     }
 
     /**

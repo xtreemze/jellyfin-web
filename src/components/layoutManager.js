@@ -18,10 +18,10 @@ class LayoutManager {
     tv = false;
     mobile = false;
     desktop = false;
-    experimental = true;
+    experimental = false;
 
     setLayout(layout, save) {
-        if (layout === 'auto') {
+        if (!layout || layout === 'auto') {
             this.autoLayout();
 
             if (save !== false) {
