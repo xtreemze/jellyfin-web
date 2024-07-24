@@ -13,14 +13,12 @@ import AppToolbar from './components/AppToolbar';
 import AppDrawer, { isDrawerPath } from './components/drawers/AppDrawer';
 
 import './AppOverrides.scss';
-import * as userSettings from '../../scripts/settings/userSettings';
 import Visualizers from 'components/visualizer/Visualizers';
 
 export const Component = () => {
     const [ isDrawerActive, setIsDrawerActive ] = useState(false);
     const { user } = useApi();
     const location = useLocation();
-    const enableVisualizer = userSettings.enableVisualizer();
 
     const isMediumScreen = useMediaQuery((t: Theme) => t.breakpoints.up('md'));
     const isDrawerAvailable = isDrawerPath(location.pathname) && Boolean(user);
@@ -66,10 +64,10 @@ export const Component = () => {
                     flexGrow: 1
                 }}
             >
+                <Visualizers />
                 <AppBody>
                     <Outlet />
                 </AppBody>
-                {enableVisualizer && (<Visualizers />)}
             </Box>
         </Box>
     );

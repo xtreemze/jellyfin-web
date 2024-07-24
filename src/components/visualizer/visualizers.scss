@@ -172,20 +172,28 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     padding-bottom: 12rem !important;
 }
 
+.backdropContainer {
+    z-index: -2;
+}
+
+.backdropContainer {
+    z-index: -3;
+}
+
 body.transition canvas#frequencyAnalyzer,
 body.transition canvas#butterchurn,
 canvas#butterchurn,
 canvas#frequencyAnalyzer {
     position: fixed;
-    z-index: -1;
     opacity: 0.6;
     mix-blend-mode: difference;
     transition: opacity 1.4s ease-in-out;
+    z-index: 0;
 }
 
 body:not(.transition).mouseIdle canvas#butterchurn,
 body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
-    opacity: 0.75;
+    opacity: 0.2;
     mix-blend-mode: normal;
     transition: opacity 6s ease-in-out;
     transition-delay: 20s;
@@ -292,7 +300,7 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
 
     .backgroundContainer.withBackdrop,
     body.transition .backgroundContainer.withBackdrop {
-        opacity: 0.9;
+        opacity: 0.7;
         transition: opacity 1.4s ease-in-out;
     }
 

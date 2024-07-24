@@ -15,6 +15,7 @@ import { useLegacyRouterSync } from 'hooks/useLegacyRouterSync';
 import { DASHBOARD_APP_PATHS, DASHBOARD_APP_ROUTES } from 'apps/dashboard/routes/routes';
 import UserThemeProvider from 'themes/UserThemeProvider';
 import { STABLE_APP_ROUTES } from 'apps/stable/routes/routes';
+import Visualizers from 'components/visualizer/Visualizers';
 
 const layoutMode = localStorage.getItem('layout');
 const isExperimentalLayout = layoutMode === 'experimental';
@@ -29,7 +30,7 @@ const router = createHashRouter([
     }
 ]);
 
-export default function RootAppRouter({ history }: Readonly<{ history: History}>) {
+export default function RootAppRouter({ history }: Readonly<{ history: History }>) {
     useLegacyRouterSync({ router, history });
 
     return <RouterProvider router={router} />;
@@ -46,6 +47,7 @@ function RootAppLayout() {
 
     return (
         <UserThemeProvider>
+            <Visualizers />
             <Backdrop />
             <AppHeader isHidden={isExperimentalLayout || isNewLayoutPath} />
 

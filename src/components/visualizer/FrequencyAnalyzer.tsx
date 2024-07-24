@@ -14,7 +14,7 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
     audioContext = masterAudioOutput.audioContext,
     mixerNode = masterAudioOutput.mixerNode,
     fftSize = 16384,
-    smoothingTimeConstant = 0.3,
+    smoothingTimeConstant = 0,
     minDecibels = -102,
     maxDecibels = 102
 }) => {
@@ -102,8 +102,6 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
 
         return () => window.removeEventListener('resize', resizeCanvas);
     }, []);
-
-    if (!audioContext || !mixerNode) return;
 
     return (
         <canvas

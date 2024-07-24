@@ -34,6 +34,9 @@ export const xDuration = {
 };
 
 export function hijackMediaElementForCrossfade() {
+    // @ts-ignore
+    console.log('###', window.playback.getPlayerState(window.playback.getPlayers()[1]));
+
     xDuration.t0 = performance.now(); // Record the start time
 
     const hijackedPlayer = document.getElementById('currentMediaElement') as HTMLMediaElement;
@@ -78,12 +81,12 @@ export function hijackMediaElementForCrossfade() {
     }, xDuration.sustain * 990);
 
     setTimeout(() => {
+        prevNextDisable(false);
         const xfadeGainNode = audioNodeBus.pop();
 
         if (!masterAudioOutput.audioContext || !xfadeGainNode) return;
         xfadeGainNode.gain.linearRampToValueAtTime(0, masterAudioOutput.audioContext.currentTime + 1);
         setTimeout(() => {
-            prevNextDisable(false);
             // Clean up and destroy the xfade MediaElement here
             xfadeGainNode.disconnect();
             hijackedPlayer.remove();
