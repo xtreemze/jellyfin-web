@@ -172,6 +172,10 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     padding-bottom: 12rem !important;
 }
 
+.backgroundContainer{
+    z-index: -1;
+}
+
 .backdropContainer {
     z-index: -2;
 }
@@ -185,7 +189,7 @@ body.transition canvas#butterchurn,
 canvas#butterchurn,
 canvas#frequencyAnalyzer {
     position: fixed;
-    opacity: 0.6;
+    opacity: 0.2;
     mix-blend-mode: difference;
     transition: opacity 1.4s ease-in-out;
     z-index: 0;
@@ -193,7 +197,7 @@ canvas#frequencyAnalyzer {
 
 body:not(.transition).mouseIdle canvas#butterchurn,
 body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
-    opacity: 0.2;
+    opacity: 0.6;
     mix-blend-mode: normal;
     transition: opacity 6s ease-in-out;
     transition-delay: 20s;

@@ -32,7 +32,7 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
         <Stack spacing={3}>
             <Typography variant='h2'>{globalize.translate('Display')}</Typography>
 
-            {appHost.supports('displaymode') && (
+            { appHost.supports('displaymode') && (
                 <FormControl fullWidth>
                     <InputLabel id='display-settings-layout-label'>{globalize.translate('LabelDisplayMode')}</InputLabel>
                     <Select
@@ -55,9 +55,9 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
                         <span>{globalize.translate('LabelPleaseRestart')}</span>
                     </FormHelperText>
                 </FormControl>
-            )}
+            ) }
 
-            {themes.length > 0 && (
+            { themes.length > 0 && (
                 <FormControl fullWidth>
                     <InputLabel id='display-settings-theme-label'>{globalize.translate('LabelTheme')}</InputLabel>
                     <Select
@@ -68,12 +68,12 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
                         onChange={onChange}
                         value={values.theme}
                     >
-                        {...themes.map(({ id, name }) => (
+                        { ...themes.map(({ id, name }) => (
                             <MenuItem key={id} value={id}>{name}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
-            )}
+            ) }
 
             <FormControl fullWidth>
                 <FormControlLabel
@@ -106,7 +106,7 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
                 </FormHelperText>
             </FormControl>
 
-            {themes.length > 0 && user?.Policy?.IsAdministrator && (
+            { themes.length > 0 && user?.Policy?.IsAdministrator && (
                 <FormControl fullWidth>
                     <InputLabel id='display-settings-dashboard-theme-label'>{globalize.translate('LabelDashboardTheme')}</InputLabel>
                     <Select
@@ -114,17 +114,17 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
                             name: 'dashboardTheme'
                         }}
                         labelId='display-settings-dashboard-theme-label'
-                        onChange={onChange}
-                        value={values.dashboardTheme}
+                        onChange={ onChange }
+                        value={ values.dashboardTheme }
                     >
-                        {...themes.map(({ id, name }) => (
-                            <MenuItem key={id} value={id}>{name}</MenuItem>
-                        ))}
+                        { ...themes.map(({ id, name }) => (
+                            <MenuItem key={ id } value={ id }>{ name }</MenuItem>
+                        )) }
                     </Select>
                 </FormControl>
-            )}
+            ) }
 
-            {screensavers.length > 0 && appHost.supports('screensaver') && (
+            { screensavers.length > 0 && appHost.supports('screensaver') && (
                 <Fragment>
                     <FormControl fullWidth>
                         <InputLabel id='display-settings-screensaver-label'>{globalize.translate('LabelScreensaver')}</InputLabel>
@@ -136,7 +136,7 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
                             onChange={onChange}
                             value={values.screensaver}
                         >
-                            {...screensavers.map(({ id, name }) => (
+                            { ...screensavers.map(({ id, name }) => (
                                 <MenuItem key={id} value={id}>{name}</MenuItem>
                             ))}
                         </Select>
@@ -164,7 +164,7 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
                         </FormHelperText>
                     </FormControl>
                 </Fragment>
-            )}
+            ) }
 
             <FormControl fullWidth>
                 <FormControlLabel
@@ -197,23 +197,6 @@ export function DisplayPreferences({ onChange, values }: Readonly<DisplayPrefere
                 />
                 <FormHelperText id='display-settings-blurhash-description'>
                     {globalize.translate('EnableBlurHashHelp')}
-                </FormHelperText>
-            </FormControl>
-
-            <FormControl fullWidth>
-                <FormControlLabel
-                    aria-describedby='display-settings-visualizer-description'
-                    control={
-                        <Checkbox
-                            checked={values.enableVisualizer}
-                            onChange={onChange}
-                        />
-                    }
-                    label={globalize.translate('EnableVisualizer')}
-                    name='enableVisualizer'
-                />
-                <FormHelperText id='display-settings-visualizer-description'>
-                    {globalize.translate('EnableVisualizerHelp')}
                 </FormHelperText>
             </FormControl>
         </Stack>

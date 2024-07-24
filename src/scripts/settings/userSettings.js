@@ -3,6 +3,7 @@ import { toBoolean } from '../../utils/string.ts';
 import { setXDuration } from 'components/audioEngine/crossfader.logic';
 import browser from '../browser';
 import appSettings from './appSettings';
+import { getVisualizerSettings, setVisualizerSettings } from 'components/visualizer/visualizers.logic';
 
 function onSaveTimeout() {
     const self = this;
@@ -187,6 +188,20 @@ export class UserSettings {
     }
 
     /**
+     * Get or set 'Visualizer' state.
+     * @param {string|undefined} val - Flag to set Visualizer state
+     * @return {string} crossfade duration in seconds
+     */
+    visualizerConfiguration(val) {
+        if (val !== undefined) {
+            setVisualizerSettings(val);
+            return this.set('visualizerConfiguration', getVisualizerSettings(), true);
+        }
+
+        return parseFloat(this.get('visualizerConfiguration', true) || getVisualizerSettings());
+    }
+
+    /**
      * Get or set 'Next Video Info Overlay' state.
      * @param {boolean|undefined} val - Flag to enable 'Next Video Info Overlay' or undefined.
      * @return {boolean} 'Next Video Info Overlay' state.
@@ -262,19 +277,6 @@ export class UserSettings {
         }
 
         return toBoolean(this.get('blurhash', false), true);
-    }
-
-    /**
-     * Get or set 'Visualizer' state.
-     * @param {boolean|undefined} [val] - Flag to enable 'Visualizer' or undefined.
-     * @return {boolean} 'Visualizer' state.
-     */
-    enableVisualizer(val) {
-        if (val !== undefined) {
-            return this.set('visualizer', val.toString(), false);
-        }
-
-        return toBoolean(this.get('visualizer', false), false);
     }
 
     /**
@@ -670,13 +672,13 @@ export const preferFmp4HlsContainer = currentSettings.preferFmp4HlsContainer.bin
 export const enableCinemaMode = currentSettings.enableCinemaMode.bind(currentSettings);
 export const selectAudioNormalization = currentSettings.selectAudioNormalization.bind(currentSettings);
 export const crossfadeDuration = currentSettings.crossfadeDuration.bind(currentSettings);
+export const visualizerConfiguration = currentSettings.visualizerConfiguration.bind(currentSettings);
 export const enableNextVideoInfoOverlay = currentSettings.enableNextVideoInfoOverlay.bind(currentSettings);
 export const enableVideoRemainingTime = currentSettings.enableVideoRemainingTime.bind(currentSettings);
 export const enableThemeSongs = currentSettings.enableThemeSongs.bind(currentSettings);
 export const enableThemeVideos = currentSettings.enableThemeVideos.bind(currentSettings);
 export const enableFastFadein = currentSettings.enableFastFadein.bind(currentSettings);
 export const enableBlurhash = currentSettings.enableBlurhash.bind(currentSettings);
-export const enableVisualizer = currentSettings.enableVisualizer.bind(currentSettings);
 export const enableBackdrops = currentSettings.enableBackdrops.bind(currentSettings);
 export const detailsBanner = currentSettings.detailsBanner.bind(currentSettings);
 export const useEpisodeImagesInNextUpAndResume = currentSettings.useEpisodeImagesInNextUpAndResume.bind(currentSettings);

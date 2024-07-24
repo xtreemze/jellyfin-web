@@ -20,7 +20,7 @@ import { appRouter } from '../router/appRouter';
 import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 import { hideCursor } from 'scripts/mouseManager';
 import { isMobileBrowser } from 'utils/detectMobile';
-import * as userSettings from '../../scripts/settings/userSettings';
+import { visualizerSettings } from 'components/visualizer/visualizers.logic';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];
@@ -136,7 +136,7 @@ function slideDown(elem) {
     });
 
     const legacy = destroyWaveSurferInstance();
-    if (!currentPlayer?.isLocalPlayer || !userSettings.enableVisualizer()) return;
+    if (!currentPlayer?.isLocalPlayer || !visualizerSettings.waveSurfer.enabled) return;
 
     // When opening the same song, preserve the player legacy
     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
@@ -154,7 +154,7 @@ function slideUp(elem) {
     elem.classList.remove('nowPlayingBar-hidden');
 
     const legacy = destroyWaveSurferInstance();
-    if (!currentPlayer?.isLocalPlayer || !userSettings.enableVisualizer()) return;
+    if (!currentPlayer?.isLocalPlayer || !!visualizerSettings.waveSurfer.enabled) return;
 
     // When opening the same song, preserve the player legacy
     waveSurferInitialization('#barSurfer', legacy, playbackManager?.duration());

@@ -1,5 +1,7 @@
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 import { audioNodeBus, masterAudioOutput, unbindCallback } from './master.logic';
+import { butterchurnInstance } from 'components/visualizer/butterchurn.logic';
+import { visualizerSettings } from 'components/visualizer/visualizers.logic';
 
 export function setXDuration(crossfadeDuration: number) {
     if (crossfadeDuration < 0.01) {
@@ -35,6 +37,7 @@ export const xDuration = {
 
 export function hijackMediaElementForCrossfade() {
     xDuration.t0 = performance.now(); // Record the start time
+    if (visualizerSettings.butterchurn.enabled) butterchurnInstance.nextPreset();
 
     const hijackedPlayer = document.getElementById('currentMediaElement') as HTMLMediaElement;
     if (!hijackedPlayer || !masterAudioOutput.audioContext) return;
@@ -108,6 +111,7 @@ function prevNextDisable(disable = false) {
     });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function timeRunningOut(player: any) {
     const currentTime = player.currentTime();
 

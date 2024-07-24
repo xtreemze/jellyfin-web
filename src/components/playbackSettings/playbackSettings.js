@@ -11,6 +11,7 @@ import ServerConnections from '../ServerConnections';
 import toast from '../toast/toast';
 import template from './playbackSettings.template.html';
 import escapeHTML from 'escape-html';
+import { getVisualizerInputValues } from 'components/visualizer/visualizers.logic';
 
 function fillSkipLengths(select) {
     const options = [5, 10, 15, 20, 25, 30];
@@ -238,6 +239,7 @@ function saveUser(context, user, userSettingsInstance, apiClient) {
     userSettingsInstance.enableCinemaMode(context.querySelector('.chkEnableCinemaMode').checked);
     userSettingsInstance.selectAudioNormalization(context.querySelector('#selectAudioNormalization').value);
     userSettingsInstance.crossfadeDuration(context.querySelector('#sliderCrossfadeDuration').value);
+    userSettingsInstance.visualizerConfiguration(getVisualizerInputValues(context));
     userSettingsInstance.enableNextVideoInfoOverlay(context.querySelector('.chkEnableNextVideoOverlay').checked);
     user.Configuration.RememberAudioSelections = context.querySelector('.chkRememberAudioSelections').checked;
     user.Configuration.RememberSubtitleSelections = context.querySelector('.chkRememberSubtitleSelections').checked;
