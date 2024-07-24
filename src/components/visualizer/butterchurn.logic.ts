@@ -41,12 +41,15 @@ export function initializeButterChurn(canvas: HTMLCanvasElement) {
     const presetNames = Object.keys(presets);
 
     const loadNextPreset = () => {
+        clearInterval(presetSwitchInterval);
+
         const randomIndex = Math.floor(Math.random() * presetNames.length);
         const nextPresetName = presetNames[randomIndex];
         const nextPreset = presets[nextPresetName];
         if (nextPreset) {
             butterchurnInstance.visualizer.loadPreset(nextPreset, xDuration.fadeOut); // Blend presets over 0 seconds
         }
+        presetSwitchInterval = setInterval(loadNextPreset, 60000);
     };
     // Load the initial preset
     loadNextPreset();

@@ -188,9 +188,16 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     z-index: -3;
 }
 
-body.transition canvas#frequencyAnalyzer,
 body.transition canvas#butterchurn,
-canvas#butterchurn,
+canvas#butterchurn {
+    position: fixed;
+    opacity: 0.4;
+    mix-blend-mode: difference;
+    transition: opacity 1.4s ease-in-out;
+    z-index: 0;
+}
+
+body.transition canvas#frequencyAnalyzer,
 canvas#frequencyAnalyzer {
     position: fixed;
     opacity: 0.2;
@@ -199,9 +206,15 @@ canvas#frequencyAnalyzer {
     z-index: 0;
 }
 
-body:not(.transition).mouseIdle canvas#butterchurn,
+body:not(.transition).mouseIdle canvas#butterchurn {
+    opacity: 0.65;
+    mix-blend-mode: normal;
+    transition: opacity 6s ease-in-out;
+    transition-delay: 20s;
+}
+
 body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
-    opacity: 0.6;
+    opacity: 0.5;
     mix-blend-mode: normal;
     transition: opacity 6s ease-in-out;
     transition-delay: 20s;

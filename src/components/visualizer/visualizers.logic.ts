@@ -2,13 +2,13 @@
 export const visualizerSettings = {
     butterchurn: {
         enabled: false,
-        opacity: 0, // slider value from 0 - 1
+        opacity: 0.6, // slider value from 0 - 1
         smoothingTime: 0, // value from 0 - 10
         presetInterval: 60 // slider value from 0 - 120
     },
     frequencyAnalyzer: {
         enabled: false,
-        opacity: 0, // value from 0 - 1
+        opacity: 0.6, // value from 0 - 1
         smoothingTime: 0, // value from 0 - 10
         color: 'rgb(30, 210, 75)'
     },
@@ -52,4 +52,3 @@ export function getVisualizerInputValues(context: any) {
 
     return visualizerSettings;
 }
-
