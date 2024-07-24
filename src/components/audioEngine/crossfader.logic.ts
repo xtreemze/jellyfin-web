@@ -35,8 +35,6 @@ export const xDuration = {
 };
 
 export function hijackMediaElementForCrossfade() {
-    // @ts-ignore
-    console.log(window.playback.getPlayerState(window.playback.getPlayers()[1]));
     xDuration.t0 = performance.now(); // Record the start time
 
     const hijackedPlayer = document.getElementById('currentMediaElement') as HTMLMediaElement;
@@ -53,6 +51,10 @@ export function hijackMediaElementForCrossfade() {
     prevNextDisable(true);
     hijackedPlayer.classList.remove('mediaPlayerAudio');
     hijackedPlayer.id = 'crossFadeMediaElement';
+
+    hijackedPlayer.pause = ()=>{
+        // Do nothing
+    };
 
     Object.defineProperty(hijackedPlayer, 'src', {
         set: () => {
