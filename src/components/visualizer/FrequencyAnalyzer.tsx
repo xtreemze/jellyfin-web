@@ -1,7 +1,7 @@
 import { masterAudioOutput } from 'components/audioEngine/master.logic';
 import React, { useEffect, useRef, useCallback } from 'react';
 
-type VisualizerProps = {
+type FrequencyAnalyzersProps = {
     audioContext?: AudioContext;
     mixerNode?: AudioNode;
     fftSize?: number;
@@ -10,7 +10,7 @@ type VisualizerProps = {
     maxDecibels?: number;
 };
 
-const Visualizer: React.FC<VisualizerProps> = ({
+const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
     audioContext = masterAudioOutput.audioContext,
     mixerNode = masterAudioOutput.mixerNode,
     fftSize = 16384,
@@ -103,9 +103,11 @@ const Visualizer: React.FC<VisualizerProps> = ({
         return () => window.removeEventListener('resize', resizeCanvas);
     }, []);
 
+    if (!audioContext || !mixerNode) return;
+
     return (
         <canvas
-            id='visualizer'
+            id='frequencyAnalyzer'
             ref={canvasRef}
             width={window.innerWidth}
             height={window.innerHeight}
@@ -113,4 +115,4 @@ const Visualizer: React.FC<VisualizerProps> = ({
     );
 };
 
-export default Visualizer;
+export default FrequencyAnalyzer;

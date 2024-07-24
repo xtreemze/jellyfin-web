@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import React, { useEffect } from 'react';
-import Visualizer from './visualizer/FrequencyAnalyzer';
 import * as userSettings from '../scripts/settings/userSettings';
+import Visualizers from './visualizer/Visualizers';
 
 const Backdrop = () => {
     useEffect(() => {
@@ -16,7 +16,7 @@ const Backdrop = () => {
             <Box
                 className='backdropContainer'
             />
-            {enableVisualizer && (<Visualizer />)}
+            {enableVisualizer && (<Visualizers />)}
             <div className='backgroundContainer' />
         </>
     );

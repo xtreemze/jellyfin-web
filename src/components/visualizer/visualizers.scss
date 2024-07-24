@@ -172,8 +172,10 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     padding-bottom: 12rem !important;
 }
 
-body.transition canvas#visualizer,
-canvas#visualizer {
+body.transition canvas#frequencyAnalyzer,
+body.transition canvas#butterchurn,
+canvas#butterchurn,
+canvas#frequencyAnalyzer {
     position: fixed;
     z-index: -1;
     opacity: 0.6;
@@ -181,7 +183,8 @@ canvas#visualizer {
     transition: opacity 1.4s ease-in-out;
 }
 
-body:not(.transition).mouseIdle canvas#visualizer {
+body:not(.transition).mouseIdle canvas#butterchurn,
+body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     opacity: 0.75;
     mix-blend-mode: normal;
     transition: opacity 6s ease-in-out;
@@ -236,7 +239,8 @@ body:not(.transition).mouseIdle canvas#visualizer {
         max-width: unset;
     }
 
-    body:not(.transition).mouseIdle canvas#visualizer {
+    canvas#butterchurn
+    body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
         opacity: 0.25;
         mix-blend-mode: difference;
         transition: opacity 6s ease-in-out;
