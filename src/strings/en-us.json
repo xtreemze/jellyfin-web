@@ -80,7 +80,7 @@
     "Browse": "Browse",
     "BurnSubtitlesHelp": "Determine if the server should burn in subtitles while transcoding videos. Avoiding this will greatly improve performance. Select Auto to burn image based formats (VobSub, PGS, SUB, IDX, etc.) and certain ASS or SSA subtitles.",
     "ButterchurnPresetInterval": "Butterchurn preset duration",
-    "ButterchurnPresetIntervalHelp": "Time interval in seconds for a new random preset. 0 disables switching.",
+    "ButterchurnPresetIntervalHelp": "Time interval in seconds for a new random preset. 10 disables switching.",
     "ButtonActivate": "Activate",
     "ButtonAddImage": "Add Image",
     "ButtonAddMediaLibrary": "Add Media Library",

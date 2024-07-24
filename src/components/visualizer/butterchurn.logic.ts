@@ -6,6 +6,7 @@ import butterchurn from 'butterchurn';
 import butterchurnPresets from 'butterchurn-presets';
 import { xDuration } from 'components/audioEngine/crossfader.logic';
 import { masterAudioOutput } from 'components/audioEngine/master.logic';
+import { visualizerSettings } from './visualizers.logic';
 
 let presetSwitchInterval: NodeJS.Timeout;
 
@@ -30,7 +31,7 @@ export function initializeButterChurn(canvas: HTMLCanvasElement) {
     butterchurnInstance.visualizer = butterchurn.createVisualizer(masterAudioOutput.audioContext, canvas, {
         width: window.innerWidth,
         height: window.innerHeight,
-        pixelRatio: window.devicePixelRatio || 0.25,
+        pixelRatio: window.devicePixelRatio || 1,
         textureRatio: 1
     });
 
@@ -49,7 +50,10 @@ export function initializeButterChurn(canvas: HTMLCanvasElement) {
         if (nextPreset) {
             butterchurnInstance.visualizer.loadPreset(nextPreset, xDuration.fadeOut); // Blend presets over 0 seconds
         }
-        presetSwitchInterval = setInterval(loadNextPreset, 60000);
+
+        if (visualizerSettings.butterchurn.presetInterval > 10) {
+            presetSwitchInterval = setInterval(loadNextPreset, visualizerSettings.butterchurn.presetInterval * 1000);
+        }
     };
     // Load the initial preset
     loadNextPreset();
@@ -67,7 +71,9 @@ export function initializeButterChurn(canvas: HTMLCanvasElement) {
         butterchurnInstance.visualizer.disconnectAudio(masterAudioOutput.mixerNode);
     };
 
-    // Switch presets every 60 seconds
-    presetSwitchInterval = setInterval(loadNextPreset, 60000);
+    if (visualizerSettings.butterchurn.presetInterval > 10) {
+    // Switch presets every predetermined interval in seconds
+        presetSwitchInterval = setInterval(loadNextPreset, visualizerSettings.butterchurn.presetInterval * 1000);
+    }
 }
 

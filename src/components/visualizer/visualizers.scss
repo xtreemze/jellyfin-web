@@ -17,7 +17,7 @@ div.nowPlayingBarTop {
 }
 
 html.layout-desktop, .scrollY {
-    scrollbar-width: none;
+    scrollbar-width: thin;
 }
 
 header {
@@ -101,7 +101,6 @@ div.appfooter>div.nowPlayingBar {
 #playlist {
     background-color: rgba(7, 7, 7, 0.936);
     z-index: 4;
-    position: absolute;
 }
 
 div.infoContainer>.nowPlayingInfoContainerMedia>div,
@@ -166,6 +165,10 @@ button.button-submit.btnSave {
     flex-wrap: nowrap;
 }
 
+.force-scroll {
+    overflow-y: visible;
+}
+
 div.skinBody>#musicPage,
 .page.mainAnimatedPage.libraryPage.withTabs {
     margin-top: 6rem !important;
@@ -220,27 +223,27 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     transition-delay: 20s;
 }
 
-@media (orientation: portrait) and (max-width: 915px) {
-    #nowPlayingPage {
-        top: 100vh;
-    }
+// @media (orientation: portrait) and (max-width: 915px) {
+    // #nowPlayingPage {
+    //     top: 100vh;
+    // }
 
-    .playlistSectionButton {
-        margin-top: 6rem;
-    }
+    // .playlistSectionButton {
+    //     margin-top: 6rem;
+    // }
 
-    .remoteControlContent {
-        height: 100%;
-    }
+    // .remoteControlContent {
+    //     height: 100%;
+    // }
 
-    .nowPlayingInfoContainer {
-        align-items: center;
-        flex-direction: column !important;
-        height: calc(100% - 4.2em);
-        width: 100%;
-        display: flex;
-    }
-}
+    // .nowPlayingInfoContainer {
+    //     align-items: center;
+    //     flex-direction: column !important;
+    //     height: calc(100% - 4.2em);
+    //     width: 100%;
+    //     display: flex;
+    // }
+// }
 
 @media (orientation: landscape) and (min-width: 915px) {
     #inputSurfer ::part(minimap) {
@@ -516,10 +519,6 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
         right: 2.8rem;
         font-size: 0.6em;
     }
-
-    // #playlist>button {
-    //     height: 1.5rem;
-    // }
 
     .listItemImage.playlistIndexIndicatorImage {
         background-size: 2em !important;

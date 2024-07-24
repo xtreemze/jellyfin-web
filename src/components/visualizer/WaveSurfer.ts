@@ -4,6 +4,7 @@ import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import MiniMapPlugin from 'wavesurfer.js/dist/plugins/minimap';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
 import { scrollToActivePlaylistItem, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
+import { visualizerSettings } from './visualizers.logic';
 
 type WaveSurferLegacy = {
     peaks: number[][]
@@ -50,11 +51,12 @@ function isNewSong(newSongDuration: number) {
 function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, newSongDuration: 0 ) {
     findElements();
 
+    destroyWaveSurferInstance();
+    if (!visualizerSettings.waveSurfer.enabled) return;
     if (container !== ('#' + barSurfer?.id) && container !== ('#' + inputSurfer?.id)) {
         return;
     }
     // Don't update if the tab is not in focus or the screen is off
-    destroyWaveSurferInstance();
     if (document.hidden
         || document.visibilityState !== 'visible'
         || ( !inputSurfer && !barSurfer)
