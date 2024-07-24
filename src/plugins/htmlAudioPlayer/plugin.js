@@ -6,8 +6,8 @@ import { getIncludeCorsCredentials } from '../../scripts/settings/webSettings';
 import { PluginType } from '../../types/plugin';
 import Events from '../../utils/events';
 import { MediaError } from 'types/mediaError';
-import { audioNodeBus, masterAudioOutput } from 'components/audioEngine/master.logic';
-import { createGainNode, hijackMediaElementForCrossfade, initializeMasterAudio, xDuration } from 'components/audioEngine/crossfader.logic';
+import { audioNodeBus, createGainNode, initializeMasterAudio, masterAudioOutput } from 'components/audioEngine/master.logic';
+import { hijackMediaElementForCrossfade, xDuration } from 'components/audioEngine/crossfader.logic';
 
 function getDefaultProfile() {
     return profileBuilder({});
@@ -304,11 +304,9 @@ class HtmlAudioPlayer {
         }
 
         function addGainElement(elem) {
-            initializeMasterAudio(self.destroy);
-
             try {
+                initializeMasterAudio(self.destroy);
                 createGainNode(elem);
-                return;
             } catch (e) {
                 console.error('Web Audio API is not supported in this browser', e);
             }

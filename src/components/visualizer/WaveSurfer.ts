@@ -34,7 +34,7 @@ let savedPeaks: number[][];
 let initialDistance: number | null = null;
 const MIN_DELTA = waveSurferPluginOptions.zoomOptions.deltaThreshold; // Define a threshold for minimal significant distance change
 
-export const purgatory: WaveSurfer[] = [];
+const purgatory: WaveSurfer[] = [];
 
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
@@ -209,9 +209,7 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         // Cleans up multiple existing instances
         const victim = purgatory.shift();
         if (victim) {
-            // disableControl(true);
             victim.destroy();
-            // disableControl(false);
         }
         purgatory.push(waveSurferInstance);
     }
@@ -237,4 +235,10 @@ function resetVisibility() {
     if (barSurfer) barSurfer.hidden = true;
 }
 
-export { waveSurferInitialization, waveSurferInstance, destroyWaveSurferInstance, currentZoom, scrollToActivePlaylistItem };
+export {
+    waveSurferInitialization,
+    waveSurferInstance,
+    destroyWaveSurferInstance,
+    currentZoom,
+    scrollToActivePlaylistItem
+};
