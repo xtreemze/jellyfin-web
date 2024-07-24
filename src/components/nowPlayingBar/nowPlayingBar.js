@@ -135,8 +135,8 @@ function slideDown(elem) {
         once: true
     });
 
-    if (!currentPlayer?.isLocalPlayer || !userSettings.enableVisualizer()) return;
     const legacy = destroyWaveSurferInstance();
+    if (!currentPlayer?.isLocalPlayer || !userSettings.enableVisualizer()) return;
 
     // When opening the same song, preserve the player legacy
     waveSurferInitialization('#inputSurfer', legacy, playbackManager?.duration());
@@ -153,13 +153,11 @@ function slideUp(elem) {
 
     elem.classList.remove('nowPlayingBar-hidden');
 
-    const visualizerEnabled = userSettings.enableVisualizer();
-    if (visualizerEnabled) {
-        const legacy = destroyWaveSurferInstance();
+    const legacy = destroyWaveSurferInstance();
+    if (!currentPlayer?.isLocalPlayer || !userSettings.enableVisualizer()) return;
 
-        // When opening the same song, preserve the player legacy
-        waveSurferInitialization('#barSurfer', legacy, playbackManager?.duration());
-    }
+    // When opening the same song, preserve the player legacy
+    waveSurferInitialization('#barSurfer', legacy, playbackManager?.duration());
 }
 
 function onPlayPauseClick() {
