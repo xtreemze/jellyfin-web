@@ -36,17 +36,20 @@ export const xDuration = {
 
 export function hijackMediaElementForCrossfade() {
     // @ts-ignore
-    window.prompt(window.playback.getPlayerState(window.playback.getPlayers()[1]));
+    console.log(window.playback.getPlayerState(window.playback.getPlayers()[1]));
     xDuration.t0 = performance.now(); // Record the start time
 
     const hijackedPlayer = document.getElementById('currentMediaElement') as HTMLMediaElement;
     if (!hijackedPlayer || !masterAudioOutput.audioContext) return;
 
+    if (hijackedPlayer.paused) {
+        setXDuration(0);
+    }
+
     const disposeElement = document.getElementById('crossFadeMediaElement');
     if (disposeElement) {
         destroyWaveSurferInstance();
     }
-
     prevNextDisable(true);
     hijackedPlayer.classList.remove('mediaPlayerAudio');
     hijackedPlayer.id = 'crossFadeMediaElement';
@@ -140,10 +143,10 @@ export function initializeMasterAudio(unbind: any) {
 
     if (!masterAudioOutput.audioContext) masterAudioOutput.audioContext = audioCtx;
 
-    if (!masterAudioOutput.mixerNode) {
-        const savedDuration = userSettings.crossfadeDuration(undefined);
-        setXDuration(savedDuration);
+    const savedDuration = userSettings.crossfadeDuration(undefined);
+    setXDuration(savedDuration);
 
+    if (!masterAudioOutput.mixerNode) {
         masterAudioOutput.mixerNode = audioCtx.createGain();
 
         masterAudioOutput.mixerNode.connect(audioCtx.destination);
