@@ -87,7 +87,12 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     waveSurferInstance.once('ready', (duration) => {
         setVisibility();
         savedDuration = duration;
-        savedPeaks = waveSurferInstance.exportPeaks();
+        if (newSong) {
+            savedPeaks = waveSurferInstance.exportPeaks();
+        } else {
+            const newPeaks = waveSurferInstance.exportPeaks();
+            if (newPeaks.length > savedPeaks.length) savedPeaks = newPeaks;
+        }
         if (container === '#barSurfer') {
             waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
             return;

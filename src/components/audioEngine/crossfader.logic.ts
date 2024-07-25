@@ -2,7 +2,7 @@ import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 import { audioNodeBus, delayNodeBus, masterAudioOutput, unbindCallback } from './master.logic';
 import { butterchurnInstance } from 'components/visualizer/butterchurn.logic';
 import { visualizerSettings } from 'components/visualizer/visualizers.logic';
-import { endSong, endTransition, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
+import { endSong, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 
 export function setXDuration(crossfadeDuration: number) {
     if (crossfadeDuration < 0.01) {

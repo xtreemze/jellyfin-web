@@ -1,6 +1,3 @@
-import { xDuration } from 'components/audioEngine/crossfader.logic';
-import { masterAudioOutput } from 'components/audioEngine/master.logic';
-
 const sitbackSettings = {
     songInfoDisplayDurationInSeconds: 5
 };

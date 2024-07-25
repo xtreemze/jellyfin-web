@@ -1,6 +1,5 @@
 import { masterAudioOutput } from 'components/audioEngine/master.logic';
 import React, { useEffect, useRef, useCallback } from 'react';
-import { visualizerSettings } from './visualizers.logic';
 
 type FrequencyAnalyzersProps = {
     audioContext?: AudioContext;
