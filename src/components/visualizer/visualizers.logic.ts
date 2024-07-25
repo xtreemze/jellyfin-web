@@ -1,6 +1,3 @@
-import { waveSurferInitialization } from './WaveSurfer';
-import { waveSurferChannelStyle } from './WaveSurferOptions';
-
 export const visualizerSettings = {
     butterchurn: {
         enabled: false,

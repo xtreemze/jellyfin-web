@@ -71,7 +71,6 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
 
     useEffect(() => {
         if (!audioContext) {
-            visualizerSettings.frequencyAnalyzer.enabled = false;
             return;
         }
 

@@ -16,7 +16,8 @@ div.nowPlayingBarTop {
     padding: 1rem 1rem;
 }
 
-html.layout-desktop, .scrollY {
+html.layout-desktop,
+.scrollY {
     scrollbar-width: thin;
 }
 
@@ -179,7 +180,7 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     padding-bottom: 12rem !important;
 }
 
-.backgroundContainer{
+.backgroundContainer {
     z-index: -1;
 }
 
@@ -224,25 +225,25 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
 }
 
 // @media (orientation: portrait) and (max-width: 915px) {
-    // #nowPlayingPage {
-    //     top: 100vh;
-    // }
+// #nowPlayingPage {
+//     top: 100vh;
+// }
 
-    // .playlistSectionButton {
-    //     margin-top: 6rem;
-    // }
+// .playlistSectionButton {
+//     margin-top: 6rem;
+// }
 
-    // .remoteControlContent {
-    //     height: 100%;
-    // }
+// .remoteControlContent {
+//     height: 100%;
+// }
 
-    // .nowPlayingInfoContainer {
-    //     align-items: center;
-    //     flex-direction: column !important;
-    //     height: calc(100% - 4.2em);
-    //     width: 100%;
-    //     display: flex;
-    // }
+// .nowPlayingInfoContainer {
+//     align-items: center;
+//     flex-direction: column !important;
+//     height: calc(100% - 4.2em);
+//     width: 100%;
+//     display: flex;
+// }
 // }
 
 @media (orientation: landscape) and (min-width: 915px) {
@@ -271,8 +272,7 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
         max-width: unset;
     }
 
-    canvas#butterchurn
-    body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
+    canvas#butterchurn body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
         opacity: 0.25;
         mix-blend-mode: difference;
         transition: opacity 6s ease-in-out;
@@ -397,7 +397,12 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     /* Slide out after 15 seconds of mouse idle */
     body:not(.transition).mouseIdle .nowPlayingInfoControls>.infoContainer {
         transition-delay: 15s;
-        /* Delays the transition by 15 seconds */
+    }
+
+    body.songEnd .nowPlayingInfoControls>.infoContainer {
+        transform: translateX(calc(-80vw - 6rem));
+        transition: transform 2s ease-in-out;
+        transition-delay: 0s;
     }
 
     header,
@@ -462,14 +467,14 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
         overflow: auto;
         padding: 0;
         padding-left: 2.5rem;
-        padding-right: 2rem;
+        padding-right: 0;
         position: fixed;
         scrollbar-width: none;
-        width: 32rem;
+        width: 30rem;
         z-index: 0;
         padding-top: 6rem;
         padding-bottom: 0rem;
-        right: 1rem;
+        right: 0;
     }
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {

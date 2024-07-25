@@ -3,7 +3,7 @@ import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline';
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom';
 import MiniMapPlugin from 'wavesurfer.js/dist/plugins/minimap';
 import { waveSurferChannelStyle, surferOptions, waveSurferPluginOptions } from './WaveSurferOptions';
-import { scrollToActivePlaylistItem, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
+import { triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 import { visualizerSettings } from './visualizers.logic';
 import { masterAudioOutput } from 'components/audioEngine/master.logic';
 
@@ -55,7 +55,6 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
     destroyWaveSurferInstance();
     if (!visualizerSettings.waveSurfer.enabled) return;
     if (!masterAudioOutput.audioContext) {
-        visualizerSettings.waveSurfer.enabled = false;
         return;
     }
     if (container !== ('#' + barSurfer?.id) && container !== ('#' + inputSurfer?.id)) {
@@ -225,8 +224,6 @@ function destroyWaveSurferInstance(): WaveSurferLegacy {
         mediaElement?.play();
     }
 
-    triggerSongInfoDisplay();
-
     return legacy;
 }
 
@@ -246,6 +243,5 @@ export {
     waveSurferInitialization,
     waveSurferInstance,
     destroyWaveSurferInstance,
-    currentZoom,
-    scrollToActivePlaylistItem
+    currentZoom
 };

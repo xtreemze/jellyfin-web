@@ -7,6 +7,7 @@ import butterchurnPresets from 'butterchurn-presets';
 import { xDuration } from 'components/audioEngine/crossfader.logic';
 import { masterAudioOutput } from 'components/audioEngine/master.logic';
 import { visualizerSettings } from './visualizers.logic';
+// @ts-ignore
 import isButterchurnSupported from 'butterchurn/lib/isSupported.min';
 
 let presetSwitchInterval: NodeJS.Timeout;
@@ -28,7 +29,6 @@ export const butterchurnInstance: {
 
 export function initializeButterChurn(canvas: HTMLCanvasElement) {
     if (!masterAudioOutput.audioContext || !isButterchurnSupported()) {
-        visualizerSettings.butterchurn.enabled = false;
         return;
     }
 

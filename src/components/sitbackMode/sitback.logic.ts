@@ -1,10 +1,13 @@
+import { xDuration } from 'components/audioEngine/crossfader.logic';
+import { masterAudioOutput } from 'components/audioEngine/master.logic';
+
 const sitbackSettings = {
     songInfoDisplayDurationInSeconds: 5
 };
 
 let activePlaylistItem: HTMLElement | null;
 
-declare let window: Window & {Emby: IEmby, crossFade: ()=> void};
+declare let window: Window & {Emby: IEmby};
 
 interface IEmby {
     Page: {currentRouteInfo: { path: string }};
@@ -35,8 +38,8 @@ const smoothScrollSettings = {
     behavior: 'smooth'
 } as ScrollIntoViewOptions;
 
-let scrollTimeout: number | NodeJS.Timeout | undefined;
-let scrollTimeout2: number | NodeJS.Timeout | undefined;
+let scrollTimeout: NodeJS.Timeout;
+let scrollTimeout2: NodeJS.Timeout;
 
 export function scrollToActivePlaylistItem() {
     clearTimeout(scrollTimeout);
@@ -56,25 +59,35 @@ export function scrollToActivePlaylistItem() {
 }
 
 function startTransition() {
-    const classList = document.body.classList;
-
     scrollToActivePlaylistItem();
 
+    const classList = document.body.classList;
     classList.add('transition');
 }
 
 function endTransition() {
+    scrollToActivePlaylistItem();
+
     const classList = document.body.classList;
     classList.remove('transition');
+    classList.remove('songEnd');
+}
+
+export function endSong() {
+    if (!isNowPlaying()) return;
+
+    endTransition();
+    const classList = document.body.classList;
+    classList.add('songEnd');
 }
 
 export function triggerSongInfoDisplay() {
-    if (isNowPlaying()) {
-        startTransition();
-        scrollToActivePlaylistItem();
+    if (!isNowPlaying()) return;
 
-        setTimeout(()=>{
-            endTransition();
-        }, (sitbackSettings.songInfoDisplayDurationInSeconds * 1000));
-    }
+    startTransition();
+    scrollToActivePlaylistItem();
+
+    setTimeout(()=>{
+        endTransition();
+    }, (sitbackSettings.songInfoDisplayDurationInSeconds * 1000));
 }

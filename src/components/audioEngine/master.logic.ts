@@ -1,8 +1,10 @@
+import { visualizerSettings } from 'components/visualizer/visualizers.logic';
 import * as userSettings from '../../scripts/settings/userSettings';
 import { setXDuration } from './crossfader.logic';
 
 type MasterAudioTypes = {
     mixerNode?: GainNode;
+    buffered?: DelayNode
     makeupGain: number;
     muted: boolean;
     audioContext?: AudioContext;
@@ -51,14 +53,33 @@ export function initializeMasterAudio(unbind: any) {
         masterAudioOutput.mixerNode = audioCtx.createGain();
 
         masterAudioOutput.mixerNode.connect(audioCtx.destination);
+
         masterAudioOutput.mixerNode.gain
             .setValueAtTime((masterAudioOutput.volume / 100) * masterAudioOutput.makeupGain, audioCtx.currentTime);
     }
 }
 
 type GainNodes = GainNode[];
+type DelayNodes = DelayNode[];
 
 export const audioNodeBus: GainNodes = [];
+export const delayNodeBus: DelayNodes = [];
+
+function createBuffer(input: MediaElementAudioSourceNode, output: GainNode) {
+    if (!masterAudioOutput.audioContext) return;
+    const delayedAudible = masterAudioOutput.audioContext.createDelay();
+
+    if (visualizerSettings.waveSurfer.enabled) {
+        delayedAudible.delayTime.value = 0.01;
+    } else {
+        delayedAudible.delayTime.value = 0.25;
+    }
+
+    delayNodeBus.unshift(delayedAudible);
+
+    input.connect(delayNodeBus[0]);
+    delayNodeBus[0].connect(output);
+}
 
 export function createGainNode(elem: HTMLMediaElement) {
     if (!masterAudioOutput.audioContext || !masterAudioOutput.mixerNode) {
@@ -66,13 +87,12 @@ export function createGainNode(elem: HTMLMediaElement) {
         return;
     }
 
-    const source = masterAudioOutput.audioContext.createMediaElementSource(elem);
     const gainNode = masterAudioOutput.audioContext.createGain();
-
+    gainNode.gain.setValueAtTime(0, masterAudioOutput.audioContext.currentTime);
     audioNodeBus.unshift(gainNode);
-    audioNodeBus[0].gain.setValueAtTime(0, masterAudioOutput.audioContext.currentTime);
 
-    source.connect(audioNodeBus[0]);
+    const source = masterAudioOutput.audioContext.createMediaElementSource(elem);
+    createBuffer(source, audioNodeBus[0] );
     audioNodeBus[0].connect(masterAudioOutput.mixerNode);
 }
 

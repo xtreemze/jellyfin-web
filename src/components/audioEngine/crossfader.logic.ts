@@ -1,7 +1,8 @@
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
-import { audioNodeBus, masterAudioOutput, unbindCallback } from './master.logic';
+import { audioNodeBus, delayNodeBus, masterAudioOutput, unbindCallback } from './master.logic';
 import { butterchurnInstance } from 'components/visualizer/butterchurn.logic';
 import { visualizerSettings } from 'components/visualizer/visualizers.logic';
+import { endSong, endTransition, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 
 export function setXDuration(crossfadeDuration: number) {
     if (crossfadeDuration < 0.01) {
@@ -37,10 +38,11 @@ export const xDuration = {
 
 export function hijackMediaElementForCrossfade() {
     xDuration.t0 = performance.now(); // Record the start time
+    endSong();
     if (visualizerSettings.butterchurn.enabled) butterchurnInstance.nextPreset();
 
     const hijackedPlayer = document.getElementById('currentMediaElement') as HTMLMediaElement;
-    if (!hijackedPlayer || !masterAudioOutput.audioContext) return;
+    if (!hijackedPlayer || !masterAudioOutput.audioContext) return triggerSongInfoDisplay();
 
     if (hijackedPlayer.paused) {
         setXDuration(0);
@@ -78,17 +80,20 @@ export function hijackMediaElementForCrossfade() {
         }
         // This destroys the wavesurfer on the fade out track when the new track starts
         destroyWaveSurferInstance();
+        triggerSongInfoDisplay();
     }, xDuration.sustain * 990);
 
     setTimeout(() => {
         prevNextDisable(false);
         const xfadeGainNode = audioNodeBus.pop();
+        const delayNode = delayNodeBus.pop();
 
-        if (!masterAudioOutput.audioContext || !xfadeGainNode) return;
+        if (!masterAudioOutput.audioContext || !xfadeGainNode || !delayNode) return;
         xfadeGainNode.gain.linearRampToValueAtTime(0, masterAudioOutput.audioContext.currentTime + 1);
         setTimeout(() => {
             // Clean up and destroy the xfade MediaElement here
             xfadeGainNode.disconnect();
+            delayNode.disconnect();
             hijackedPlayer.remove();
             xDuration.busy = false;
         }, 1015);
