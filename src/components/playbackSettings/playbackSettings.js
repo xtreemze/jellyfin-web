@@ -11,7 +11,7 @@ import ServerConnections from '../ServerConnections';
 import toast from '../toast/toast';
 import template from './playbackSettings.template.html';
 import escapeHTML from 'escape-html';
-import { getVisualizerInputValues, setVisualizerInputValues } from 'components/visualizer/visualizers.logic';
+import { getVisualizerInputValues, setVisualizerSettings } from 'components/visualizer/visualizers.logic';
 
 function fillSkipLengths(select) {
     const options = [5, 10, 15, 20, 25, 30];
@@ -191,6 +191,7 @@ function loadForm(context, user, userSettings, systemInfo, apiClient) {
     context.querySelector('#sliderButterchurnPresetInterval').value = userSettings.visualizerConfiguration().butterchurn.presetInterval;
     context.querySelector('.chkEnableFrequencyAnalyzer').checked = userSettings.visualizerConfiguration().frequencyAnalyzer.enabled;
     context.querySelector('.chkEnableWavesurfer').checked = userSettings.visualizerConfiguration().waveSurfer.enabled;
+    setVisualizerSettings(userSettings.visualizerConfiguration());
 
     setMaxBitrateIntoField(context.querySelector('.selectVideoInNetworkQuality'), true, 'Video');
     setMaxBitrateIntoField(context.querySelector('.selectVideoInternetQuality'), false, 'Video');

@@ -1,4 +1,3 @@
-import { setVisualizerSettings } from 'components/visualizer/visualizers.logic';
 import * as userSettings from '../../scripts/settings/userSettings';
 import { setXDuration } from './crossfader.logic';
 
