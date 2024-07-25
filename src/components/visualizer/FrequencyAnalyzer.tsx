@@ -1,5 +1,6 @@
 import { masterAudioOutput } from 'components/audioEngine/master.logic';
 import React, { useEffect, useRef, useCallback } from 'react';
+import { visualizerSettings } from './visualizers.logic';
 
 type FrequencyAnalyzersProps = {
     audioContext?: AudioContext;
@@ -21,6 +22,10 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     const draw = useCallback((analyser: AnalyserNode, ctx: CanvasRenderingContext2D, defaultBarHeight: number) => {
+        if (document.hidden || document.visibilityState !== 'visible') {
+            return;
+        }
+
         const isLandscape = false; //window.innerWidth > window.innerHeight;
         const numberOfBars = Math.floor((isLandscape ? window.innerHeight : window.innerWidth) / 32);
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
@@ -65,7 +70,10 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
     }, []);
 
     useEffect(() => {
-        if (!audioContext) return;
+        if (!audioContext) {
+            visualizerSettings.frequencyAnalyzer.enabled = false;
+            return;
+        }
 
         const analyser = audioContext.createAnalyser();
 

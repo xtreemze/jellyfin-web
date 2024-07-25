@@ -7,6 +7,7 @@ import butterchurnPresets from 'butterchurn-presets';
 import { xDuration } from 'components/audioEngine/crossfader.logic';
 import { masterAudioOutput } from 'components/audioEngine/master.logic';
 import { visualizerSettings } from './visualizers.logic';
+import isButterchurnSupported from 'butterchurn/lib/isSupported.min';
 
 let presetSwitchInterval: NodeJS.Timeout;
 
@@ -26,7 +27,10 @@ export const butterchurnInstance: {
 };
 
 export function initializeButterChurn(canvas: HTMLCanvasElement) {
-    if (!masterAudioOutput.audioContext) return;
+    if (!masterAudioOutput.audioContext || !isButterchurnSupported()) {
+        visualizerSettings.butterchurn.enabled = false;
+        return;
+    }
 
     butterchurnInstance.visualizer = butterchurn.createVisualizer(masterAudioOutput.audioContext, canvas, {
         width: window.innerWidth,
@@ -61,6 +65,9 @@ export function initializeButterChurn(canvas: HTMLCanvasElement) {
 
     // Custom animation loop using requestAnimationFrame
     const animate = () => {
+        if (document.hidden || document.visibilityState !== 'visible') {
+            return;
+        }
         butterchurnInstance.visualizer.render();
         requestAnimationFrame(animate);
     };
