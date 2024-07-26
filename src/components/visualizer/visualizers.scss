@@ -47,8 +47,8 @@ div.appfooter>div.nowPlayingBar {
 }
 
 #inputSurfer ::part(minimap) {
-    bottom: 15rem;
-    height: 2rem;
+    bottom: 14.6rem;
+    height: 1.5rem;
     opacity: .9;
     user-select: none;
     z-index: 3;
@@ -59,8 +59,8 @@ div.appfooter>div.nowPlayingBar {
 }
 
 #inputSurfer {
-    bottom: 6rem;
-    height: 6rem;
+    bottom: 6.2rem;
+    height: 4rem;
     width: 100vw;
     left: 0;
     right: 0;
@@ -184,12 +184,18 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     z-index: -1;
 }
 
-.backdropContainer {
-    z-index: -2;
-}
 
 .backdropContainer {
     z-index: -3;
+}
+
+.backdropImage {
+    transition: filter 3s ease-in-out;
+}
+
+body.transition .backdropContainer,
+body.songEnd .backdropContainer {
+    filter: blur(5px) brightness(0.5);
 }
 
 body.transition canvas#butterchurn,
@@ -222,6 +228,34 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     mix-blend-mode: normal;
     transition: opacity 6s ease-in-out;
     transition-delay: 20s;
+}
+
+#nowPlayingPage .detailLogo {
+    bottom: 11rem;
+    height: 19.5rem;
+    right: 25vw;
+    position: fixed;
+    left: calc(50vw + 5rem);
+    top: auto;
+    width: auto;
+}
+
+.productionYear {
+    position: fixed;
+    right: -6.1rem;
+    bottom: 15.3rem;
+    font-size: 8em;
+    font-weight: 800;
+    color: #bdbdbd;
+    opacity: 0.5;
+    rotate: -90deg;
+    letter-spacing: -4px;
+    z-index: -1;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1)
+}
+
+body.songEnd .productionYear {
+    transform: translateX(100vh);
 }
 
 // @media (orientation: portrait) and (max-width: 915px) {
@@ -313,13 +347,13 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     }
 
     #inputSurfer {
-        height: 9.8rem;
+        height: 4rem;
         margin: 0;
         position: fixed;
         left: 0;
         right: 0;
         max-width: 100vw;
-        bottom: 1.5rem;
+        bottom: 2.5rem;
     }
 
     .backgroundContainer.withBackdrop,
@@ -357,32 +391,33 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     }
 
     div.nowPlayingButtonsContainer {
-        align-items: center;
-        bottom: 6.4rem;
-        height: 0;
-        left: 7.2rem;
+        bottom: 4.5rem;
+        height: 0rem;
         margin: 0;
         position: fixed;
-        right: 6.5rem;
+        right: 18.8vw;
+        width: 56.7vw;
+        align-items: center;
     }
 
     .nowPlayingInfoControls>.infoContainer {
         z-index: -1;
         position: fixed;
-        bottom: 23rem;
-        left: -0.2em;
         background-color: black;
-        padding-top: 2.1rem;
-        padding-bottom: 1.1rem;
-        padding-left: 32.5rem;
-        padding-right: 2.6rem;
-        border-radius: .2em;
+        border-radius: 0 3.5em 3.5em 0;
+        bottom: 33rem;
+        left: -0.2em;
+        padding-bottom: 4.7rem;
+        padding-left: 70vw;
+        padding-right: 0vw;
+        padding-top: 7rem;
         width: unset;
+        min-width: 26rem;
     }
 
     /* Base state: element is off-screen */
     .nowPlayingInfoControls>.infoContainer {
-        transform: translateX(calc(-80vw - 6rem));
+        transform: translateX(calc(-100vw - 6rem));
         transition: transform 4s ease-in-out;
     }
 
@@ -396,11 +431,11 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
 
     /* Slide out after 15 seconds of mouse idle */
     body:not(.transition).mouseIdle .nowPlayingInfoControls>.infoContainer {
-        transition-delay: 15s;
+        transition-delay: 10s;
     }
 
     body.songEnd .nowPlayingInfoControls>.infoContainer {
-        transform: translateX(calc(-80vw - 6rem));
+        transform: translateX(calc(-100vw - 6rem));
         transition: transform 2s ease-in-out;
         transition-delay: 0s;
     }
@@ -432,7 +467,7 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     body:not(.transition).mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
         transition: opacity 500ms ease-out;
-        transition-delay: 25s;
+        transition-delay: 15s;
     }
 
     body.songEnd .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
@@ -447,12 +482,13 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     }
 
     #nowPlayingPage .detailLogo {
+        bottom: 32rem;
+        height: 16.5rem;
+        right: calc(10vw + 5rem);
         position: fixed;
-        left: 2rem;
-        bottom: 12rem;
-        top: unset;
-        right: unset;
-        height: 8rem;
+        left: calc(60vw + 2rem);
+        top: auto;
+        width: auto;
     }
 
     .nowPlayingInfoContainer {
@@ -474,25 +510,26 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     }
 
     div.playlistSection {
-        bottom: 12rem;
+        bottom: 8rem;
         font-size: .75em;
-        max-height: 12rem;
+        max-height: 13rem;
         overflow: auto;
         padding: 0;
-        padding-left: 2.5rem;
+        padding-bottom: 6rem;
+        padding-left: 0;
         padding-right: 0;
-        position: fixed;
-        scrollbar-width: none;
-        width: 30rem;
-        z-index: 0;
         padding-top: 6rem;
-        padding-bottom: 0rem;
-        right: 0;
+        right: calc(20vw - 7rem);
+        scrollbar-width: none;
+        position: absolute;
+        width: 24rem;
     }
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        width: 24rem;
-        bottom: unset;
+        bottom: 7rem;
+        width: 43vw;
+        left: unset;
+        right: 37vw;
     }
 
     .nowPlayingPageImage {
