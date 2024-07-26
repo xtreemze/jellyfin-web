@@ -22,6 +22,7 @@ import ServerConnections from '../ServerConnections';
 import toast from '../toast/toast';
 import { appRouter } from '../router/appRouter';
 import { getDefaultBackgroundClass } from '../cardbuilder/cardBuilderUtils';
+import { renderLogo, renderYear } from 'controllers/itemDetails';
 
 let showMuteButton = true;
 let showVolumeSlider = true;
@@ -230,6 +231,8 @@ function updateNowPlayingInfo(context, state, serverId) {
             });
         });
         setImageUrl(context, state, url);
+        renderLogo(document.querySelector('#nowPlayingPage'), item, apiClient);
+        renderYear(document.querySelector('#nowPlayingPage'), item, apiClient);
         setBackdrops([item]);
         apiClient.getItem(apiClient.getCurrentUserId(), item.Id).then(function (fullItem) {
             const userData = fullItem.UserData || {};

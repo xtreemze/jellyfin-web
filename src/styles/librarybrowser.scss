@@ -235,6 +235,7 @@
 
 .headerTop {
     padding: 0.54em 0;
+    padding-top: calc(env(safe-area-inset-top) + 0.54em);
 }
 
 .sectionTabs {

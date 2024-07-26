@@ -435,12 +435,25 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
         transition-delay: 25s;
     }
 
+    body.songEnd .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+        opacity: 0;
+        transition-delay: 1.5s;
+    }
+
     body:not(.transition).mouseIdle .backgroundContainer.withBackdrop {
         opacity: 0.5;
         transition: opacity 12s ease-in-out;
         transition-delay: 20s;
     }
 
+    #nowPlayingPage .detailLogo {
+        position: fixed;
+        left: 2rem;
+        bottom: 12rem;
+        top: unset;
+        right: unset;
+        height: 8rem;
+    }
 
     .nowPlayingInfoContainer {
         height: unset;

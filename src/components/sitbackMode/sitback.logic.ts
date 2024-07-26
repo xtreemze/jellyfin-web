@@ -41,7 +41,7 @@ let scrollTimeout2: NodeJS.Timeout;
 export function scrollToActivePlaylistItem() {
     clearTimeout(scrollTimeout);
     clearTimeout(scrollTimeout2);
-    if (!isNowPlaying()) return;
+    if (!isNowPlaying() || window.innerWidth < 400) return;
     scrollTimeout = setTimeout(()=>{
         findActivePlaylistItem();
 
@@ -60,14 +60,13 @@ function startTransition() {
 
     const classList = document.body.classList;
     classList.add('transition');
+    classList.remove('songEnd');
 }
 
 function endTransition() {
-    scrollToActivePlaylistItem();
-
     const classList = document.body.classList;
     classList.remove('transition');
-    classList.remove('songEnd');
+    scrollToActivePlaylistItem();
 }
 
 export function endSong() {
@@ -82,7 +81,6 @@ export function triggerSongInfoDisplay() {
     if (!isNowPlaying()) return;
 
     startTransition();
-    scrollToActivePlaylistItem();
 
     setTimeout(()=>{
         endTransition();

@@ -664,7 +664,7 @@ function logoImageUrl(item, apiClient, options) {
     return null;
 }
 
-function renderLogo(page, item, apiClient) {
+export function renderLogo(page, item, apiClient) {
     const detailLogo = page.querySelector('.detailLogo');
 
     const url = logoImageUrl(item, apiClient, {});
@@ -675,6 +675,11 @@ function renderLogo(page, item, apiClient) {
     } else {
         detailLogo.classList.add('hide');
     }
+}
+
+export function renderYear(page, item) {
+    const productionYear = page.querySelector('.productionYear');
+    productionYear.innerText = item.ProductionYear || '';
 }
 
 function showRecordingFields(instance, page, item, user) {

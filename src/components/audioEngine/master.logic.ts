@@ -72,7 +72,7 @@ function createBuffer(input: MediaElementAudioSourceNode, output: GainNode) {
     if (visualizerSettings.waveSurfer.enabled) {
         delayedAudible.delayTime.value = 0.01;
     } else {
-        delayedAudible.delayTime.value = 0.25;
+        delayedAudible.delayTime.value = 0.05;
     }
 
     delayNodeBus.unshift(delayedAudible);
