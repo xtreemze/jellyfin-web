@@ -190,12 +190,14 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
 }
 
 .backdropImage {
-    transition: filter 3s ease-in-out;
+    transition: filter 2s ease-in-out;
+    filter: blur(0px) brightness(1);
 }
 
-body.transition .backdropContainer,
-body.songEnd .backdropContainer {
-    filter: blur(5px) brightness(0.5);
+body:not(.mouseIdle) .backdropImage,
+body.transition .backdropImage,
+body.songEnd .backdropImage {
+    filter: blur(6px) brightness(0.5);
 }
 
 body.transition canvas#butterchurn,
