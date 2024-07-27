@@ -2263,7 +2263,7 @@ class PlaybackManager {
                         setPlaylistState(items[playStartIndex].PlaylistItemId, playStartIndex);
                         loading.hide();
                     });
-                }, Math.max(xDuration.sustain * 1000), 5);
+                }, Math.max(xDuration.sustain * 1000), 1);
             });
         }
 
@@ -2304,11 +2304,10 @@ class PlaybackManager {
                 .then(() => detectBitrate(apiClient, item, mediaType))
                 .then((bitrate) => {
                     const elapsedTime = performance.now() - xDuration.t0; // Calculate the elapsed time
-
                     setTimeout(() => {
                         return playAfterBitrateDetect(bitrate, item, playOptions, onPlaybackStartedFn, prevSource)
                             .catch(onPlaybackRejection);
-                    }, Math.max(5, xDuration.sustain * 1000 - elapsedTime));
+                    }, Math.max(1, xDuration.sustain * 1000 - elapsedTime));
                 })
                 .catch(() => {
                     if (playOptions.fullscreen) {

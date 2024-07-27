@@ -18,14 +18,14 @@ function notifyApp() {
     inputManager.notifyMouseMove();
 }
 
-export function removeIdleClasses() {
+function removeIdleClasses() {
     const classList = document.body.classList;
 
     classList.remove('mouseIdle');
     classList.remove('mouseIdle-tv');
 }
 
-export function addIdleClasses() {
+function addIdleClasses() {
     const classList = document.body.classList;
 
     classList.add('mouseIdle');

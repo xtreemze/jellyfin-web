@@ -38,6 +38,7 @@ export const xDuration = {
 
 export function hijackMediaElementForCrossfade() {
     xDuration.t0 = performance.now(); // Record the start time
+    xDuration.busy = true;
     endSong();
     if (visualizerSettings.butterchurn.enabled) butterchurnInstance.nextPreset();
 
@@ -66,8 +67,6 @@ export function hijackMediaElementForCrossfade() {
         }
     });
 
-    xDuration.busy = true;
-
     if (!xDuration.disableFade && audioNodeBus[0] && masterAudioOutput.audioContext) {
         // Schedule the fadeout crossfade curve
         audioNodeBus[0].gain.linearRampToValueAtTime(audioNodeBus[0].gain.value, masterAudioOutput.audioContext.currentTime);
@@ -80,8 +79,14 @@ export function hijackMediaElementForCrossfade() {
         }
         // This destroys the wavesurfer on the fade out track when the new track starts
         destroyWaveSurferInstance();
-        triggerSongInfoDisplay();
-    }, xDuration.sustain * 990);
+
+        const elem = document.createElement('audio');
+        elem.classList.add('mediaPlayerAudio');
+        elem.id = 'currentMediaElement';
+        elem.classList.add('hide');
+
+        document.body.appendChild(elem);
+    }, (xDuration.sustain * 1000) - 15);
 
     setTimeout(() => {
         prevNextDisable(false);
@@ -120,7 +125,7 @@ function prevNextDisable(disable = false) {
 export function timeRunningOut(player: any) {
     const currentTime = player.currentTime();
 
-    if (!masterAudioOutput.audioContext || !xDuration.enabled || xDuration.busy || currentTime < xDuration.fadeOut * 1001) return false;
+    if (!masterAudioOutput.audioContext || !xDuration.enabled || xDuration.busy || currentTime < xDuration.fadeOut * 1000) return false;
     return (player.duration() - currentTime) <= (xDuration.fadeOut * 1000);
 }
 

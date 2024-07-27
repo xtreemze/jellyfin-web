@@ -134,10 +134,6 @@ div.nowPlayingButtonsContainer {
     width: 85%;
 }
 
-body.mouseIdle {
-    cursor: none !important;
-}
-
 div>form>div>button,
 button.button-submit.btnSave {
     position: fixed !important;
@@ -155,30 +151,30 @@ button.button-submit.btnSave {
     z-index: -1;
 }
 
-.nowPlayingVolumeSliderContainer {
-    flex: 1;
-    flex-wrap: nowrap;
-}
+// .nowPlayingVolumeSliderContainer {
+//     flex: 1;
+//     flex-wrap: nowrap;
+// }
 
-.volumecontrol.hide {
-    display: flex;
-    flex: 1;
-    flex-wrap: nowrap;
-}
+// .volumecontrol.hide {
+//     display: flex;
+//     flex: 1;
+//     flex-wrap: nowrap;
+// }
 
 .force-scroll {
     overflow-y: visible;
 }
 
-div.skinBody>#musicPage,
-.page.mainAnimatedPage.libraryPage.withTabs {
-    margin-top: 6rem !important;
-}
+// div.skinBody>#musicPage,
+// .page.mainAnimatedPage.libraryPage.withTabs {
+//     margin-top: 6rem !important;
+// }
 
-div.skinBody>#musicPage,
-div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.padded-left.padded-right.padded-bottom.focuscontainer-x.padPagination.MuiBox-root.css-0 {
-    padding-bottom: 12rem !important;
-}
+// div.skinBody>#musicPage,
+// div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.padded-left.padded-right.padded-bottom.focuscontainer-x.padPagination.MuiBox-root.css-0 {
+//     padding-bottom: 12rem !important;
+// }
 
 .backgroundContainer {
     z-index: -1;
@@ -189,15 +185,17 @@ div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.pad
     z-index: -3;
 }
 
-.backdropImage {
-    transition: filter 2s ease-in-out;
-    filter: blur(0px) brightness(1);
+body:not(.transition).mouseIdle .backdropContainer {
+    transition: filter 4s ease-in-out;
+    filter: blur(0.2px) brightness(0.95);
+    transition-delay:5s;
 }
 
-body:not(.mouseIdle) .backdropImage,
-body.transition .backdropImage,
-body.songEnd .backdropImage {
-    filter: blur(6px) brightness(0.5);
+body:not(.mouseIdle) .backdropContainer,
+body.transition .backdropContainer,
+body.songEnd .backdropContainer {
+    transition: filter 1s ease-in-out;
+    filter: blur(5px) brightness(0.5);
 }
 
 body.transition canvas#butterchurn,
@@ -222,22 +220,22 @@ body:not(.transition).mouseIdle canvas#butterchurn {
     opacity: 0.65;
     mix-blend-mode: normal;
     transition: opacity 6s ease-in-out;
-    transition-delay: 20s;
+    transition-delay: 5s;
 }
 
 body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     opacity: 0.5;
     mix-blend-mode: normal;
     transition: opacity 6s ease-in-out;
-    transition-delay: 20s;
+    transition-delay: 5s;
 }
 
 #nowPlayingPage .detailLogo {
-    bottom: 11rem;
-    height: 19.5rem;
-    right: 25vw;
+    bottom: 35rem;
+    height: 12rem;
+    left: calc(60vw + 5rem);
     position: fixed;
-    left: calc(50vw + 5rem);
+    right: calc(10vw + 5rem);
     top: auto;
     width: auto;
 }
@@ -260,29 +258,7 @@ body.songEnd .productionYear {
     transform: translateX(100vh);
 }
 
-// @media (orientation: portrait) and (max-width: 915px) {
-// #nowPlayingPage {
-//     top: 100vh;
-// }
-
-// .playlistSectionButton {
-//     margin-top: 6rem;
-// }
-
-// .remoteControlContent {
-//     height: 100%;
-// }
-
-// .nowPlayingInfoContainer {
-//     align-items: center;
-//     flex-direction: column !important;
-//     height: calc(100% - 4.2em);
-//     width: 100%;
-//     display: flex;
-// }
-// }
-
-@media (orientation: landscape) and (min-width: 915px) {
+@media (min-width: 690px) {
     #inputSurfer ::part(minimap) {
         position: fixed;
         left: 34vw;
@@ -312,7 +288,7 @@ body.songEnd .productionYear {
         opacity: 0.25;
         mix-blend-mode: difference;
         transition: opacity 6s ease-in-out;
-        transition-delay: 20s;
+        transition-delay: 5s;
     }
 
     .nowPlayingSecondaryButtons {
@@ -335,9 +311,7 @@ body.songEnd .productionYear {
         position: fixed;
         bottom: -0.25rem;
         overflow: visible;
-        user-select: none;
         margin: none;
-        pointer-events: none;
         left: 31%;
         right: 31%;
         width: 38%;
@@ -397,8 +371,8 @@ body.songEnd .productionYear {
         height: 0rem;
         margin: 0;
         position: fixed;
-        right: 18.8vw;
-        width: 56.7vw;
+        right: 9vw;
+        width: 56.2vw;
         align-items: center;
     }
 
@@ -418,22 +392,23 @@ body.songEnd .productionYear {
     }
 
     /* Base state: element is off-screen */
-    .nowPlayingInfoControls>.infoContainer {
+    body.mouseIdle .nowPlayingInfoControls>.infoContainer {
         transform: translateX(calc(-100vw - 6rem));
-        transition: transform 4s ease-in-out;
+        transition: transform 2s ease-in-out;
     }
-
+    
     /* Slide in when the page loads or when the user is active */
-    body:not(.mouseIdle) .nowPlayingInfoControls>.infoContainer,
-    body.transition .nowPlayingInfoControls>.infoContainer {
+    body.transition .nowPlayingInfoControls>.infoContainer,
+    body:not(.mouseIdle) .nowPlayingInfoControls>.infoContainer {
         transform: translateX(0);
         transition-delay: 0s;
+        transition: transform 2s ease-in-out;
         /* Ensures immediate transition when user becomes active */
     }
 
-    /* Slide out after 15 seconds of mouse idle */
+    /* Slide out after seconds of mouse idle */
     body:not(.transition).mouseIdle .nowPlayingInfoControls>.infoContainer {
-        transition-delay: 10s;
+        transition-delay: 2s;
     }
 
     body.songEnd .nowPlayingInfoControls>.infoContainer {
@@ -453,6 +428,7 @@ body.songEnd .productionYear {
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
         transition: opacity 500ms ease-in-out;
+        transition-delay: 1s;
     }
 
     body.mouseIdle header,
@@ -463,13 +439,13 @@ body.songEnd .productionYear {
         transition: opacity 500ms ease-out;
     }
 
-    body:not(.transition).mouseIdle div#itemDetailPage,
-    body:not(.transition).mouseIdle div#musicPage,
-    body:not(.transition).mouseIdle div#indexPage,
+    // body:not(.transition).mouseIdle div#itemDetailPage,
+    // body:not(.transition).mouseIdle div#musicPage,
+    // body:not(.transition).mouseIdle div#indexPage,
     body:not(.transition).mouseIdle .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 0;
         transition: opacity 500ms ease-out;
-        transition-delay: 15s;
+        transition-delay: 5s;
     }
 
     body.songEnd .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
@@ -480,15 +456,15 @@ body.songEnd .productionYear {
     body:not(.transition).mouseIdle .backgroundContainer.withBackdrop {
         opacity: 0.5;
         transition: opacity 12s ease-in-out;
-        transition-delay: 20s;
+        transition-delay: 5s;
     }
 
     #nowPlayingPage .detailLogo {
         bottom: 32rem;
         height: 16.5rem;
-        right: calc(10vw + 5rem);
+        right: calc(12vw + 2rem);
         position: fixed;
-        left: calc(60vw + 2rem);
+        left: calc(65vw + 2rem);
         top: auto;
         width: auto;
     }
@@ -521,7 +497,7 @@ body.songEnd .productionYear {
         padding-left: 0;
         padding-right: 0;
         padding-top: 6rem;
-        right: calc(20vw - 7rem);
+        right: calc(26vw - 16rem);
         scrollbar-width: none;
         position: absolute;
         width: 24rem;

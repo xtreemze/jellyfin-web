@@ -18,8 +18,6 @@ import './nowPlayingBar.scss';
 import '../../elements/emby-slider/emby-slider';
 import { appRouter } from '../router/appRouter';
 import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
-import { hideCursor } from 'scripts/mouseManager';
-import { isMobileBrowser } from 'utils/detectMobile';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];
@@ -115,16 +113,7 @@ function onSlideDownComplete() {
     this.classList.add('hide');
 }
 
-function toggleFullscreen() {
-    if (currentPlayer && !document?.fullscreenElement && isMobileBrowser()) {
-        playbackManager.toggleFullscreen(currentPlayer);
-    }
-}
-
 function slideDown(elem) {
-    hideCursor();
-    toggleFullscreen();
-
     // trigger reflow
     void elem.offsetWidth;
 

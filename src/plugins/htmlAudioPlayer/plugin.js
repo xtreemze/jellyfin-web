@@ -8,6 +8,7 @@ import Events from '../../utils/events';
 import { MediaError } from 'types/mediaError';
 import { audioNodeBus, createGainNode, initializeMasterAudio, masterAudioOutput } from 'components/audioEngine/master.logic';
 import { hijackMediaElementForCrossfade, xDuration } from 'components/audioEngine/crossfader.logic';
+import { triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 
 function getDefaultProfile() {
     return profileBuilder({});
@@ -342,6 +343,10 @@ class HtmlAudioPlayer {
                 htmlMediaHelper.seekOnPlaybackStart(self, e.target, self._currentPlayOptions.playerStartPositionTicks);
             }
             Events.trigger(self, 'playing');
+            triggerSongInfoDisplay();
+
+            const elapsedTime = performance.now() - xDuration.t0; // Calculate the elapsed time
+            console.log('unexpected audio gap in seconds: ', (elapsedTime / 1000) - xDuration.sustain);
         }
 
         function onPlay() {
@@ -655,11 +660,11 @@ class HtmlAudioPlayer {
         if (mediaElement) {
             if (document.AirPlayEnabled) {
                 if (isEnabled) {
-                    mediaElement.requestAirPlay().catch(function(err) {
+                    mediaElement.requestAirPlay().catch(function (err) {
                         console.error('Error requesting AirPlay', err);
                     });
                 } else {
-                    document.exitAirPLay().catch(function(err) {
+                    document.exitAirPLay().catch(function (err) {
                         console.error('Error exiting AirPlay', err);
                     });
                 }

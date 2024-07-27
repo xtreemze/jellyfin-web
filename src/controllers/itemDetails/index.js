@@ -678,8 +678,37 @@ export function renderLogo(page, item, apiClient) {
 }
 
 export function renderYear(page, item) {
-    const productionYear = page.querySelector('.productionYear');
-    productionYear.innerText = item.ProductionYear || '';
+    const productionYearElement = page.querySelector('.productionYear');
+    if (!item.PremiereDate && !item.ProductionYear) {
+        productionYearElement.innerText = '';
+        return;
+    }
+    const extractedYear = new Date(item.PremiereDate || item.ProductionYear);
+    productionYearElement.innerText = extractedYear.getFullYear();
+}
+
+function discImageUrl(item, apiClient, options) {
+    options = options || {};
+    options.type = 'Disc';
+
+    if (item.ImageTags?.Disc) {
+        options.tag = item.ImageTags.Disc;
+        return apiClient.getScaledImageUrl(item.AlbumId, options);
+    }
+}
+
+export function renderDiscImage(page, item, apiClient) {
+    const discImageElement = page.querySelector('.discImage');
+    if (!discImageElement) return;
+
+    const url = discImageUrl(item, apiClient, {});
+
+    if (url) {
+        discImageElement.classList.remove('hide');
+        imageLoader.setLazyImage(discImageElement, url);
+    } else {
+        discImageElement.classList.add('hide');
+    }
 }
 
 function showRecordingFields(instance, page, item, user) {
