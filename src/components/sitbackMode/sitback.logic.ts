@@ -56,8 +56,6 @@ export function scrollToActivePlaylistItem() {
 }
 
 function startTransition() {
-    scrollToActivePlaylistItem();
-
     const classList = document.body.classList;
     classList.add('transition');
     classList.remove('songEnd');
@@ -66,7 +64,6 @@ function startTransition() {
 function endTransition() {
     const classList = document.body.classList;
     classList.remove('transition');
-    scrollToActivePlaylistItem();
 }
 
 export function endSong() {

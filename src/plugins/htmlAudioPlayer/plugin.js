@@ -8,7 +8,7 @@ import Events from '../../utils/events';
 import { MediaError } from 'types/mediaError';
 import { audioNodeBus, createGainNode, initializeMasterAudio, masterAudioOutput } from 'components/audioEngine/master.logic';
 import { hijackMediaElementForCrossfade, xDuration } from 'components/audioEngine/crossfader.logic';
-import { triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
+import { scrollToActivePlaylistItem, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 
 function getDefaultProfile() {
     return profileBuilder({});
@@ -344,6 +344,7 @@ class HtmlAudioPlayer {
             }
             Events.trigger(self, 'playing');
             triggerSongInfoDisplay();
+            scrollToActivePlaylistItem();
 
             const elapsedTime = performance.now() - xDuration.t0; // Calculate the elapsed time
             console.log('unexpected audio gap in seconds: ', (elapsedTime / 1000) - xDuration.sustain);
