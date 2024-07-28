@@ -79,13 +79,6 @@ export function hijackMediaElementForCrossfade() {
         }
         // This destroys the wavesurfer on the fade out track when the new track starts
         destroyWaveSurferInstance();
-
-        const elem = document.createElement('audio');
-        elem.classList.add('mediaPlayerAudio');
-        elem.id = 'currentMediaElement';
-        elem.classList.add('hide');
-
-        document.body.appendChild(elem);
     }, (xDuration.sustain * 1000) - 15);
 
     setTimeout(() => {

@@ -200,11 +200,10 @@ body.songEnd .backdropContainer {
 
 body.transition canvas#butterchurn,
 canvas#butterchurn {
-    position: fixed;
-    opacity: 0.4;
-    mix-blend-mode: difference;
-    transition: opacity 1.4s ease-in-out;
     z-index: 0;
+    position: fixed;
+    filter: opacity(0.7) brightness(0.9) blur(12px);
+    transition: filter 1.4s ease-in-out;
 }
 
 body.transition canvas#frequencyAnalyzer,
@@ -217,9 +216,8 @@ canvas#frequencyAnalyzer {
 }
 
 body:not(.transition).mouseIdle canvas#butterchurn {
-    opacity: 0.65;
-    mix-blend-mode: normal;
-    transition: opacity 6s ease-in-out;
+    filter: opacity(0.7) brightness(0.9) blur(0.2px);
+    transition: filter 6s ease-in-out;
     transition-delay: 5s;
 }
 
@@ -285,9 +283,8 @@ body.songEnd .productionYear {
     }
 
     canvas#butterchurn body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
-        opacity: 0.25;
-        mix-blend-mode: difference;
-        transition: opacity 6s ease-in-out;
+        filter: opacity(0.9) brightness(0.7) blur(13px);
+        transition: filter 6s ease-in-out;
         transition-delay: 5s;
     }
 
@@ -307,9 +304,9 @@ body.songEnd .productionYear {
     #simpleSlider {
         padding: unset;
         z-index: 3;
-        height: 1rem;
+        bottom: 0.65rem;
         position: fixed;
-        bottom: -0.25rem;
+        height: 1rem;
         overflow: visible;
         margin: none;
         left: 31%;
@@ -380,15 +377,20 @@ body.songEnd .productionYear {
         z-index: -1;
         position: fixed;
         background-color: black;
-        border-radius: 0 3.5em 3.5em 0;
+        border-radius: 0 1.5em 1.5em 0;
         bottom: 33rem;
         left: -0.2em;
         padding-bottom: 4.7rem;
         padding-left: 70vw;
         padding-right: 0vw;
-        padding-top: 7rem;
+        padding-top: 6rem;
         width: unset;
         min-width: 26rem;
+    }
+
+    .nowPlayingSongName {
+        font-size: 2rem;
+        letter-spacing: -1px;
     }
 
     /* Base state: element is off-screen */
@@ -424,6 +426,8 @@ body.songEnd .productionYear {
     div#indexPage,
     #simpleSlider,
     .nowPlayingButtonsContainer,
+    div.positionTime,
+    div.runtime,
     body.transition .nowPlayingInfoContainer>.nowPlayingPageImageContainer,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
@@ -433,6 +437,8 @@ body.songEnd .productionYear {
 
     body.mouseIdle header,
     body.mouseIdle .skinHeader,
+    body.mouseIdle div.positionTime,
+    body.mouseIdle div.runtime,
     body.mouseIdle #simpleSlider .nowPlayingPositionSliderContainer,
     body.mouseIdle .nowPlayingButtonsContainer {
         opacity: 0;
@@ -550,7 +556,6 @@ body.songEnd .productionYear {
         bottom: 1rem;
         left: 2.8rem;
         right: 2.8rem;
-        font-size: 0.6em;
     }
 
     .listItemImage.playlistIndexIndicatorImage {
