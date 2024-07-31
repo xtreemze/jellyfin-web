@@ -3975,6 +3975,7 @@ class PlaybackManager {
             const list = [
                 'GoHome',
                 'GoToSettings',
+                'GoToQueue',
                 'VolumeUp',
                 'VolumeDown',
                 'Mute',
