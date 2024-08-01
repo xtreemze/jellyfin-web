@@ -151,35 +151,13 @@ button.button-submit.btnSave {
     z-index: -1;
 }
 
-// .nowPlayingVolumeSliderContainer {
-//     flex: 1;
-//     flex-wrap: nowrap;
-// }
-
-// .volumecontrol.hide {
-//     display: flex;
-//     flex: 1;
-//     flex-wrap: nowrap;
-// }
-
 .force-scroll {
     overflow-y: visible;
 }
 
-// div.skinBody>#musicPage,
-// .page.mainAnimatedPage.libraryPage.withTabs {
-//     margin-top: 6rem !important;
-// }
-
-// div.skinBody>#musicPage,
-// div.flex.align-items-center.justify-content-center.flex-wrap-wrap.padded-top.padded-left.padded-right.padded-bottom.focuscontainer-x.padPagination.MuiBox-root.css-0 {
-//     padding-bottom: 12rem !important;
-// }
-
 .backgroundContainer {
     z-index: -1;
 }
-
 
 .backdropContainer {
     z-index: -3;
@@ -188,7 +166,7 @@ button.button-submit.btnSave {
 body:not(.transition).mouseIdle .backdropContainer {
     transition: filter 4s ease-in-out;
     filter: blur(0.2px) brightness(0.95);
-    transition-delay:5s;
+    transition-delay: 5s;
 }
 
 body:not(.mouseIdle) .backdropContainer,
@@ -229,13 +207,15 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
 }
 
 #nowPlayingPage .detailLogo {
-    bottom: 35rem;
-    height: 12rem;
-    left: calc(60vw + 5rem);
+    bottom: 4rem;
+    height: 8rem;
+    left: 5rem;
     position: fixed;
-    right: calc(10vw + 5rem);
+    right: 5rem;
     top: auto;
     width: auto;
+    z-index: 2;
+    display: block;
 }
 
 .productionYear {
@@ -254,6 +234,40 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
 
 body.songEnd .productionYear {
     transform: translateX(100vh);
+}
+
+.discImage {
+    z-index: 0;
+    left: calc(21rem - 35vh);
+    bottom: calc(38.3rem - 35vh);
+    position: fixed;
+    width: 80vh;
+    height: 80vh;
+    filter: brightness(0.85) contrast(1.05);
+    background-size: 80vh;
+    background-position-y: center;
+    background-position-x: center;
+    transition: transform 2.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transform: translateX(0vh) rotate(-3turn);
+    transition-delay: 0s;
+}
+
+body:not(.transition).mouseIdle .discImage {
+    transform: translateX(-80vh) rotate(-4turn);
+    transition: transform 1.5s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+    transition-delay: 2s;
+}
+
+body.songEnd .discImage {
+    transform: translateX(0vh) rotate(-4turn);
+    transition-duration: 3s;
+    transition-delay: 0s;
+}
+
+body.transition .discImage {
+    transform: translateX(0vh) rotate(-3turn);
+    transition-duration: 3s;
+    transition-delay: 0s;
 }
 
 @media (min-width: 690px) {
@@ -397,8 +411,10 @@ body.songEnd .productionYear {
     body.mouseIdle .nowPlayingInfoControls>.infoContainer {
         transform: translateX(calc(-100vw - 6rem));
         transition: transform 2s ease-in-out;
+        box-shadow: 2px 2px 3px #010101;
+
     }
-    
+
     /* Slide in when the page loads or when the user is active */
     body.transition .nowPlayingInfoControls>.infoContainer,
     body:not(.mouseIdle) .nowPlayingInfoControls>.infoContainer {
@@ -414,8 +430,8 @@ body.songEnd .productionYear {
     }
 
     body.songEnd .nowPlayingInfoControls>.infoContainer {
-        transform: translateX(calc(-100vw - 6rem));
-        transition: transform 2s ease-in-out;
+        transform: translateX(calc(-100vw));
+        transition: transform 1s ease-in-out;
         transition-delay: 0s;
     }
 
@@ -466,6 +482,7 @@ body.songEnd .productionYear {
     }
 
     #nowPlayingPage .detailLogo {
+        z-index: -2;
         bottom: 32rem;
         height: 16.5rem;
         right: calc(12vw + 2rem);

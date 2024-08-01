@@ -689,11 +689,8 @@ export function renderYear(page, item) {
 function discImageUrl(item, apiClient, options) {
     options = options || {};
     options.type = 'Disc';
-
-    if (item.ImageTags?.Disc) {
-        options.tag = item.ImageTags.Disc;
-        return apiClient.getScaledImageUrl(item.AlbumId, options);
-    }
+    options.maxWidth = window.innerHeight * 0.8;
+    return apiClient.getScaledImageUrl(item.AlbumId, options);
 }
 
 export function renderDiscImage(page, item, apiClient) {
@@ -1668,7 +1665,7 @@ function inferContext(item) {
 function filterItemsByCollectionItemType(items, typeInfo) {
     const filteredItems = [];
     const leftoverItems = [];
-    items.forEach(function(item) {
+    items.forEach(function (item) {
         if ((typeInfo.mediaType && item.MediaType == typeInfo.mediaType) || (item.Type == typeInfo.type)) {
             filteredItems.push(item);
         } else {
