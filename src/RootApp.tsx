@@ -1,4 +1,3 @@
-import { History } from '@remix-run/router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
@@ -10,11 +9,11 @@ import './components/visualizer/visualizers.scss';
 
 import RootAppRouter from 'RootAppRouter';
 
-const RootApp = ({ history }: Readonly<{ history: History }>) => (
+const RootApp = () => (
     <QueryClientProvider client={queryClient}>
         <ApiProvider>
             <WebConfigProvider>
-                <RootAppRouter history={history} />
+                <RootAppRouter />
             </WebConfigProvider>
         </ApiProvider>
         <ReactQueryDevtools initialIsOpen={false} />
