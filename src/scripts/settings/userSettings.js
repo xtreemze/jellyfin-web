@@ -167,10 +167,10 @@ export class UserSettings {
      */
     selectAudioNormalization(val) {
         if (val !== undefined) {
-            return this.set('selectAudioNormalization', val, false);
+            return this.set('selectAudioNormalization', val, true);
         }
 
-        return this.get('selectAudioNormalization', false) || 'TrackGain';
+        return this.get('selectAudioNormalization', true) || 'AlbumGain';
     }
 
     /**
@@ -286,10 +286,10 @@ export class UserSettings {
      */
     enableBackdrops(val) {
         if (val !== undefined) {
-            return this.set('enableBackdrops', val.toString(), false);
+            return this.set('enableBackdrops', val.toString(), true);
         }
 
-        return toBoolean(this.get('enableBackdrops', false), false);
+        return toBoolean(this.get('enableBackdrops', true), false);
     }
 
     /**
@@ -468,10 +468,10 @@ export class UserSettings {
      */
     libraryPageSize(val) {
         if (val !== undefined) {
-            return this.set('libraryPageSize', val.toString(), false);
+            return this.set('libraryPageSize', val.toString(), true);
         }
 
-        const libraryPageSize = parseInt(this.get('libraryPageSize', false), 10);
+        const libraryPageSize = parseInt(this.get('libraryPageSize', true), 10);
         if (libraryPageSize === 0) {
             // Explicitly return 0 to avoid returning 100 because 0 is falsy.
             return 0;
