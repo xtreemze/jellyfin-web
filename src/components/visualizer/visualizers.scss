@@ -112,14 +112,20 @@ div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
     max-width: 30vh;
 }
 
-div.nowPlayingPageImageContainer {
+.nowPlayingPageImageContainer {
     position: fixed;
-    bottom: 26.25rem;
+    bottom: 13rem;
     width: 92.5%;
     margin-right: 0rem !important;
     z-index: 1;
-    user-select: none;
-    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    transition-delay: 0s;
+}
+
+body.transition .nowPlayingPageImageContainer {
+    opacity: 1;
+    transition-delay: 0.5s;
 }
 
 div.infoContainer {
@@ -237,19 +243,23 @@ body.songEnd .productionYear {
 }
 
 .discImage {
-    z-index: 0;
-    left: calc(21rem - 35vh);
-    bottom: calc(38.3rem - 35vh);
-    position: fixed;
-    width: 80vh;
-    height: 80vh;
-    filter: brightness(0.85) contrast(1.05);
-    background-size: 80vh;
-    background-position-y: center;
     background-position-x: center;
-    transition: transform 2.4s cubic-bezier(0.22, 0.61, 0.36, 1);
-    transform: translateX(0vh) rotate(-3turn);
+    background-position-y: center;
+    background-size: 50vh;
+    bottom: 28rem;
+    -webkit-filter: brightness(.85) contrast(1.05);
+    filter: brightness(.85) contrast(1.05);
+    height: 50vh;
+    left: calc(49.8vw - 25vh);
+    position: fixed;
+    -webkit-transform: translateX(0) rotate(-3turn);
+    transform: translateX(0) rotate(-3turn);
+    transition: -webkit-transform 2.4s cubic-bezier(.22,.61,.36,1);
+    transition: transform 2.4s cubic-bezier(.22,.61,.36,1);
+    transition: transform 2.4s cubic-bezier(.22,.61,.36,1), -webkit-transform 2.4s cubic-bezier(.22,.61,.36,1);
     transition-delay: 0s;
+    width: 50vh;
+    z-index: 0;
 }
 
 body:not(.transition).mouseIdle .discImage {
@@ -490,6 +500,14 @@ body.transition .discImage {
         left: calc(65vw + 2rem);
         top: auto;
         width: auto;
+    }
+
+    .discImage {
+        left: calc(21rem - 35vh);
+        bottom: calc(38.3rem - 35vh);
+        width: 80vh;
+        height: 80vh;
+        background-size: 80vh;
     }
 
     .nowPlayingInfoContainer {
