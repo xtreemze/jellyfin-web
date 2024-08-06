@@ -224,6 +224,7 @@ body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
     width: auto;
     z-index: 2;
     display: block;
+    pointer-events: none;
 }
 
 .productionYear {
@@ -245,22 +246,18 @@ body.songEnd .productionYear {
 }
 
 .discImage {
+    filter: brightness(.85) contrast(1.05);
     background-position-x: center;
     background-position-y: center;
-    background-size: 50vh;
-    bottom: 28rem;
-    -webkit-filter: brightness(.85) contrast(1.05);
-    filter: brightness(.85) contrast(1.05);
-    height: 50vh;
-    left: calc(49.8vw - 25vh);
     position: fixed;
-    -webkit-transform: translateX(0) rotate(-3turn);
+    bottom: 28rem;
+    left: calc(50vw - 21vh);
+    height: 42vh;
+    width: 42vh;
+    background-size: 42vh;
     transform: translateX(0) rotate(-3turn);
-    transition: -webkit-transform 2.4s cubic-bezier(.22,.61,.36,1);
     transition: transform 2.4s cubic-bezier(.22,.61,.36,1);
-    transition: transform 2.4s cubic-bezier(.22,.61,.36,1), -webkit-transform 2.4s cubic-bezier(.22,.61,.36,1);
     transition-delay: 0s;
-    width: 50vh;
     z-index: 0;
 }
 
