@@ -121,6 +121,7 @@ div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
     opacity: 0;
     transition: opacity 1s ease-in-out;
     transition-delay: 0s;
+    pointer-events: none;
 }
 
 body.transition .nowPlayingPageImageContainer {
@@ -163,6 +164,7 @@ button.button-submit.btnSave {
 
 .backgroundContainer {
     z-index: -1;
+    opacity: 0.5;
 }
 
 .backdropContainer {
@@ -547,8 +549,9 @@ body.transition .discImage {
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         bottom: 7rem;
         width: 43vw;
-        left: unset;
+        left: auto;
         right: 37vw;
+        position: fixed;
     }
 
     .nowPlayingPageImage {
