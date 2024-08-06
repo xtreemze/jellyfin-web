@@ -1,3 +1,5 @@
+import * as userSettings from '../../scripts/settings/userSettings';
+
 export const visualizerSettings = {
     butterchurn: {
         enabled: false,
@@ -40,6 +42,10 @@ export function setVisualizerSettings (savedSettings: typeof visualizerSettings)
     visualizerSettings.frequencyAnalyzer = savedSettings?.frequencyAnalyzer;
     visualizerSettings.sitBack = savedSettings?.sitBack;
     visualizerSettings.waveSurfer = savedSettings?.waveSurfer;
+}
+
+export function getSavedVisualizerSettings() {
+    return userSettings.visualizerConfiguration(undefined);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

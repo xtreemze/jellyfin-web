@@ -1,8 +1,9 @@
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 import { audioNodeBus, delayNodeBus, masterAudioOutput, unbindCallback } from './master.logic';
 import { butterchurnInstance } from 'components/visualizer/butterchurn.logic';
-import { visualizerSettings } from 'components/visualizer/visualizers.logic';
+import { getSavedVisualizerSettings, setVisualizerSettings, visualizerSettings } from 'components/visualizer/visualizers.logic';
 import { endSong, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
+import * as userSettings from '../../scripts/settings/userSettings';
 
 export function setXDuration(crossfadeDuration: number) {
     if (crossfadeDuration < 0.01) {
@@ -36,9 +37,16 @@ export const xDuration = {
     busy: false
 };
 
+function getCrossfadeDuration() {
+    return userSettings.crossfadeDuration(undefined);
+}
+
 export function hijackMediaElementForCrossfade() {
     xDuration.t0 = performance.now(); // Record the start time
     xDuration.busy = true;
+    setXDuration(getCrossfadeDuration());
+    setVisualizerSettings(getSavedVisualizerSettings());
+
     endSong();
     if (visualizerSettings.butterchurn.enabled) butterchurnInstance.nextPreset();
 

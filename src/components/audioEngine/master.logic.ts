@@ -1,4 +1,4 @@
-import { visualizerSettings } from 'components/visualizer/visualizers.logic';
+import { getSavedVisualizerSettings, setVisualizerSettings, visualizerSettings } from 'components/visualizer/visualizers.logic';
 import * as userSettings from '../../scripts/settings/userSettings';
 import { setXDuration } from './crossfader.logic';
 
@@ -30,10 +30,15 @@ export let unbindCallback = () => {
     return;
 };
 
+function getCrossfadeDuration() {
+    return userSettings.crossfadeDuration(undefined);
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function initializeMasterAudio(unbind: any) {
-    const savedDuration = userSettings.crossfadeDuration(undefined);
+    const savedDuration = getCrossfadeDuration();
     setXDuration(savedDuration);
+    setVisualizerSettings(getSavedVisualizerSettings());
 
     unbindCallback = unbind;
 
