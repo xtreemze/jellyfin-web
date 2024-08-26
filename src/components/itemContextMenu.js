@@ -201,14 +201,6 @@ export function getCommands(options) {
             id: 'delete',
             icon: 'delete'
         });
-
-        if (item.Type === 'Audio' && item.HasLyrics && window.location.href.includes(item.Id)) {
-            commands.push({
-                name: globalize.translate('DeleteLyrics'),
-                id: 'deleteLyrics',
-                icon: 'delete_sweep'
-            });
-        }
     }
 
     if (commands.length) {
@@ -240,6 +232,14 @@ export function getCommands(options) {
             name: globalize.translate('EditSubtitles'),
             id: 'editsubtitles',
             icon: 'closed_caption'
+        });
+    }
+
+    if (itemHelper.canEditLyrics(user, item)) {
+        commands.push({
+            name: globalize.translate('EditLyrics'),
+            id: 'editlyrics',
+            icon: 'lyrics'
         });
     }
 
@@ -288,6 +288,22 @@ export function getCommands(options) {
             name: globalize.translate('RemoveFromPlaylist'),
             id: 'removefromplaylist',
             icon: 'playlist_remove'
+        });
+    }
+
+    if (item.PlaylistItemId && options.playlistId && item.PlaylistIndex > 0) {
+        commands.push({
+            name: globalize.translate('MoveToTop'),
+            id: 'movetotop',
+            icon: 'vertical_align_top'
+        });
+    }
+
+    if (item.PlaylistItemId && options.playlistId && item.PlaylistIndex < (item.PlaylistItemCount - 1)) {
+        commands.push({
+            name: globalize.translate('MoveToBottom'),
+            id: 'movetobottom',
+            icon: 'vertical_align_bottom'
         });
     }
 
@@ -441,6 +457,11 @@ function executeCommand(item, id, options) {
                     subtitleEditor.show(itemId, serverId).then(getResolveFunction(resolve, id, true), getResolveFunction(resolve, id));
                 });
                 break;
+            case 'editlyrics':
+                import('./lyricseditor/lyricseditor').then(({ default: lyricseditor }) => {
+                    lyricseditor.show(itemId, serverId).then(getResolveFunction(resolve, id, true), getResolveFunction(resolve, id));
+                });
+                break;
             case 'edit':
                 editItem(apiClient, item).then(getResolveFunction(resolve, id, true), getResolveFunction(resolve, id));
                 break;
@@ -514,9 +535,6 @@ function executeCommand(item, id, options) {
             case 'delete':
                 deleteItem(apiClient, item).then(getResolveFunction(resolve, id, true, true), getResolveFunction(resolve, id));
                 break;
-            case 'deleteLyrics':
-                deleteLyrics(apiClient, item).then(getResolveFunction(resolve, id, true), getResolveFunction(resolve, id));
-                break;
             case 'share':
                 navigator.share({
                     title: item.Name,
@@ -553,6 +571,22 @@ function executeCommand(item, id, options) {
                         EntryIds: [item.PlaylistItemId].join(',')
                     }),
                     type: 'DELETE'
+                }).then(function () {
+                    getResolveFunction(resolve, id, true)();
+                });
+                break;
+            case 'movetotop':
+                apiClient.ajax({
+                    url: apiClient.getUrl('Playlists/' + options.playlistId + '/Items/' + item.PlaylistItemId + '/Move/0'),
+                    type: 'POST'
+                }).then(function () {
+                    getResolveFunction(resolve, id, true)();
+                });
+                break;
+            case 'movetobottom':
+                apiClient.ajax({
+                    url: apiClient.getUrl('Playlists/' + options.playlistId + '/Items/' + item.PlaylistItemId + '/Move/' + (item.PlaylistItemCount - 1)),
+                    type: 'POST'
                 }).then(function () {
                     getResolveFunction(resolve, id, true)();
                 });
@@ -664,12 +698,6 @@ function deleteItem(apiClient, item) {
                 resolve(true);
             }, reject);
         });
-    });
-}
-
-function deleteLyrics(apiClient, item) {
-    return import('../scripts/deleteHelper').then((deleteHelper) => {
-        return deleteHelper.deleteLyrics(item);
     });
 }
 

@@ -8,6 +8,7 @@ import * as userSettings from '../../scripts/settings/userSettings';
 import globalize from '../../lib/globalize';
 import Dashboard from '../../utils/dashboard';
 import Events from '../../utils/events.ts';
+import { setFilterStatus } from 'components/filterdialog/filterIndicator';
 
 import '../../elements/emby-itemscontainer/emby-itemscontainer';
 import { scrollPageToTop } from 'components/sitbackMode/sitback.logic';
@@ -55,6 +56,8 @@ export default function (view, params, tabContent) {
         isLoading = true;
         scrollPageToTop();
         const query = getQuery();
+        setFilterStatus(tabContent, query);
+
         ApiClient.getItems(Dashboard.getCurrentUserId(), query).then(function (result) {
             function onNextPageClick() {
                 if (isLoading) {
