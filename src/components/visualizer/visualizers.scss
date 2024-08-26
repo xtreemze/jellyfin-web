@@ -112,16 +112,17 @@ div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
     max-width: 30vh;
 }
 
-.nowPlayingPageImageContainer {
-    position: fixed;
-    bottom: 13rem;
-    width: 92.5%;
-    margin-right: 0rem !important;
-    z-index: 1;
+div.nowPlayingPageImageContainer {
+    bottom: 27.3rem;
+    margin-right: 0 !important;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 1s ease-in-out;
     transition-delay: 0s;
-    pointer-events: none;
+    width: 30rem;
+    position: fixed;
+    max-width: 92vw;
+    z-index: 1;
 }
 
 body.transition .nowPlayingPageImageContainer {
@@ -256,7 +257,7 @@ body.songEnd .productionYear {
     width: 42vh;
     background-size: 42vh;
     transform: translateX(0) rotate(-3turn);
-    transition: transform 2.4s cubic-bezier(.22,.61,.36,1);
+    transition: transform 2.4s cubic-bezier(.22, .61, .36, 1);
     transition-delay: 0s;
     z-index: 0;
 }
@@ -544,6 +545,7 @@ body.transition .discImage {
     }
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
+        z-index: 1;
         bottom: 7rem;
         width: 43vw;
         left: auto;
