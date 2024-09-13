@@ -1,3 +1,4 @@
+import { appRouter, isLyricsPage } from 'components/router/appRouter';
 import datetime from '../../scripts/datetime';
 import Events from '../../utils/events.ts';
 import browser from 'scripts/browser';
@@ -792,7 +793,7 @@ function refreshFromPlayer(player, type) {
 }
 
 function bindToPlayer(player) {
-    isLyricPageActive = appRouter.currentRouteInfo.path.toLowerCase() === '/lyrics';
+    isLyricPageActive = isLyricsPage();
     if (player === currentPlayer) {
         return;
     }
@@ -825,7 +826,7 @@ Events.on(playbackManager, 'playerchange', function () {
 bindToPlayer(playbackManager.getCurrentPlayer());
 
 document.addEventListener('viewbeforeshow', function (e) {
-    isLyricPageActive = appRouter.currentRouteInfo.path.toLowerCase() === '/lyrics';
+    isLyricPageActive = isLyricsPage();
     setLyricButtonActiveStatus();
     if (!e.detail.options.enableMediaControl) {
         if (isVisibilityAllowed) {

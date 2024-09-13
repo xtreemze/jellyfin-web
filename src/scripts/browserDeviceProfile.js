@@ -242,16 +242,16 @@ function supportedDolbyVisionProfilesHevc(videoTestElement) {
     if (browser.xboxOne) return [5, 8];
 
     const supportedProfiles = [];
-    // Profiles 5/8 4k@60fps
+    // Profiles 5/8 4k@24fps
     if (videoTestElement.canPlayType) {
         if (videoTestElement
-            .canPlayType('video/mp4; codecs="dvh1.05.09"')
+            .canPlayType('video/mp4; codecs="dvh1.05.06"')
             .replace(/no/, '')) {
             supportedProfiles.push(5);
         }
         if (
             videoTestElement
-                .canPlayType('video/mp4; codecs="dvh1.08.09"')
+                .canPlayType('video/mp4; codecs="dvh1.08.06"')
                 .replace(/no/, '')
             // LG TVs from at least 2020 onwards should support profile 8, but they don't report it.
             || (browser.web0sVersion >= 4)
@@ -453,7 +453,7 @@ export default function (options) {
 
     const canPlayVp8 = videoTestElement.canPlayType('video/webm; codecs="vp8"').replace(/no/, '');
     const canPlayVp9 = videoTestElement.canPlayType('video/webm; codecs="vp9"').replace(/no/, '');
-    const safariSupportsOpus = browser.safari && !!document.createElement('audio').canPlayType('audio/x-caf; codecs="opus"').replace(/no/, '');
+    const safariSupportsOpus = browser.safari && browser.versionMajor >= 17 && !!document.createElement('audio').canPlayType('audio/x-caf; codecs="opus"').replace(/no/, '');
     const webmAudioCodecs = ['vorbis'];
 
     const canPlayMkv = testCanPlayMkv(videoTestElement);
@@ -738,10 +738,19 @@ export default function (options) {
             });
         }
 
-        profile.DirectPlayProfiles.push({
-            Container: audioFormat,
-            Type: 'Audio'
-        });
+        if (audioFormat === 'flac' && appSettings.alwaysRemuxFlac()) {
+            // force remux flac in fmp4. Clients not supporting this configuration should disable this option
+            profile.DirectPlayProfiles.push({
+                Container: 'mp4',
+                AudioCodec: 'flac',
+                Type: 'Audio'
+            });
+        } else if (audioFormat !== 'mp3' || !appSettings.alwaysRemuxMp3()) { // mp3 remux profile is already injected
+            profile.DirectPlayProfiles.push({
+                Container: audioFormat,
+                Type: 'Audio'
+            });
+        }
 
         // https://www.webmproject.org/about/faq/
         if (audioFormat === 'opus' || audioFormat === 'webma') {
@@ -794,7 +803,8 @@ export default function (options) {
             Protocol: 'hls',
             MaxAudioChannels: physicalAudioChannels.toString(),
             MinSegments: browser.iOS || browser.osx ? '2' : '1',
-            BreakOnNonKeyFrames: hlsBreakOnNonKeyFrames
+            BreakOnNonKeyFrames: hlsBreakOnNonKeyFrames,
+            EnableAudioVbrEncoding: !appSettings.disableVbrAudio()
         });
     }
 
@@ -906,17 +916,45 @@ export default function (options) {
         });
     }
 
+    const globalAudioCodecProfileConditions = [];
+    const globalVideoAudioCodecProfileConditions = [];
+
+    if (parseInt(userSettings.allowedAudioChannels(), 10) > 0) {
+        globalAudioCodecProfileConditions.push({
+            Condition: 'LessThanEqual',
+            Property: 'AudioChannels',
+            Value: physicalAudioChannels.toString(),
+            IsRequired: false
+        });
+
+        globalVideoAudioCodecProfileConditions.push({
+            Condition: 'LessThanEqual',
+            Property: 'AudioChannels',
+            Value: physicalAudioChannels.toString(),
+            IsRequired: false
+        });
+    }
+
     if (!supportsSecondaryAudio) {
+        globalVideoAudioCodecProfileConditions.push({
+            Condition: 'Equals',
+            Property: 'IsSecondaryAudio',
+            Value: 'false',
+            IsRequired: false
+        });
+    }
+
+    if (globalAudioCodecProfileConditions.length) {
+        profile.CodecProfiles.push({
+            Type: 'Audio',
+            Conditions: globalAudioCodecProfileConditions
+        });
+    }
+
+    if (globalVideoAudioCodecProfileConditions.length) {
         profile.CodecProfiles.push({
             Type: 'VideoAudio',
-            Conditions: [
-                {
-                    Condition: 'Equals',
-                    Property: 'IsSecondaryAudio',
-                    Value: 'false',
-                    IsRequired: false
-                }
-            ]
+            Conditions: globalVideoAudioCodecProfileConditions
         });
     }
 
@@ -1287,6 +1325,23 @@ export default function (options) {
         });
 
         profile.CodecProfiles.push(codecProfileMp4);
+    }
+
+    if (browser.safari && appSettings.enableHi10p()) {
+        profile.CodecProfiles.push({
+            Type: 'Video',
+            Container: 'hls',
+            SubContainer: 'mp4',
+            Codec: 'h264',
+            Conditions: [
+                {
+                    Condition: 'EqualsAny',
+                    Property: 'VideoProfile',
+                    Value: h264Profiles + '|high 10',
+                    IsRequired: false
+                }
+            ]
+        });
     }
 
     profile.CodecProfiles.push({
