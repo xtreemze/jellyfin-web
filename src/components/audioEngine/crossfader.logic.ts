@@ -4,7 +4,6 @@ import { butterchurnInstance } from 'components/visualizer/butterchurn.logic';
 import { getSavedVisualizerSettings, setVisualizerSettings, visualizerSettings } from 'components/visualizer/visualizers.logic';
 import { endSong, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 import * as userSettings from '../../scripts/settings/userSettings';
-import { rebindMediaSession } from 'components/playback/mediasession';
 
 export function setXDuration(crossfadeDuration: number) {
     if (crossfadeDuration < 0.01) {
@@ -94,7 +93,6 @@ export function hijackMediaElementForCrossfade() {
         prevNextDisable(false);
         const xfadeGainNode = audioNodeBus.pop();
         const delayNode = delayNodeBus.pop();
-        rebindMediaSession();
 
         if (!masterAudioOutput.audioContext || !xfadeGainNode || !delayNode) return;
         xfadeGainNode.gain.linearRampToValueAtTime(0, masterAudioOutput.audioContext.currentTime + 1);

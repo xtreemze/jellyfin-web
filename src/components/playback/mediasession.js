@@ -255,8 +255,4 @@ Events.on(playbackManager, 'playerchange', function () {
     bindToPlayer(playbackManager.getCurrentPlayer());
 });
 
-export function rebindMediaSession() {
-    bindToPlayer(playbackManager.getCurrentPlayer());
-}
-
-rebindMediaSession();
+bindToPlayer(playbackManager.getCurrentPlayer());

@@ -77,7 +77,7 @@ const Pagination: FC<PaginationProps> = ({
                         <IconButton
                             title={globalize.translate('Next')}
                             className='paper-icon-button-light btnNextPage autoSize'
-                            disabled={startIndex + limit >= totalRecordCount || isPlaceholderData}
+                            disabled={startIndex + limit >= totalRecordCount || isPlaceholderData }
                             onClick={onNextPageClick}
                         >
                             <ArrowForwardIcon />
