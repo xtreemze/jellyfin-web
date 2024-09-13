@@ -119,13 +119,13 @@ function updatePlayerState(player, state, eventName) {
     const canSeek = playState.CanSeek || false;
 
     if ('mediaSession' in navigator) {
-        /* eslint-disable-next-line compat/compat */
         navigator.mediaSession.metadata = new MediaMetadata({
             title: title,
             artist: artist,
             album: album,
             artwork: getImageUrls(item)
         });
+        navigator.mediaSession.playbackState = isPaused ? 'paused' : 'playing';
     } else {
         const itemImageUrl = seriesImageUrl(item, { maxHeight: 3000 }) || imageUrl(item, { maxHeight: 3000 });
         shell.updateMediaSession({
@@ -255,5 +255,8 @@ Events.on(playbackManager, 'playerchange', function () {
     bindToPlayer(playbackManager.getCurrentPlayer());
 });
 
-bindToPlayer(playbackManager.getCurrentPlayer());
+export function rebindMediaSession() {
+    bindToPlayer(playbackManager.getCurrentPlayer());
+}
 
+rebindMediaSession();
