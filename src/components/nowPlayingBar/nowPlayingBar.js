@@ -17,7 +17,6 @@ import appFooter from '../appFooter/appFooter';
 import itemShortcuts from '../shortcuts';
 import './nowPlayingBar.scss';
 import '../../elements/emby-slider/emby-slider';
-import { appRouter } from '../router/appRouter';
 import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
 
 let currentPlayer;
