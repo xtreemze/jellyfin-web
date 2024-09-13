@@ -4,14 +4,14 @@ const sitbackSettings = {
 
 let activePlaylistItem: HTMLElement | null;
 
-declare let window: Window & {Emby: IEmby};
+declare let window: Window & { Emby: IEmby };
 
 interface IEmby {
-    Page: {currentRouteInfo: { path: string }};
+    Page: { currentRouteInfo: { path: string } };
 }
 
 function isNowPlaying() {
-    return (window?.Emby?.Page?.currentRouteInfo.path === '/queue');
+    return (window?.Emby?.Page?.currentRouteInfo?.path === '/queue');
 }
 
 function findActivePlaylistItem() {
