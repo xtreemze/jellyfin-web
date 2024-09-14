@@ -11,7 +11,7 @@ interface IEmby {
 }
 
 function isNowPlaying() {
-    return (window?.Emby?.Page?.currentRouteInfo?.path === '/queue');
+    return (window.location.hash === '#/queue');
 }
 
 function findActivePlaylistItem() {

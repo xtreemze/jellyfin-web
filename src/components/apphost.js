@@ -272,7 +272,7 @@ const supportedFeatures = function () {
         features.push('fullscreenchange');
     }
 
-    if (browser.tv || browser.xboxOne || browser.ps4 || browser.mobile || browser.ipad) {
+    if (browser.tv || browser.xboxOne || browser.ps4 || browser.ipad) {
         features.push('physicalvolumecontrol');
     }
 

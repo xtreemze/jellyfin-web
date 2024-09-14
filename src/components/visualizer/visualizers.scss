@@ -576,10 +576,6 @@ body.transition .discImage {
         display: none;
     }
 
-    html {
-        scrollbar-width: none;
-    }
-
     div.nowPlayingInfoContainer {
         bottom: 12rem;
         left: 6rem;
@@ -612,6 +608,6 @@ body.transition .discImage {
 
     .layout-desktop,
     .scrollY {
-        scrollbar-width: none;
+        scrollbar-width: none !important;
     }
 }
