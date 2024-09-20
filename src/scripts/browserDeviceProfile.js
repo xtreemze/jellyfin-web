@@ -262,6 +262,11 @@ function supportedDolbyVisionProfilesHevc(videoTestElement) {
     return supportedProfiles;
 }
 
+function supportedDolbyVisionProfileAv1(videoTestElement) {
+    // Profile 10 4k@24fps
+    return videoTestElement.canPlayType?.('video/mp4; codecs="dav1.10.06"').replace(/no/, '');
+}
+
 function getDirectPlayProfileForVideoContainer(container, videoAudioCodecs, videoTestElement, options) {
     let supported = false;
     let profileContainer = container;
@@ -667,7 +672,7 @@ export default function (options) {
         // Only iOS Safari's native HLS player understands vp9 in fmp4
         // This should be used in conjunction with forcing
         // using HLS.js for VP9 remuxing on desktop Safari.
-        if (browser.safari) {
+        if (browser.safari || browser.edgeChromium || browser.chrome || browser.firefox) {
             hlsInFmp4VideoCodecs.push('vp9');
         }
         // webm support is unreliable on safari 17
@@ -1102,6 +1107,10 @@ export default function (options) {
         }
         if (profiles.includes(8)) {
             hevcVideoRangeTypes += '|DOVIWithHDR10|DOVIWithHLG|DOVIWithSDR';
+        }
+
+        if (supportedDolbyVisionProfileAv1(videoTestElement)) {
+            av1VideoRangeTypes += '|DOVI|DOVIWithHDR10|DOVIWithHLG|DOVIWithSDR';
         }
     }
 
