@@ -48,6 +48,15 @@ function supportsTextTracks() {
     return _supportsTextTracks;
 }
 
+let _supportsCanvas2D;
+function supportsCanvas2D() {
+    if (_supportsCanvas2D == null) {
+        _supportsCanvas2D = document.createElement('canvas').getContext('2d') != null;
+    }
+
+    return _supportsCanvas2D;
+}
+
 let _canPlayHls;
 function canPlayHls() {
     if (_canPlayHls == null) {
@@ -225,6 +234,12 @@ function supportsHdr10(options) {
             // Edge Chromium 121+ fixed the tone-mapping color issue on Nvidia
             || browser.edgeChromium && (browser.versionMajor >= 121)
             || browser.chrome && !browser.mobile
+            // Firefox 100+ has support for HDR on macOS/OS X. It requires OS support, which was
+            // added in macOS 10.15 Catalina. If enabling HDR on other platforms, be careful about
+            // allowing HDR VP9 in mp4 containers.
+            //  * https://www.mozilla.org/en-US/firefox/100.0/releasenotes/
+            //  * https://bugzilla.mozilla.org/show_bug.cgi?id=1915265
+            || browser.firefox && browser.osx && (!browser.iphone && !browser.ipod && !browser.ipad) && (browser.versionMajor >= 100)
     );
 }
 
@@ -665,8 +680,12 @@ export default function (options) {
     }
 
     if (canPlayVp9) {
-        if (!browser.iOS) {
+        if (!browser.iOS && !(browser.firefox && browser.osx)) {
             // iOS safari may fail to direct play vp9 in mp4 container
+            //
+            // Firefox can play vp9 in mp4 container but fails to detect HDR. Since HDR is
+            // unsupported for all other non-Mac platforms, it's fine to allow vp9 in mp4 for them.
+            //   * https://bugzilla.mozilla.org/show_bug.cgi?id=1915265
             mp4VideoCodecs.push('vp9');
         }
         // Only iOS Safari's native HLS player understands vp9 in fmp4
@@ -1088,16 +1107,28 @@ export default function (options) {
     let vp9VideoRangeTypes = 'SDR';
     let av1VideoRangeTypes = 'SDR';
 
+    if (browser.tizenVersion >= 3) {
+        hevcVideoRangeTypes += '|DOVIWithSDR';
+    }
+
     if (supportsHdr10(options)) {
         hevcVideoRangeTypes += '|HDR10';
         vp9VideoRangeTypes += '|HDR10';
         av1VideoRangeTypes += '|HDR10';
+
+        if (browser.tizenVersion >= 3) {
+            hevcVideoRangeTypes += '|DOVIWithHDR10';
+        }
     }
 
     if (supportsHlg(options)) {
         hevcVideoRangeTypes += '|HLG';
         vp9VideoRangeTypes += '|HLG';
         av1VideoRangeTypes += '|HLG';
+
+        if (browser.tizenVersion >= 3) {
+            hevcVideoRangeTypes += '|DOVIWithHLG';
+        }
     }
 
     if (supportsDolbyVision(options)) {
@@ -1424,6 +1455,7 @@ export default function (options) {
     // External vtt or burn in
     profile.SubtitleProfiles = [];
     const subtitleBurninSetting = appSettings.get('subtitleburnin');
+    const subtitleRenderPgsSetting = appSettings.get('subtitlerenderpgs') === 'true';
     if (subtitleBurninSetting !== 'all') {
         if (supportsTextTracks()) {
             profile.SubtitleProfiles.push({
@@ -1438,6 +1470,14 @@ export default function (options) {
             });
             profile.SubtitleProfiles.push({
                 Format: 'ssa',
+                Method: 'External'
+            });
+        }
+
+        if (supportsCanvas2D() && options.enablePgsRender !== false && !options.isRetry && subtitleRenderPgsSetting
+            && subtitleBurninSetting !== 'allcomplexformats' && subtitleBurninSetting !== 'onlyimageformats') {
+            profile.SubtitleProfiles.push({
+                Format: 'pgssub',
                 Method: 'External'
             });
         }
