@@ -457,15 +457,16 @@ body.transition .discImage {
     body.transition .nowPlayingInfoContainer>.nowPlayingPageImageContainer,
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
         opacity: 1;
-        transition: opacity 500ms ease-in-out;
-        transition-delay: 1s;
+        transition: opacity 400ms ease-in-out;
+        transition-delay: 100ms;
     }
 
     body.mouseIdle header,
     body.mouseIdle .skinHeader,
     body.mouseIdle div.positionTime,
     body.mouseIdle div.runtime,
-    body.mouseIdle #simpleSlider .nowPlayingPositionSliderContainer,
+    body.mouseIdle #simpleSlider,
+    .nowPlayingPositionSliderContainer,
     body.mouseIdle .nowPlayingButtonsContainer {
         opacity: 0;
         transition: opacity 500ms ease-out;

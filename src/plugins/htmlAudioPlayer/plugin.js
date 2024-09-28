@@ -535,7 +535,7 @@ class HtmlAudioPlayer {
 
             masterAudioOutput.mixerNode.gain.setTargetAtTime(
                 gainValue * masterAudioOutput.makeupGain,
-                audioCtx.currentTime + 0.2,
+                audioCtx.currentTime + 0.25,
                 0.1
             );
             masterAudioOutput.volume = Math.max(val, 1);
@@ -607,17 +607,17 @@ class HtmlAudioPlayer {
                     audioCtx.currentTime
                 );
                 masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
-                    0.01,
-                    audioCtx.currentTime + 1.5
+                    0.02,
+                    audioCtx.currentTime + 2
                 );
             } else {
                 masterAudioOutput.mixerNode.gain.linearRampToValueAtTime(
-                    0.01,
+                    0.02,
                     audioCtx.currentTime
                 );
                 masterAudioOutput.mixerNode.gain.exponentialRampToValueAtTime(
                     (masterAudioOutput.volume / 100) * masterAudioOutput.makeupGain,
-                    audioCtx.currentTime + 1.5
+                    audioCtx.currentTime + 2
                 );
             }
             let muteButton = document.querySelector('.buttonMute');
