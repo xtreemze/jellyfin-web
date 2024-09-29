@@ -8,17 +8,17 @@ type FrequencyAnalyzersProps = {
     smoothingTimeConstant?: number;
     minDecibels?: number;
     maxDecibels?: number;
-    alpha?: number; // New parameter for mapping adjustment
+    alpha?: number; // Parameter for mapping adjustment
 };
 
 const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
     audioContext = masterAudioOutput.audioContext,
     mixerNode = masterAudioOutput.mixerNode,
-    fftSize = 16384,
-    smoothingTimeConstant = 0.2,
-    minDecibels = -90,
-    maxDecibels = -10,
-    alpha = 4 // Adjust this value to control frequency distribution
+    fftSize = 4096,
+    smoothingTimeConstant = 0.65,
+    minDecibels = -100,
+    maxDecibels = 0,
+    alpha = 4.5 // Adjust this value to control frequency distribution
 }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const animationFrameId = useRef<number>();
@@ -30,24 +30,25 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
             const previousBarHeights = new Float32Array(analyser.frequencyBinCount);
             const sampleRate = analyser.context.sampleRate;
             const nyquist = sampleRate / 2;
-            const MIN_FREQUENCY = 50;
+            const MIN_FREQUENCY = 40;
             const MAX_FREQUENCY = nyquist;
 
-            const decibelToValue = (decibel: number) => {
-                const normalized =
-                    (decibel - analyser.minDecibels)
-                    / (analyser.maxDecibels - analyser.minDecibels);
-                return normalized * 255;
-            };
-
-            const clippingDecibel = -20;
-            const nearClippingDecibel = -65;
-
-            const maxDecibelValue = decibelToValue(clippingDecibel);
-            const minHueDecibelValue = decibelToValue(nearClippingDecibel);
+            // Adjust nearClippingDecibel and clippingDecibel as needed
+            const clippingDecibel = 12;
+            const nearClippingDecibel = -64;
 
             // Define amplitude labels of common interest
-            const amplitudeDecibels = [-85, -80, -75, -70, -60, -50, -40, -30];
+            const amplitudeDecibels = [-90, -80, -70, -60, -50, -40, -30];
+
+            // Precompute pink noise reference levels in decibels
+            const pinkNoiseReference = new Float32Array(analyser.frequencyBinCount);
+            for (let i = 0; i < analyser.frequencyBinCount; i++) {
+                const frequency = (i * nyquist) / analyser.frequencyBinCount;
+                // Pink noise decreases by 3 dB per octave
+                // We can approximate the expected level at each frequency
+                const pinkNoiseLevel = -10 * Math.log10(frequency || 1); // Avoid log(0)
+                pinkNoiseReference[i] = pinkNoiseLevel;
+            }
 
             const renderFrame = () => {
                 analyser.getByteFrequencyData(frequencyData);
@@ -58,8 +59,8 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                 const barGap = 3; // Gap between bars in pixels
 
                 // Calculate number of bars based on canvas width and barGap
-                const minBarWidth = 8;
-                const maxBars = 128;
+                const minBarWidth = 3;
+                const maxBars = 96;
                 const minBars = 16;
                 const availableWidth = ctx.canvas.width - barGap * (maxBars - 1);
                 const numberOfBars = Math.max(
@@ -71,6 +72,9 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                 const frequencies = [];
                 const xPositions = [];
 
+                const logMinFreq = Math.log(MIN_FREQUENCY);
+                const logMaxFreq = Math.log(MAX_FREQUENCY);
+
                 for (let i = 0; i <= numberOfBars; i++) {
                     // Normalized position between 0 and 1
                     const normPosition = i / numberOfBars;
@@ -81,13 +85,10 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
 
                     // Frequency mapping
                     const frequency =
-                        MIN_FREQUENCY
-                        + scaledPosition * (MAX_FREQUENCY - MIN_FREQUENCY);
+                        MIN_FREQUENCY + scaledPosition * (MAX_FREQUENCY - MIN_FREQUENCY);
                     frequencies.push(frequency);
 
                     // Map frequencies to x-positions logarithmically
-                    const logMinFreq = Math.log(MIN_FREQUENCY);
-                    const logMaxFreq = Math.log(MAX_FREQUENCY);
                     const freqForLog = Math.max(frequency, MIN_FREQUENCY); // Avoid log(0)
                     const x =
                         ((Math.log(freqForLog) - logMinFreq) / (logMaxFreq - logMinFreq))
@@ -109,9 +110,10 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
 
                     // Compute bin index
                     const bin = Math.floor(
-                        (frequencies[i] / nyquist) * frequencyData.length
+                        ((frequencies[i] - MIN_FREQUENCY) / (nyquist - MIN_FREQUENCY))
+                        * analyser.frequencyBinCount
                     );
-                    const safeBin = Math.max(0, Math.min(bin, frequencyData.length - 1));
+                    const safeBin = Math.max(0, Math.min(bin, analyser.frequencyBinCount - 1));
 
                     const value = frequencyData[safeBin];
                     const targetHeight = (value / 255) * ctx.canvas.height;
@@ -122,32 +124,42 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                         currentHeight + (targetHeight - currentHeight) * 0.3;
                     previousBarHeights[i] = barHeight;
 
-                    // Calculate fill color
-                    const normalizedValue = value / 255;
+                    // Calculate the expected pink noise level at this frequency bin
+                    const pinkNoiseLevel = pinkNoiseReference[safeBin];
+
+                    // Compute clipping and near-clipping levels for this frequency bin
+                    const clippingLevel = pinkNoiseLevel + clippingDecibel;
+                    const nearClippingLevel = pinkNoiseLevel + nearClippingDecibel;
+
+                    // Convert the actual value to decibels
+                    const actualDecibel =
+                        analyser.minDecibels
+                        + (value / 255) * (analyser.maxDecibels - analyser.minDecibels);
+
+                    // Use actualDecibel to determine color
                     let fillColor = '';
 
-                    if (value < minHueDecibelValue) {
-                        // Adjust green brightness based on amplitude
-                        const lightness = 30 + normalizedValue * 30; // 30% to 60%
-                        fillColor = `hsl(120, 100%, ${lightness}%)`;
-                    } else if (value >= maxDecibelValue) {
-                        fillColor = 'hsl(0, 100%, 50%)'; // Red
-                    } else {
-                        // Adjust hue from 120 (green) to 0 (red)
+                    if (actualDecibel <= nearClippingLevel) {
+                        // Below nearClippingLevel - less saturation at lower amplitudes
                         const ratio =
-                            (value - minHueDecibelValue)
-                            / (maxDecibelValue - minHueDecibelValue);
-                        const hue = 120 - 120 * ratio;
+                            (actualDecibel - analyser.minDecibels)
+                            / (nearClippingLevel - analyser.minDecibels);
+                        const saturation = 30 + ratio * 70; // Saturation from 30% to 100%
+                        fillColor = `hsl(120, ${saturation}%, 50%)`; // Green with varying saturation
+                    } else if (actualDecibel > nearClippingLevel && actualDecibel < clippingLevel) {
+                        // Between nearClippingLevel and clippingLevel - transition from green to red
+                        const ratio =
+                            (actualDecibel - nearClippingLevel)
+                            / (clippingLevel - nearClippingLevel);
+                        const hue = 120 - 120 * Math.min(ratio, 1); // Hue from green (120) to red (0)
                         fillColor = `hsl(${hue}, 100%, 50%)`;
+                    } else {
+                        // actualDecibel >= clippingLevel
+                        fillColor = 'hsl(0, 100%, 50%)'; // Red
                     }
 
                     ctx.fillStyle = fillColor;
-                    ctx.fillRect(
-                        x,
-                        ctx.canvas.height - barHeight,
-                        barWidth,
-                        barHeight
-                    );
+                    ctx.fillRect(x, ctx.canvas.height - barHeight, barWidth, barHeight);
                 }
 
                 // Draw amplitude labels/markers on the left side
@@ -157,7 +169,10 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                 ctx.textBaseline = 'middle';
 
                 amplitudeDecibels.forEach((decibel) => {
-                    const value = decibelToValue(decibel);
+                    const value =
+                        ((decibel - analyser.minDecibels)
+                            / (analyser.maxDecibels - analyser.minDecibels))
+                        * 255;
                     const y = ctx.canvas.height - (value / 255) * ctx.canvas.height;
 
                     // Draw a short horizontal line near the left
@@ -187,12 +202,10 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                     2000,
                     5000,
                     10000,
-                    15000
+                    20000
                 ];
 
                 commonFrequencies.forEach((freq) => {
-                    const logMinFreq = Math.log(MIN_FREQUENCY);
-                    const logMaxFreq = Math.log(MAX_FREQUENCY);
                     const percent =
                         (Math.log(freq) - logMinFreq) / (logMaxFreq - logMinFreq);
                     const x = percent * ctx.canvas.width;
