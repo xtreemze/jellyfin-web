@@ -91,7 +91,7 @@ const RemotePlayActiveMenu: FC<RemotePlayActiveMenuProps> = ({
                 horizontal: 'right'
             }}
             id={ID}
-            keepMounted={false}
+            keepMounted
             open={open}
             onClose={onMenuClose}
             MenuListProps={{

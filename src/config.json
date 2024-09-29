@@ -10,22 +10,22 @@
     {
       "name": "Dark",
       "id": "dark",
-      "color": "#202020"
+      "color": "#202020",
+      "default": true
     },
     {
       "name": "Purple Haze",
       "id": "purplehaze",
-      "color": "#000420",
-      "default": true
+      "color": "#000420"
     }
   ],
   "menuLinks": [],
   "servers": [],
-    "plugins": [
-      "playAccessValidation/plugin",
-      "htmlAudioPlayer/plugin",
-      "htmlVideoPlayer/plugin",
-      "sessionPlayer/plugin",
-      "syncPlay/plugin"
-    ]
-  }
+  "plugins": [
+    "playAccessValidation/plugin",
+    "htmlAudioPlayer/plugin",
+    "htmlVideoPlayer/plugin",
+    "sessionPlayer/plugin",
+    "syncPlay/plugin"
+  ]
+}

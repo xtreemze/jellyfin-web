@@ -191,7 +191,7 @@ function bindEvents(elem) {
         if (currentPlayer) {
             if (playbackManager.isPlayingAudio(currentPlayer)) {
                 // Cancel this event if doubleclick is fired. The actual previousTrack will be processed by the 'dblclick' event
-                if (e.detail > 1) {
+                if (e.detail > 1 ) {
                     return;
                 }
 
@@ -230,7 +230,7 @@ function bindEvents(elem) {
         }
     });
 
-    lyricButton.addEventListener('click', function () {
+    lyricButton.addEventListener('click', function() {
         if (isLyricPageActive) {
             appRouter.back();
         } else {
@@ -284,13 +284,7 @@ function bindEvents(elem) {
         return datetime.getDisplayRunningTime(ticks);
     };
 
-    nowPlayingImageElement.addEventListener('click', function (e) {
-        if (!dom.parentWithTag(e.target, ['BUTTON', 'INPUT'])) {
-            showRemoteControl();
-        }
-    });
-
-    nowPlayingTextElement.addEventListener('click', function (e) {
+    elem.addEventListener('click', function (e) {
         if (!dom.parentWithTag(e.target, ['BUTTON', 'INPUT'])) {
             showRemoteControl();
         }
@@ -302,7 +296,6 @@ function showRemoteControl() {
 }
 
 let nowPlayingBarElement;
-
 function getNowPlayingBar() {
     if (nowPlayingBarElement) {
         return nowPlayingBarElement;

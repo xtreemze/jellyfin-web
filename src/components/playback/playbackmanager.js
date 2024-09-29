@@ -690,7 +690,6 @@ function sortPlayerTargets(a, b) {
 class PlaybackManager {
     constructor() {
         const self = this;
-        window.playback = self;
 
         const players = [];
         let currentTargetInfo;
@@ -2888,7 +2887,7 @@ class PlaybackManager {
                                 });
                             } else {
                                 if (item.AlbumId != null) {
-                                    return apiClient.getItem(apiClient.getCurrentUserId(), item.AlbumId).then(function (result) {
+                                    return apiClient.getItem(apiClient.getCurrentUserId(), item.AlbumId).then(function(result) {
                                         mediaSource.albumNormalizationGain = result.NormalizationGain;
                                         return mediaSource;
                                     });

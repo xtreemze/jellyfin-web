@@ -2,7 +2,6 @@
     "name": "Jellyfin",
     "description": "Media System",
     "lang": "en-US",
-    "orientation": "any",
     "short_name": "Jellyfin",
     "start_url": "index.html#/home.html",
     "theme_color": "#101010",
@@ -12,7 +11,7 @@
         "fullscreen",
         "window-controls-overlay"
     ],
-    "display": "fullscreen",
+    "display": "standalone",
     "icons": [
         {
             "sizes": "72x72",

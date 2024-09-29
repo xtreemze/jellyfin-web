@@ -284,7 +284,7 @@ const SyncPlayMenu: FC<SyncPlayMenuProps> = ({
                 horizontal: 'right'
             }}
             id={ID}
-            keepMounted={false}
+            keepMounted
             open={open}
             onClose={onMenuClose}
             MenuListProps={MenuListProps}

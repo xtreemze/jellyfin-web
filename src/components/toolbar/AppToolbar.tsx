@@ -50,7 +50,7 @@ const AppToolbar: FC<PropsWithChildren<AppToolbarProps>> = ({
                 }
             }}
         >
-            {isUserLoggedIn && (
+            {isUserLoggedIn && isDrawerAvailable && (
                 <Tooltip title={globalize.translate(isDrawerOpen ? 'MenuClose' : 'MenuOpen')}>
                     <IconButton
                         size='large'

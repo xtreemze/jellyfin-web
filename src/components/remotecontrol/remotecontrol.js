@@ -195,9 +195,9 @@ function updateNowPlayingInfo(context, state, serverId) {
         }
 
         const url = seriesImageUrl(item, {
-            maxHeight: 600
+            maxHeight: 300
         }) || imageUrl(item, {
-            maxHeight: 600
+            maxHeight: 300
         });
 
         let contextButton = context.querySelector('.btnToggleContextMenu');
@@ -414,7 +414,7 @@ export default function () {
         const supportedCommands = currentPlayerSupportedCommands;
 
         if (supportedCommands.indexOf('Mute') === -1) {
-            showMuteButton = false;
+            showMuteButton = true;
         }
 
         if (supportedCommands.indexOf('SetVolume') === -1) {
@@ -422,7 +422,7 @@ export default function () {
         }
 
         if (currentPlayer.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {
-            showMuteButton = false;
+            showMuteButton = true;
             showVolumeSlider = true;
         }
 

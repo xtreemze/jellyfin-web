@@ -67,7 +67,7 @@ const AppUserMenu: FC<AppUserMenuProps> = ({
                 horizontal: 'right'
             }}
             id={ID}
-            keepMounted={false}
+            keepMounted
             open={open}
             onClose={onMenuClose}
         >

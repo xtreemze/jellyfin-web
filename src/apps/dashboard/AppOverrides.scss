@@ -9,6 +9,12 @@ $drawer-width: 240px;
 
 // Fix dashboard pages layout to work with drawer
 .dashboardDocument {
+    .mainAnimatedPage {
+        @media all and (min-width: $mui-bp-md) {
+            left: $drawer-width;
+        }
+    }
+
     .skinBody {
         position: unset !important;
     }
