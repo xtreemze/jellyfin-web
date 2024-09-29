@@ -134,6 +134,7 @@ function slideUp(elem) {
     dom.removeEventListener(elem, dom.whichTransitionEvent(), onSlideDownComplete, {
         once: true
     });
+
     elem.classList.remove('hide');
 
     // trigger reflow

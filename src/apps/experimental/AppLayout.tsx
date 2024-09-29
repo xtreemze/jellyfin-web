@@ -7,6 +7,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 import AppBody from 'components/AppBody';
 import ElevationScroll from 'components/ElevationScroll';
+import { DRAWER_WIDTH } from 'components/ResponsiveDrawer';
 import { useApi } from 'hooks/useApi';
 
 import AppToolbar from './components/AppToolbar';
@@ -26,7 +27,7 @@ export const Component = () => {
 
     const onToggleDrawer = useCallback(() => {
         setIsDrawerActive(!isDrawerActive);
-    }, [isDrawerActive, setIsDrawerActive]);
+    }, [ isDrawerActive, setIsDrawerActive ]);
 
     return (
         <Box sx={{ position: 'relative', display: 'flex', height: '100%' }}>
@@ -35,7 +36,12 @@ export const Component = () => {
                     position='fixed'
                     sx={{
                         width: {
-                            xs: '100%'
+                            xs: '100%',
+                            md: isDrawerAvailable ? `calc(100% - ${DRAWER_WIDTH}px)` : '100%'
+                        },
+                        ml: {
+                            xs: 0,
+                            md: isDrawerAvailable ? DRAWER_WIDTH : 0
                         }
                     }}
                 >

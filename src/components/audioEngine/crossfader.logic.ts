@@ -30,7 +30,7 @@ export function setXDuration(crossfadeDuration: number) {
 
 export const xDuration = {
     disableFade: true,
-    sustain: 0.5,
+    sustain: 0.45,
     fadeOut: 1,
     enabled: true,
     t0: performance.now(),
@@ -102,7 +102,7 @@ export function hijackMediaElementForCrossfade() {
             delayNode.disconnect();
             hijackedPlayer.remove();
             xDuration.busy = false;
-        }, 1015);
+        }, 1010);
     }, xDuration.fadeOut * 1000);
 }
 
