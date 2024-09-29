@@ -23,9 +23,12 @@
   "servers": [],
   "plugins": [
     "playAccessValidation/plugin",
+    "experimentalWarnings/plugin",
     "htmlAudioPlayer/plugin",
     "htmlVideoPlayer/plugin",
+    "photoPlayer/plugin",
     "sessionPlayer/plugin",
+    "chromecastPlayer/plugin",
     "syncPlay/plugin"
   ]
 }
