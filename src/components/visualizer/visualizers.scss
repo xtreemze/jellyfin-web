@@ -451,7 +451,7 @@ body.transition .discImage {
     div#musicPage,
     div#indexPage,
     #simpleSlider,
-    .nowPlayingButtonsContainer,
+    #simpleSlider .nowPlayingButtonsContainer,
     div.positionTime,
     div.runtime,
     body.transition .nowPlayingInfoContainer>.nowPlayingPageImageContainer,
@@ -466,7 +466,7 @@ body.transition .discImage {
     body.mouseIdle div.positionTime,
     body.mouseIdle div.runtime,
     body.mouseIdle #simpleSlider,
-    .nowPlayingPositionSliderContainer,
+    body.mouseIdle #simpleSlider .nowPlayingPositionSliderContainer,
     body.mouseIdle .nowPlayingButtonsContainer {
         opacity: 0;
         transition: opacity 500ms ease-out;
