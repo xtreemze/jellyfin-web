@@ -135,6 +135,14 @@ class HtmlAudioPlayer {
                     normalizationGain =
                         options.mediaSource.albumNormalizationGain
                         ?? options.item.NormalizationGain;
+                } else {
+                    console.debug('normalization disabled');
+                    return;
+                }
+
+                if (!self.gainNode) {
+                    addGainElement(elem);
+                    if (!self.gainNode) return;
                 }
 
                 audioNodeBus[0].gain.linearRampToValueAtTime(
@@ -299,8 +307,6 @@ class HtmlAudioPlayer {
 
             self._mediaElement = elem;
 
-            addGainElement(elem);
-
             return elem;
         }
 
@@ -331,6 +337,9 @@ class HtmlAudioPlayer {
         function onVolumeChange() {
             if (!self._isFadingOut) {
                 htmlMediaHelper.saveVolume(this.volume);
+                if (browser.safari && self.gainNode) {
+                    self.gainNode.gain.value = this.volume * self.normalizationGain;
+                }
                 Events.trigger(self, 'volumechange');
             }
         }
