@@ -53,19 +53,27 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
             const renderFrame = () => {
                 analyser.getByteFrequencyData(frequencyData);
 
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                // Get canvas dimensions in CSS pixels
+                const dpr = window.devicePixelRatio || 1;
+                const canvasWidth = ctx.canvas.width / dpr;
+                const canvasHeight = ctx.canvas.height / dpr;
 
-                // Introduce barGap parameter
-                const barGap = 3; // Gap between bars in pixels
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+                // Dynamically adjust barGap and minBarWidth based on canvas width
+                const minBarWidth = Math.max(2, canvasWidth / 200);
+                const barGap = Math.max(1, canvasWidth / 400);
 
                 // Calculate number of bars based on canvas width and barGap
-                const minBarWidth = 3;
                 const maxBars = 96;
                 const minBars = 16;
-                const availableWidth = ctx.canvas.width - barGap * (maxBars - 1);
+                const availableWidth = canvasWidth;
                 const numberOfBars = Math.max(
                     minBars,
-                    Math.min(maxBars, Math.floor(availableWidth / (minBarWidth + barGap)))
+                    Math.min(
+                        maxBars,
+                        Math.floor(availableWidth / (minBarWidth + barGap))
+                    )
                 );
 
                 // Compute frequencies and corresponding x-positions with adjusted mapping
@@ -92,7 +100,7 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                     const freqForLog = Math.max(frequency, MIN_FREQUENCY); // Avoid log(0)
                     const x =
                         ((Math.log(freqForLog) - logMinFreq) / (logMaxFreq - logMinFreq))
-                        * ctx.canvas.width;
+                        * canvasWidth;
                     xPositions.push(x);
                 }
 
@@ -113,15 +121,17 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                         ((frequencies[i] - MIN_FREQUENCY) / (nyquist - MIN_FREQUENCY))
                         * analyser.frequencyBinCount
                     );
-                    const safeBin = Math.max(0, Math.min(bin, analyser.frequencyBinCount - 1));
+                    const safeBin = Math.max(
+                        0,
+                        Math.min(bin, analyser.frequencyBinCount - 1)
+                    );
 
                     const value = frequencyData[safeBin];
-                    const targetHeight = (value / 255) * ctx.canvas.height;
+                    const targetHeight = (value / 255) * canvasHeight;
 
                     // Smooth transition
                     const currentHeight = previousBarHeights[i] || 0;
-                    const barHeight =
-                        currentHeight + (targetHeight - currentHeight) * 0.3;
+                    const barHeight = currentHeight + (targetHeight - currentHeight) * 0.3;
                     previousBarHeights[i] = barHeight;
 
                     // Calculate the expected pink noise level at this frequency bin
@@ -146,7 +156,10 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                             / (nearClippingLevel - analyser.minDecibels);
                         const saturation = 30 + ratio * 70; // Saturation from 30% to 100%
                         fillColor = `hsl(120, ${saturation}%, 50%)`; // Green with varying saturation
-                    } else if (actualDecibel > nearClippingLevel && actualDecibel < clippingLevel) {
+                    } else if (
+                        actualDecibel > nearClippingLevel
+                        && actualDecibel < clippingLevel
+                    ) {
                         // Between nearClippingLevel and clippingLevel - transition from green to red
                         const ratio =
                             (actualDecibel - nearClippingLevel)
@@ -159,21 +172,29 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                     }
 
                     ctx.fillStyle = fillColor;
-                    ctx.fillRect(x, ctx.canvas.height - barHeight, barWidth, barHeight);
+                    ctx.fillRect(x, canvasHeight - barHeight, barWidth, barHeight);
                 }
 
-                // Draw amplitude labels/markers on the left side
+                // Adjust font size based on canvas height
+                const fontSize = Math.max(10, canvasHeight / 50);
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.font = '12px Arial';
+                ctx.font = `${fontSize}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
 
+                // Draw amplitude labels/markers on the left side
                 amplitudeDecibels.forEach((decibel) => {
                     const value =
                         ((decibel - analyser.minDecibels)
                             / (analyser.maxDecibels - analyser.minDecibels))
                         * 255;
-                    const y = ctx.canvas.height - (value / 255) * ctx.canvas.height;
+                    let y = canvasHeight - (value / 255) * canvasHeight;
+
+                    // Ensure y is within canvasHeight
+                    y = Math.min(Math.max(y, fontSize / 2), canvasHeight - fontSize / 2);
+
+                    // Adjust x position if necessary to keep text within canvas
+                    const textX = Math.min(30, canvasWidth - fontSize * 2);
 
                     // Draw a short horizontal line near the left
                     ctx.beginPath();
@@ -185,30 +206,24 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
 
                     // Draw the decibel label
                     const label = `${decibel} dB`;
-                    ctx.fillText(label, 30, y);
+                    ctx.fillText(label, textX, y);
                 });
 
-                // Draw frequency labels/markers after the bars
+                // Draw frequency labels/markers at the bottom if in portrait mode
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.font = '12px Arial';
+                ctx.font = `${fontSize}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'top';
 
-                const commonFrequencies = [
-                    100,
-                    200,
-                    500,
-                    1000,
-                    2000,
-                    5000,
-                    10000,
-                    20000
-                ];
+                const commonFrequencies = [100, 200, 500, 1000, 2000, 5000, 10000, 20000];
 
                 commonFrequencies.forEach((freq) => {
                     const percent =
                         (Math.log(freq) - logMinFreq) / (logMaxFreq - logMinFreq);
-                    const x = percent * ctx.canvas.width;
+                    let x = percent * canvasWidth;
+
+                    // Ensure x is within canvasWidth
+                    x = Math.min(Math.max(x, fontSize / 2), canvasWidth - fontSize / 2);
 
                     // Draw a short vertical line near the top
                     ctx.beginPath();
@@ -251,12 +266,9 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 const dpr = window.devicePixelRatio || 1;
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                canvas.width = width * dpr;
-                canvas.height = height * dpr;
-                canvas.style.width = `${width}px`;
-                canvas.style.height = `${height}px`;
+                const { clientWidth, clientHeight } = canvas;
+                canvas.width = clientWidth * dpr;
+                canvas.height = clientHeight * dpr;
                 ctx.scale(dpr, dpr);
 
                 draw(analyser, ctx);
@@ -283,12 +295,9 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
         const resizeCanvas = () => {
             if (canvasRef.current) {
                 const dpr = window.devicePixelRatio || 1;
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                canvasRef.current.width = width * dpr;
-                canvasRef.current.height = height * dpr;
-                canvasRef.current.style.width = `${width}px`;
-                canvasRef.current.style.height = `${height}px`;
+                const { clientWidth, clientHeight } = canvasRef.current;
+                canvasRef.current.width = clientWidth * dpr;
+                canvasRef.current.height = clientHeight * dpr;
 
                 const ctx = canvasRef.current.getContext('2d');
                 if (ctx) {
@@ -298,13 +307,23 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
             }
         };
 
-        window.addEventListener('resize', resizeCanvas);
+        const observer = new ResizeObserver(() => {
+            resizeCanvas();
+        });
+        if (canvasRef.current) {
+            observer.observe(canvasRef.current);
+        }
+
+        // Call resizeCanvas initially
         resizeCanvas();
 
-        return () => window.removeEventListener('resize', resizeCanvas);
+        return () => {
+            if (canvasRef.current) {
+                observer.unobserve(canvasRef.current);
+            }
+        };
     }, []);
 
-    // Use absolute positioning to make the canvas fill the viewport
     return (
         <canvas
             ref={canvasRef}
@@ -312,8 +331,8 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                 position: 'fixed',
                 top: 0,
                 left: 0,
-                width: '100%',
-                height: '100%'
+                width: '100vw',
+                height: '100vh'
             }}
         />
     );
