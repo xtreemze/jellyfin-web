@@ -176,9 +176,9 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                 }
 
                 // Adjust font size based on canvas height
-                const fontSize = Math.max(10, canvasHeight / 50);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.font = `${fontSize}px Arial`;
+                const fontSize = Math.max(10, canvasHeight / 75);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.font = `${fontSize}px Roboto`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
 
