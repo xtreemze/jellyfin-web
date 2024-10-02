@@ -176,8 +176,8 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                 }
 
                 // Adjust font size based on canvas height
-                const fontSize = Math.max(10, canvasHeight / 75);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                const fontSize = Math.max(10, canvasHeight / 80);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
                 ctx.font = `${fontSize}px Roboto`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -199,8 +199,8 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                     // Draw a short horizontal line near the left
                     ctx.beginPath();
                     ctx.moveTo(0, y);
-                    ctx.lineTo(15, y);
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.lineTo(8, y);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
                     ctx.lineWidth = 1;
                     ctx.stroke();
 
@@ -210,8 +210,8 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                 });
 
                 // Draw frequency labels/markers at the bottom if in portrait mode
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.font = `${fontSize}px Arial`;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.font = `${fontSize}px Roboto`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'top';
 
@@ -228,8 +228,8 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
                     // Draw a short vertical line near the top
                     ctx.beginPath();
                     ctx.moveTo(x, 0);
-                    ctx.lineTo(x, 15);
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.lineTo(x, 8);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
                     ctx.lineWidth = 1;
                     ctx.stroke();
 

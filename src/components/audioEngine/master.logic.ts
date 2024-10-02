@@ -11,7 +11,7 @@ type MasterAudioTypes = {
     volume: number;
 };
 
-const dbBoost = 12;
+const dbBoost = 16;
 
 function applyDbReduction(originalVolume: number, reductionDb: number) {
     const originalLinear = originalVolume / 100; // Convert the original volume to a linear scale of 0 to 1

@@ -150,7 +150,7 @@
   ],
   "scripts": {
     "start": "npm run serve",
-    "serve": "webpack serve --config webpack.dev.js",
+    "serve": "webpack serve --config webpack.dev.js --no-overlay",
     "build:analyze": "cross-env NODE_ENV=\"production\" webpack --config webpack.analyze.js",
     "build:development": "webpack --config webpack.dev.js",
     "build:production": "cross-env NODE_ENV=\"production\" webpack --config webpack.prod.js",
