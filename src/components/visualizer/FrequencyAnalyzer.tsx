@@ -26,6 +26,7 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
 
     const draw = useCallback(
         (analyser: AnalyserNode, ctx: CanvasRenderingContext2D) => {
+            if (document.visibilityState === 'hidden') return;
             const frequencyData = new Uint8Array(analyser.frequencyBinCount);
             const previousBarHeights = new Float32Array(analyser.frequencyBinCount);
             const sampleRate = analyser.context.sampleRate;
