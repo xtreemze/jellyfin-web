@@ -13,8 +13,8 @@ function enableAnimation() {
 
 function enableRotation() {
     return !browser.tv
-            // Causes high cpu usage
-            && !browser.firefox;
+        // Causes high cpu usage
+        && !browser.firefox;
 }
 
 class Backdrop {
@@ -243,7 +243,7 @@ function startRotation(images, enableImageRotation) {
 }
 
 function onRotationInterval() {
-    if (playbackManager.isPlayingLocally(['Video'])) {
+    if (playbackManager.isPlayingLocally(['Video']) || document.visibilityState === 'hidden') {
         return;
     }
 
