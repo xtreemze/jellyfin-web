@@ -539,7 +539,7 @@ class HtmlAudioPlayer {
             masterAudioOutput.mixerNode.gain.setTargetAtTime(
                 gainValue * masterAudioOutput.makeupGain,
                 audioCtx.currentTime + 0.25,
-                0.1
+                0.2
             );
             masterAudioOutput.volume = Math.max(val, 1);
             let muteButton = document.querySelector('.buttonMute');
