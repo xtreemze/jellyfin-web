@@ -119,6 +119,7 @@ function updatePlayerState(player, state, eventName) {
     const canSeek = playState.CanSeek || false;
 
     if ('mediaSession' in navigator) {
+        /* eslint-disable-next-line compat/compat */
         navigator.mediaSession.metadata = new MediaMetadata({
             title: title,
             artist: artist,

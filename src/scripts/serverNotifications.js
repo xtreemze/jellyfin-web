@@ -111,9 +111,6 @@ function processGeneralCommand(cmd, apiClient) {
         case 'GoHome':
             inputManager.handleCommand('home');
             return;
-        case 'GoToQueue':
-            inputManager.handleCommand('nowplaying');
-            return;
         case 'GoToSettings':
             inputManager.handleCommand('settings');
             return;
