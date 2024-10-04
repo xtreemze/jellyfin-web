@@ -268,7 +268,7 @@ const supportedFeatures = function () {
         features.push('htmlvideoautoplay');
     }
 
-    if (supportsFullscreen()) {
+    if (supportsFullscreen() || browser.mobile) {
         features.push('fullscreenchange');
     }
 
