@@ -152,12 +152,12 @@ class HtmlAudioPlayer {
                     // Set the final gain value
                     audioNodeBus[0].gain.exponentialRampToValueAtTime(
                         gainValue,
-                        masterAudioOutput.audioContext.currentTime + (xDuration.sustain / 12)
+                        masterAudioOutput.audioContext.currentTime + (xDuration.sustain / 24)
                     );
                 } else {
                     audioNodeBus[0].gain.exponentialRampToValueAtTime(
                         1,
-                        masterAudioOutput.audioContext.currentTime + (xDuration.sustain / 12)
+                        masterAudioOutput.audioContext.currentTime + (xDuration.sustain / 24)
                     );
                 }
             }).catch((err) => {
