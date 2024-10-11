@@ -53,7 +53,7 @@ export function hijackMediaElementForCrossfade() {
     const hijackedPlayer = document.getElementById('currentMediaElement') as HTMLMediaElement;
     if (!hijackedPlayer || !masterAudioOutput.audioContext) return triggerSongInfoDisplay();
 
-    if (hijackedPlayer.paused) {
+    if (hijackedPlayer.paused || hijackedPlayer.src === '') {
         setXDuration(0);
     }
 
