@@ -13,8 +13,8 @@ function enableAnimation() {
 
 function enableRotation() {
     return !browser.tv
-        // Causes high cpu usage
-        && !browser.firefox;
+            // Causes high cpu usage
+            && !browser.firefox;
 }
 
 class Backdrop {

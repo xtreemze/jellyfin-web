@@ -12,12 +12,12 @@ import qualityoptions from '../qualityOptions';
 import globalize from '../../lib/globalize';
 import loading from '../loading/loading';
 import Events from '../../utils/events.ts';
-import '../../elements/emby-slider/emby-slider';
 import { getVisualizerInputValues, setVisualizerSettings } from 'components/visualizer/visualizers.logic';
 import ServerConnections from '../ServerConnections';
 import toast from '../toast/toast';
 import template from './playbackSettings.template.html';
 
+import '../../elements/emby-slider/emby-slider';
 import '../../elements/emby-select/emby-select';
 import '../../elements/emby-checkbox/emby-checkbox';
 

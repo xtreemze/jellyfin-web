@@ -484,12 +484,12 @@ export class UserSettings {
             return this.set('libraryPageSize', val.toString(), true);
         }
 
-        const libraryPageSize = parseInt(this.get('libraryPageSize', true), 10);
+        const libraryPageSize = parseInt(this.get('libraryPageSize', false), 10);
         if (libraryPageSize === 0) {
             // Explicitly return 0 to avoid returning 100 because 0 is falsy.
             return 0;
         } else {
-            return libraryPageSize || 60;
+            return libraryPageSize;
         }
     }
 

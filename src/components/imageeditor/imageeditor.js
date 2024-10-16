@@ -450,7 +450,7 @@ function showEditor(options, resolve, reject) {
     });
 }
 
-export function show(options) {
+export function show (options) {
     return new Promise(function (resolve, reject) {
         hasChanges = false;
         showEditor(options, resolve, reject);
