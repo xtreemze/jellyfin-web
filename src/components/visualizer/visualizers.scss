@@ -410,7 +410,7 @@ body.transition .discImage {
         padding-top: 6rem;
         width: unset;
         min-width: 25.4rem;
-        min-width: 31.4rem;
+        max-width: 31.4rem;
     }
 
     .nowPlayingSongName {
