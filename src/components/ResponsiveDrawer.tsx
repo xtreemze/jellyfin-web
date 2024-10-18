@@ -31,7 +31,7 @@ const ResponsiveDrawer: FC<PropsWithChildren<ResponsiveDrawerProps>> = ({
                 flexShrink: 0,
                 '& .MuiDrawer-paper': {
                     width: DRAWER_WIDTH,
-                    paddingBottom: '4.2rem', // Padding for now playing bar
+                    paddingBottom: '12rem', // Padding for now playing bar
                     boxSizing: 'border-box'
                 }
             }}

@@ -109,7 +109,7 @@ div.infoContainer>.nowPlayingInfoContainerMedia>div>a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 30vh;
+    max-width: 36vh;
 }
 
 div.nowPlayingPageImageContainer {
@@ -422,8 +422,6 @@ body.transition .discImage {
     body.mouseIdle .nowPlayingInfoControls>.infoContainer {
         transform: translateX(calc(-100vw - 6rem));
         transition: transform 2s ease-in-out;
-        box-shadow: 2px 2px 3px #010101;
-
     }
 
     /* Slide in when the page loads or when the user is active */
