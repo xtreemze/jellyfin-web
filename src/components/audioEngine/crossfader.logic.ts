@@ -23,7 +23,7 @@ export function setXDuration(crossfadeDuration: number) {
     }
 
     xDuration.enabled = true;
-    xDuration.fadeOut = crossfadeDuration * 2;
+    xDuration.fadeOut = crossfadeDuration * 3;
     xDuration.disableFade = false;
     xDuration.sustain = crossfadeDuration;
 }

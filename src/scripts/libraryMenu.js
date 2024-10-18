@@ -769,7 +769,7 @@ pageClassOn('pagebeforeshow', 'page', function () {
     }
 });
 
-pageClassOn('pageshow', 'page', function () {
+pageClassOn('pageshow', 'page', function (e) {
     const page = this;
     const isDashboardPage = page.classList.contains('type-interior');
     const isHomePage = page.classList.contains('homePage');

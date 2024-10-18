@@ -481,7 +481,7 @@ export class UserSettings {
      */
     libraryPageSize(val) {
         if (val !== undefined) {
-            return this.set('libraryPageSize', val.toString(), true);
+            return this.set('libraryPageSize', val.toString(), false);
         }
 
         const libraryPageSize = parseInt(this.get('libraryPageSize', false), 10);
