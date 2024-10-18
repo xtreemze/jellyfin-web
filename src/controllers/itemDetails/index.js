@@ -2042,6 +2042,7 @@ export default function (view, params) {
         const downloadHref = getApiClient().getItemDownloadUrl(currentItem.Id);
         download([{
             url: downloadHref,
+            item: currentItem,
             itemId: currentItem.Id,
             serverId: currentItem.ServerId,
             title: currentItem.Name,
