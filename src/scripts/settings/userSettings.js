@@ -485,11 +485,11 @@ export class UserSettings {
         }
 
         const libraryPageSize = parseInt(this.get('libraryPageSize', false), 10);
-        if (libraryPageSize === 0) {
+        if (!libraryPageSize) {
             // Explicitly return 0 to avoid returning 100 because 0 is falsy.
             return 0;
         } else {
-            return libraryPageSize;
+            return libraryPageSize || 90;
         }
     }
 
