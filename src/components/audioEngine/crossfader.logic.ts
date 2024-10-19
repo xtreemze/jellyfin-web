@@ -51,11 +51,12 @@ export function hijackMediaElementForCrossfade() {
     if (visualizerSettings.butterchurn.enabled) butterchurnInstance.nextPreset();
 
     const hijackedPlayer = document.getElementById('currentMediaElement') as HTMLMediaElement;
-    if (!hijackedPlayer || !masterAudioOutput.audioContext) return triggerSongInfoDisplay();
 
-    if (hijackedPlayer.paused || hijackedPlayer.src === '') {
+    if (!hijackedPlayer || hijackedPlayer.paused || hijackedPlayer.src === '') {
         setXDuration(0);
     }
+
+    if (!hijackedPlayer || !masterAudioOutput.audioContext) return triggerSongInfoDisplay();
 
     const disposeElement = document.getElementById('crossFadeMediaElement');
     if (disposeElement) {
@@ -87,10 +88,10 @@ export function hijackMediaElementForCrossfade() {
         }
         // This destroys the wavesurfer on the fade out track when the new track starts
         destroyWaveSurferInstance();
+        prevNextDisable(false);
     }, (xDuration.sustain * 1000) - 15);
 
     setTimeout(() => {
-        prevNextDisable(false);
         const xfadeGainNode = audioNodeBus.pop();
         const delayNode = delayNodeBus.pop();
 
