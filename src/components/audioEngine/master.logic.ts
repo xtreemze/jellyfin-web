@@ -57,7 +57,7 @@ function getCrossfadeDuration() {
  * Initializes the master audio output.
  * @param {Function} unbind - The unbind callback function.
  */
-export function initializeMasterAudio(unbind: any) {
+export function initializeMasterAudio(unbind: () => void) {
     const savedDuration = getCrossfadeDuration();
     setXDuration(savedDuration);
     setVisualizerSettings(getSavedVisualizerSettings());
