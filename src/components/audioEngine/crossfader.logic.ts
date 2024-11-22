@@ -5,6 +5,10 @@ import { getSavedVisualizerSettings, setVisualizerSettings, visualizerSettings }
 import { endSong, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 import * as userSettings from '../../scripts/settings/userSettings';
 
+/**
+ * Sets the crossfade duration and related properties.
+ * @param {number} crossfadeDuration - The duration of the crossfade in seconds.
+ */
 export function setXDuration(crossfadeDuration: number) {
     if (crossfadeDuration < 0.01) {
         xDuration.enabled = false;
@@ -28,6 +32,10 @@ export function setXDuration(crossfadeDuration: number) {
     xDuration.sustain = crossfadeDuration;
 }
 
+/**
+ * Object to store crossfade duration settings.
+ * @type {Object}
+ */
 export const xDuration = {
     disableFade: true,
     sustain: 0.45,
@@ -37,10 +45,17 @@ export const xDuration = {
     busy: false
 };
 
+/**
+ * Gets the crossfade duration from user settings.
+ * @returns {number} The crossfade duration.
+ */
 function getCrossfadeDuration() {
     return userSettings.crossfadeDuration(undefined);
 }
 
+/**
+ * Hijacks the media element for crossfade.
+ */
 export function hijackMediaElementForCrossfade() {
     xDuration.t0 = performance.now(); // Record the start time
     xDuration.busy = true;
@@ -107,6 +122,10 @@ export function hijackMediaElementForCrossfade() {
     }, xDuration.fadeOut * 1000);
 }
 
+/**
+ * Disables or enables previous/next buttons.
+ * @param {boolean} [disable=false] - Whether to disable the buttons.
+ */
 function prevNextDisable(disable = false) {
     const buttons = [
         '.btnPreviousTrack', '.previousTrackButton',
@@ -123,6 +142,11 @@ function prevNextDisable(disable = false) {
     });
 }
 
+/**
+ * Checks if the time is running out for the current track.
+ * @param {any} player - The player instance.
+ * @returns {boolean} Whether the time is running out.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function timeRunningOut(player: any) {
     const currentTime = player.currentTime();

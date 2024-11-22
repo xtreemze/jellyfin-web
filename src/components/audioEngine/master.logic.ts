@@ -13,6 +13,12 @@ type MasterAudioTypes = {
 
 const dbBoost = 16;
 
+/**
+ * Applies a decibel reduction to the original volume.
+ * @param {number} originalVolume - The original volume.
+ * @param {number} reductionDb - The reduction in decibels.
+ * @returns {number} The reduced volume.
+ */
 function applyDbReduction(originalVolume: number, reductionDb: number) {
     const originalLinear = originalVolume / 100; // Convert the original volume to a linear scale of 0 to 1
     const newLinear = originalLinear * Math.pow(10, -reductionDb / 20);
@@ -20,21 +26,37 @@ function applyDbReduction(originalVolume: number, reductionDb: number) {
     return newLinear * 100; // Convert back to a scale of 0 to 100
 }
 
+/**
+ * Master audio output settings.
+ * @type {Object}
+ */
 export const masterAudioOutput: MasterAudioTypes = {
     makeupGain: Math.pow(10, dbBoost / 20),
     muted: false,
     volume: applyDbReduction(100, dbBoost)
 };
 
+/**
+ * Unbind callback function.
+ * @type {Function}
+ */
 export let unbindCallback = () => {
     return;
 };
 
+/**
+ * Gets the crossfade duration from user settings.
+ * @returns {number} The crossfade duration.
+ */
 function getCrossfadeDuration() {
     return userSettings.crossfadeDuration(undefined);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * Initializes the master audio output.
+ * @param {Function} unbind - The unbind callback function.
+ */
 export function initializeMasterAudio(unbind: any) {
     const savedDuration = getCrossfadeDuration();
     setXDuration(savedDuration);
@@ -70,6 +92,11 @@ type DelayNodes = DelayNode[];
 export const audioNodeBus: GainNodes = [];
 export const delayNodeBus: DelayNodes = [];
 
+/**
+ * Creates a buffer for the audio nodes.
+ * @param {MediaElementAudioSourceNode} input - The input audio source node.
+ * @param {GainNode} output - The output gain node.
+ */
 function createBuffer(input: MediaElementAudioSourceNode, output: GainNode) {
     if (!masterAudioOutput.audioContext) return;
     const delayedAudible = masterAudioOutput.audioContext.createDelay();
@@ -86,6 +113,10 @@ function createBuffer(input: MediaElementAudioSourceNode, output: GainNode) {
     delayNodeBus[0].connect(output);
 }
 
+/**
+ * Creates a gain node for the media element.
+ * @param {HTMLMediaElement} elem - The media element.
+ */
 export function createGainNode(elem: HTMLMediaElement) {
     if (!masterAudioOutput.audioContext || !masterAudioOutput.mixerNode) {
         console.log('MasterAudio is not initialized');
