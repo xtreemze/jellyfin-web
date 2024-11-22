@@ -100,13 +100,18 @@ function updatePlayerState(player, state) {
     const album = item.Album || '';
     const itemId = item.Id;
 
-    // Convert ticks (100ns units) to seconds
-    const durationInSeconds = item.RunTimeTicks ? (item.RunTimeTicks / 10000000) : 0;
-    const currentTimeInSeconds = playState.PositionTicks ? (playState.PositionTicks / 10000000) : 0;
+    // Convert ticks (100ns units) to milliseconds
+    const durationInMilliseconds = item.RunTimeTicks ? (item.RunTimeTicks / 10000) : 0;
+    let currentTimeInMilliseconds = playState.PositionTicks ? (playState.PositionTicks / 10000) : 0;
 
-    const isPaused = playState.IsPaused || false;
-    const canSeek = playState.CanSeek || false;
-    const playbackRate = playState.PlaybackRate || 1;
+    // If PositionTicks is not updating, get current time from player
+    if (!currentTimeInMilliseconds && typeof player.currentTime === 'number') {
+        currentTimeInMilliseconds = player.currentTime * 1000; // Convert to milliseconds
+    }
+
+    const isPaused = typeof playState.IsPaused === 'boolean' ? playState.IsPaused : false;
+    const canSeek = typeof playState.CanSeek === 'boolean' ? playState.CanSeek : false;
+    const playbackRate = typeof playState.PlaybackRate === 'number' ? playState.PlaybackRate : 1;
 
     if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -122,9 +127,9 @@ function updatePlayerState(player, state) {
 
         if ('setPositionState' in navigator.mediaSession) {
             navigator.mediaSession.setPositionState({
-                duration: durationInSeconds,
+                duration: durationInMilliseconds / 1000, // Convert to seconds
                 playbackRate: playbackRate,
-                position: currentTimeInSeconds
+                position: currentTimeInMilliseconds / 1000 // Convert to seconds
             });
         }
     } else {
@@ -135,8 +140,8 @@ function updatePlayerState(player, state) {
             title: title,
             artist: artist,
             album: album,
-            duration: durationInSeconds * 1000, // milliseconds
-            position: currentTimeInSeconds * 1000, // milliseconds
+            duration: durationInMilliseconds,
+            position: currentTimeInMilliseconds,
             imageUrl: itemImageUrl,
             canSeek: canSeek,
             isPaused: isPaused
@@ -239,28 +244,28 @@ if ('mediaSession' in navigator) {
     });
 
     setMediaSessionActionHandler('seekbackward', function (details) {
-        const seekOffset = details.seekOffset || 10; // default to 10 seconds
+        const seekOffset = (details.seekOffset || 10) * 1000; // Convert to milliseconds
         const state = playbackManager.getPlayerState(currentPlayer);
-        const playState = state.PlayState || {};
-        const positionInSeconds = playState.PositionTicks ? (playState.PositionTicks / 10000000) : 0;
-        const newPosition = Math.max(positionInSeconds - seekOffset, 0);
-        playbackManager.seek(newPosition * 1000, currentPlayer); // Convert to milliseconds
+        const positionInMilliseconds = state.PlayState?.PositionTicks ? (state.PlayState.PositionTicks / 10000) : 0;
+        const newPosition = Math.max(positionInMilliseconds - seekOffset, 0);
+        playbackManager.seek(newPosition, currentPlayer);
     });
 
     setMediaSessionActionHandler('seekforward', function (details) {
-        const seekOffset = details.seekOffset || 10; // default to 10 seconds
+        const seekOffset = (details.seekOffset || 10) * 1000; // Convert to milliseconds
         const state = playbackManager.getPlayerState(currentPlayer);
-        const item = state.NowPlayingItem;
-        const durationInSeconds = item.RunTimeTicks ? (item.RunTimeTicks / 10000000) : 0;
-        const playState = state.PlayState || {};
-        const positionInSeconds = playState.PositionTicks ? (playState.PositionTicks / 10000000) : 0;
-        const newPosition = Math.min(positionInSeconds + seekOffset, durationInSeconds);
-        playbackManager.seek(newPosition * 1000, currentPlayer); // Convert to milliseconds
+        const durationInMilliseconds = state.NowPlayingItem.RunTimeTicks ? (state.NowPlayingItem.RunTimeTicks / 10000) : 0;
+        const positionInMilliseconds = state.PlayState?.PositionTicks ? (state.PlayState.PositionTicks / 10000) : 0;
+        const newPosition = Math.min(positionInMilliseconds + seekOffset, durationInMilliseconds);
+        playbackManager.seek(newPosition, currentPlayer);
     });
 
     setMediaSessionActionHandler('seekto', function (details) {
-        const position = details.seekTime; // in seconds
-        playbackManager.seek(position * 1000, currentPlayer); // Convert to milliseconds
+        const position = details.seekTime * 1000; // Convert to milliseconds
+        const state = playbackManager.getPlayerState(currentPlayer);
+        const durationInMilliseconds = state.NowPlayingItem.RunTimeTicks ? (state.NowPlayingItem.RunTimeTicks / 10000) : 0;
+        const newPosition = Math.min(position, durationInMilliseconds);
+        playbackManager.seek(newPosition, currentPlayer);
     });
 
     setMediaSessionActionHandler('stop', function () {
