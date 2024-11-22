@@ -113,7 +113,10 @@ function updatePlayerState(player, state) {
             title: title,
             artist: artist,
             album: album,
-            artwork: getImageUrls(item)
+            artwork: getImageUrls(item),
+            genre: item.Genres ? item.Genres.join(', ') : '',
+            trackNumber: item.IndexNumber || 0,
+            discNumber: item.ParentIndexNumber || 0
         });
         navigator.mediaSession.playbackState = isPaused ? 'paused' : 'playing';
 
@@ -214,7 +217,7 @@ function setMediaSessionActionHandler(action, handler) {
         // eslint-disable-next-line compat/compat
         navigator.mediaSession.setActionHandler(action, handler);
     } catch (error) {
-        // The action is not supported
+        console.warn(`MediaSession action "${action}" is not supported:`, error);
     }
 }
 
