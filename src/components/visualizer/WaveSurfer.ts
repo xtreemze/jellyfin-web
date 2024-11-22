@@ -22,10 +22,6 @@ let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
 let mediaElement: HTMLMediaElement | undefined;
 
-const maxZoom = waveSurferPluginOptions.zoomOptions.maxZoom;
-const minZoom = 1;
-const doubleChannelZoom = 130;
-const wholeSongZoom = 70;
 let currentZoom = 105;
 
 let mobileTouch = false;
@@ -33,10 +29,21 @@ let mobileTouch = false;
 let savedDuration = 0;
 let savedPeaks: number[][];
 
-let initialDistance: number | null = null;
-const MIN_DELTA = waveSurferPluginOptions.zoomOptions.deltaThreshold; // Define a threshold for minimal significant distance change
-
 const purgatory: WaveSurfer[] = [];
+
+// eslint-disable-next-line compat/compat
+const worker = new Worker(new URL('./waveSurferWorker.js', import.meta.url));
+
+worker.onmessage = (event) => {
+    const { type, newZoom, styleOptions } = event.data;
+    if (type === 'zoom') {
+        waveSurferInstance.zoom(newZoom);
+        currentZoom = newZoom;
+    }
+    if (type === 'initializeStyle') {
+        waveSurferInstance.setOptions(styleOptions);
+    }
+};
 
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
@@ -77,9 +84,11 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         duration: newSong ? undefined : savedDuration
     });
 
+    worker.postMessage({ type: 'initializeStyle', minPxPerSec: currentZoom, waveSurferChannelStyle });
+
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
-        initializeStyle(minPxPerSec);
+        worker.postMessage({ type: 'initializeStyle', minPxPerSec, waveSurferChannelStyle });
 
         currentZoom = minPxPerSec;
     });
@@ -97,7 +106,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
             return;
         }
-        initializeStyle(currentZoom);
+        worker.postMessage({ type: 'initializeStyle', minPxPerSec: currentZoom, waveSurferChannelStyle });
         waveSurferInstance.zoom(currentZoom);
         waveSurferInstance.registerPlugin(
             TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
@@ -124,26 +133,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         inputSurfer.removeEventListener('touchend', onTouchEnd);
     });
 
-    function initializeStyle(minPxPerSec: number) {
-        if (minPxPerSec < doubleChannelZoom && minPxPerSec > wholeSongZoom) {
-            waveSurferInstance.setOptions(waveSurferChannelStyle.showSingleChannel);
-            return;
-        }
-        if (minPxPerSec > doubleChannelZoom && minPxPerSec > wholeSongZoom) {
-            waveSurferInstance.setOptions(waveSurferChannelStyle.showDoubleChannels);
-            return;
-        }
-        waveSurferInstance.setOptions(waveSurferChannelStyle.showWholeSong);
-    }
-
     if (container === '#barSlider') return;
-
-    function getDistance(touches: TouchList): number {
-        const [touch1, touch2] = touches;
-        const dx = touch2.clientX - touch1.clientX;
-        const dy = touch2.clientY - touch1.clientY;
-        return Math.sqrt(dx * dx + dy * dy);
-    }
 
     function onTouchStart(e: TouchEvent): void {
         mobileTouch = true;
@@ -163,29 +153,13 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
                 autoCenter: false,
                 autoScroll: false
             });
-            initialDistance = getDistance(e.touches);
+            worker.postMessage({ type: 'touchStart', touches: e.touches });
         }
     }
 
     function onTouchMove(e: TouchEvent): void {
-        if (e.touches.length === 2 && initialDistance !== null) {
-            const currentDistance = getDistance(e.touches);
-            const delta = Math.abs(currentDistance - initialDistance);
-
-            // Check if the distance change is significant
-            if (delta < MIN_DELTA) return;
-
-            const zoomFactor = currentDistance / initialDistance;
-
-            // Ensure the new zoom factor is within allowed bounds
-            const newZoom = currentZoom ** zoomFactor;
-            if (newZoom >= maxZoom || newZoom <= minZoom) return;
-
-            // Debounce logic with time difference check
-            waveSurferInstance.zoom(newZoom);
-            currentZoom = newZoom ;
-            // Update the initial distance for the next move event
-            initialDistance = currentDistance;
+        if (e.touches.length === 2) {
+            worker.postMessage({ type: 'touchMove', touches: e.touches });
         }
     }
 
@@ -197,9 +171,9 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             });
         }
         if (e.touches.length === 2) {
-            initialDistance = null;
+            worker.postMessage({ type: 'touchEnd' });
         }
-        initializeStyle(currentZoom);
+        worker.postMessage({ type: 'initializeStyle', minPxPerSec: currentZoom });
 
         mobileTouch = false;
     }
