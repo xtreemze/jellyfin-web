@@ -122,6 +122,7 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
         resizeCanvas();
 
         return () => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             const currentCanvas = canvasRef.current;
             if (currentCanvas) {
                 observer.unobserve(currentCanvas);
