@@ -190,7 +190,8 @@ const waveSurferPluginOptions = {
     zoomOptions:  {
         scale: 0.25,
         maxZoom: 8000,
-        deltaThreshold: 10
+        deltaThreshold: 10,
+        exponentialZooming: true
     }
 };
 
