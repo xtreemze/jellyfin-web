@@ -22,6 +22,10 @@ let simpleSlider: HTMLElement | null;
 let barSurfer: HTMLElement | null;
 let mediaElement: HTMLMediaElement | undefined;
 
+const maxZoom = waveSurferPluginOptions.zoomOptions.maxZoom;
+const minZoom = 1;
+const doubleChannelZoom = 130;
+const wholeSongZoom = 70;
 let currentZoom = 105;
 
 let mobileTouch = false;
@@ -29,21 +33,13 @@ let mobileTouch = false;
 let savedDuration = 0;
 let savedPeaks: number[][];
 
+let initialDistance: number | null = null;
+const MIN_DELTA = waveSurferPluginOptions.zoomOptions.deltaThreshold; // Define a threshold for minimal significant distance change
+const DEBOUNCE_INTERVAL = 20;
+
 const purgatory: WaveSurfer[] = [];
 
-// eslint-disable-next-line compat/compat
-const worker = new Worker(new URL('./waveSurferWorker.js', import.meta.url));
-
-worker.onmessage = (event) => {
-    const { type, newZoom, styleOptions } = event.data;
-    if (type === 'zoom') {
-        waveSurferInstance.zoom(newZoom);
-        currentZoom = newZoom;
-    }
-    if (type === 'initializeStyle') {
-        waveSurferInstance.setOptions(styleOptions);
-    }
-};
+let lastTouchMoveTime = 0;
 
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
@@ -84,11 +80,9 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         duration: newSong ? undefined : savedDuration
     });
 
-    worker.postMessage({ type: 'initializeStyle', minPxPerSec: currentZoom, waveSurferChannelStyle });
-
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
         if (mobileTouch) return;
-        worker.postMessage({ type: 'initializeStyle', minPxPerSec, waveSurferChannelStyle });
+        initializeStyle(minPxPerSec);
 
         currentZoom = minPxPerSec;
     });
@@ -106,7 +100,7 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             waveSurferInstance.setOptions(waveSurferChannelStyle.bar);
             return;
         }
-        worker.postMessage({ type: 'initializeStyle', minPxPerSec: currentZoom, waveSurferChannelStyle });
+        initializeStyle(currentZoom);
         waveSurferInstance.zoom(currentZoom);
         waveSurferInstance.registerPlugin(
             TimelinePlugin.create(waveSurferPluginOptions.timelineOptions)
@@ -133,7 +127,26 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         inputSurfer.removeEventListener('touchend', onTouchEnd);
     });
 
+    function initializeStyle(minPxPerSec: number) {
+        if (minPxPerSec < doubleChannelZoom && minPxPerSec > wholeSongZoom) {
+            waveSurferInstance.setOptions(waveSurferChannelStyle.showSingleChannel);
+            return;
+        }
+        if (minPxPerSec > doubleChannelZoom && minPxPerSec > wholeSongZoom) {
+            waveSurferInstance.setOptions(waveSurferChannelStyle.showDoubleChannels);
+            return;
+        }
+        waveSurferInstance.setOptions(waveSurferChannelStyle.showWholeSong);
+    }
+
     if (container === '#barSlider') return;
+
+    function getDistance(touches: TouchList): number {
+        const [touch1, touch2] = touches;
+        const dx = touch2.clientX - touch1.clientX;
+        const dy = touch2.clientY - touch1.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
 
     function onTouchStart(e: TouchEvent): void {
         mobileTouch = true;
@@ -153,13 +166,28 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
                 autoCenter: false,
                 autoScroll: false
             });
-            worker.postMessage({ type: 'touchStart', touches: e.touches });
+            initialDistance = getDistance(e.touches);
         }
     }
 
     function onTouchMove(e: TouchEvent): void {
-        if (e.touches.length === 2) {
-            worker.postMessage({ type: 'touchMove', touches: e.touches });
+        if (e.touches.length === 2 && initialDistance !== null) {
+            const currentTime = Date.now();
+            if (currentTime - lastTouchMoveTime < DEBOUNCE_INTERVAL) return; // Debounce touch move events
+            lastTouchMoveTime = currentTime;
+
+            const currentDistance = getDistance(e.touches);
+            const delta = Math.abs(currentDistance - initialDistance);
+
+            if (delta < MIN_DELTA) return;
+
+            const zoomFactor = currentDistance / initialDistance;
+            const newZoom = currentZoom ** zoomFactor;
+            if (newZoom >= maxZoom || newZoom <= minZoom) return;
+
+            waveSurferInstance.zoom(newZoom);
+            currentZoom = newZoom;
+            initialDistance = currentDistance;
         }
     }
 
@@ -171,9 +199,9 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
             });
         }
         if (e.touches.length === 2) {
-            worker.postMessage({ type: 'touchEnd' });
+            initialDistance = null;
         }
-        worker.postMessage({ type: 'initializeStyle', minPxPerSec: currentZoom });
+        initializeStyle(currentZoom);
 
         mobileTouch = false;
     }
