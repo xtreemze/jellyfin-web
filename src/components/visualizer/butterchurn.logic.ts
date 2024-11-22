@@ -1,4 +1,3 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import butterchurn from 'butterchurn';
@@ -25,6 +24,8 @@ export const butterchurnInstance: {
     destroy: () => {
         // empty
     }
+
+    /* eslint-enable @typescript-eslint/ban-ts-comment */
 };
 
 export function initializeButterChurn(canvas: HTMLCanvasElement) {
