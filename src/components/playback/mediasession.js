@@ -144,7 +144,7 @@ function updatePlayerState(player, state) {
     }
 }
 
-function onGeneralEvent(e) {
+function onGeneralEvent() {
     const state = playbackManager.getPlayerState(this);
 
     updatePlayerState(this, state);
