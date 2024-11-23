@@ -100,13 +100,13 @@ function updatePlayerState(player, state) {
     const album = item.Album || '';
     const itemId = item.Id;
 
-    // Convert ticks (100ns units) to milliseconds
-    const durationInMilliseconds = item.RunTimeTicks ? (item.RunTimeTicks / 10000) : 0;
-    let currentTimeInMilliseconds = playState.PositionTicks ? (playState.PositionTicks / 10000) : 0;
+    // Convert ticks (100ns units) to seconds
+    const durationInSeconds = item.RunTimeTicks ? (item.RunTimeTicks / 10000000) : 0;
+    let currentTimeInSeconds = playState.PositionTicks ? (playState.PositionTicks / 10000000) : 0;
 
     // If PositionTicks is not updating, get current time from player
-    if (!currentTimeInMilliseconds && typeof player.currentTime === 'number') {
-        currentTimeInMilliseconds = player.currentTime * 1000; // Convert to milliseconds
+    if (!currentTimeInSeconds && typeof player.currentTime === 'number') {
+        currentTimeInSeconds = player.currentTime; // Already in seconds
     }
 
     const isPaused = typeof playState.IsPaused === 'boolean' ? playState.IsPaused : false;
@@ -127,9 +127,9 @@ function updatePlayerState(player, state) {
 
         if ('setPositionState' in navigator.mediaSession) {
             navigator.mediaSession.setPositionState({
-                duration: durationInMilliseconds / 1000, // Convert to seconds
+                duration: durationInSeconds,
                 playbackRate: playbackRate,
-                position: currentTimeInMilliseconds / 1000 // Convert to seconds
+                position: currentTimeInSeconds
             });
         }
     } else {
@@ -140,8 +140,8 @@ function updatePlayerState(player, state) {
             title: title,
             artist: artist,
             album: album,
-            duration: durationInMilliseconds,
-            position: currentTimeInMilliseconds,
+            duration: durationInSeconds * 1000, // Convert to milliseconds
+            position: currentTimeInSeconds * 1000, // Convert to milliseconds
             imageUrl: itemImageUrl,
             canSeek: canSeek,
             isPaused: isPaused
@@ -244,28 +244,28 @@ if ('mediaSession' in navigator) {
     });
 
     setMediaSessionActionHandler('seekbackward', function (details) {
-        const seekOffset = (details.seekOffset || 10) * 1000; // Convert to milliseconds
+        const seekOffset = (details.seekOffset || 10); // Already in seconds
         const state = playbackManager.getPlayerState(currentPlayer);
-        const positionInMilliseconds = state.PlayState?.PositionTicks ? (state.PlayState.PositionTicks / 10000) : 0;
-        const newPosition = Math.max(positionInMilliseconds - seekOffset, 0);
-        playbackManager.seek(newPosition, currentPlayer);
+        const positionInSeconds = state.PlayState?.PositionTicks ? (state.PlayState.PositionTicks / 10000000) : 0;
+        const newPosition = Math.max(positionInSeconds - seekOffset, 0);
+        playbackManager.seek(newPosition * 1000, currentPlayer); // Convert to milliseconds
     });
 
     setMediaSessionActionHandler('seekforward', function (details) {
-        const seekOffset = (details.seekOffset || 10) * 1000; // Convert to milliseconds
+        const seekOffset = (details.seekOffset || 10); // Already in seconds
         const state = playbackManager.getPlayerState(currentPlayer);
-        const durationInMilliseconds = state.NowPlayingItem.RunTimeTicks ? (state.NowPlayingItem.RunTimeTicks / 10000) : 0;
-        const positionInMilliseconds = state.PlayState?.PositionTicks ? (state.PlayState.PositionTicks / 10000) : 0;
-        const newPosition = Math.min(positionInMilliseconds + seekOffset, durationInMilliseconds);
-        playbackManager.seek(newPosition, currentPlayer);
+        const durationInSeconds = state.NowPlayingItem.RunTimeTicks ? (state.NowPlayingItem.RunTimeTicks / 10000000) : 0;
+        const positionInSeconds = state.PlayState?.PositionTicks ? (state.PlayState.PositionTicks / 10000000) : 0;
+        const newPosition = Math.min(positionInSeconds + seekOffset, durationInSeconds);
+        playbackManager.seek(newPosition * 1000, currentPlayer); // Convert to milliseconds
     });
 
     setMediaSessionActionHandler('seekto', function (details) {
-        const position = details.seekTime * 1000; // Convert to milliseconds
+        const position = details.seekTime; // Already in seconds
         const state = playbackManager.getPlayerState(currentPlayer);
-        const durationInMilliseconds = state.NowPlayingItem.RunTimeTicks ? (state.NowPlayingItem.RunTimeTicks / 10000) : 0;
-        const newPosition = Math.min(position, durationInMilliseconds);
-        playbackManager.seek(newPosition, currentPlayer);
+        const durationInSeconds = state.NowPlayingItem.RunTimeTicks ? (state.NowPlayingItem.RunTimeTicks / 10000000) : 0;
+        const newPosition = Math.min(position, durationInSeconds);
+        playbackManager.seek(newPosition * 1000, currentPlayer); // Convert to milliseconds
     });
 
     setMediaSessionActionHandler('stop', function () {
