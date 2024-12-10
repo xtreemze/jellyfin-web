@@ -1,6 +1,6 @@
 import Events from '../../utils/events.ts';
 import { toBoolean } from '../../utils/string.ts';
-import { setXDuration } from 'components/audioEngine/crossfader.logic';
+import { setXDuration } from 'plugins/crossfadingPlayer/plugin';
 import browser from '../browser';
 import appSettings from './appSettings';
 import { getVisualizerSettings, setVisualizerSettings } from 'components/visualizer/visualizers.logic';
@@ -688,6 +688,32 @@ export class UserSettings {
             sortOrder: this.getFilter(key + '-sortorder') === 'Descending' ? 'Descending' : 'Ascending'
         };
     }
+
+    /**
+     * Get or set 'Gapless Playback' state.
+     * @param {boolean|undefined} val - Flag to enable 'Gapless Playback' or undefined.
+     * @return {boolean} 'Gapless Playback' state.
+     */
+    enableGaplessPlayback(val) {
+        if (val !== undefined) {
+            return this.set('enableGaplessPlayback', val.toString(), true);
+        }
+
+        return toBoolean(this.get('enableGaplessPlayback', true), false);
+    }
+
+    /**
+     * Get or set 'Silence Detection' state.
+     * @param {boolean|undefined} val - Flag to enable 'Silence Detection' or undefined.
+     * @return {boolean} 'Silence Detection' state.
+     */
+    enableSilenceDetection(val) {
+        if (val !== undefined) {
+            return this.set('enableSilenceDetection', val.toString(), true);
+        }
+
+        return toBoolean(this.get('enableSilenceDetection', true), false);
+    }
 }
 
 export const currentSettings = new UserSettings;
@@ -741,3 +767,5 @@ export const disableCustomCss = currentSettings.disableCustomCss.bind(currentSet
 export const getSavedView = currentSettings.getSavedView.bind(currentSettings);
 export const saveViewSetting = currentSettings.saveViewSetting.bind(currentSettings);
 export const getSortValuesLegacy = currentSettings.getSortValuesLegacy.bind(currentSettings);
+export const enableGaplessPlayback = currentSettings.enableGaplessPlayback.bind(currentSettings);
+export const enableSilenceDetection = currentSettings.enableSilenceDetection.bind(currentSettings);

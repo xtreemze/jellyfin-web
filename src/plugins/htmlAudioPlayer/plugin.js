@@ -7,7 +7,7 @@ import { PluginType } from '../../types/plugin';
 import Events from '../../utils/events';
 import { MediaError } from 'types/mediaError';
 import { audioNodeBus, createGainNode, initializeMasterAudio, masterAudioOutput } from 'components/audioEngine/master.logic';
-import { hijackMediaElementForCrossfade, xDuration } from 'components/audioEngine/crossfader.logic';
+import { hijackMediaElementForCrossfade, xDuration, timeRunningOut } from 'plugins/crossfadingPlayer/plugin';
 import { scrollToActivePlaylistItem, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
 
 function getDefaultProfile() {
@@ -328,6 +328,10 @@ class HtmlAudioPlayer {
             if (!self._isFadingOut) {
                 self._currentTime = time;
                 Events.trigger(self, 'timeupdate');
+            }
+
+            if (timeRunningOut(self)) {
+                hijackMediaElementForCrossfade();
             }
         }
 

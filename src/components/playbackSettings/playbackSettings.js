@@ -273,6 +273,9 @@ function loadForm(context, user, userSettings, systemInfo, apiClient) {
     const mediaSegmentContainer = context.querySelector('.mediaSegmentActionContainer');
     populateMediaSegments(mediaSegmentContainer, userSettings);
 
+    context.querySelector('.chkEnableGaplessPlayback').checked = userSettings.enableGaplessPlayback();
+    context.querySelector('.chkEnableSilenceDetection').checked = userSettings.enableSilenceDetection();
+
     loading.hide();
 }
 
@@ -317,6 +320,9 @@ function saveUser(context, user, userSettingsInstance, apiClient) {
     Array.prototype.forEach.call(segmentTypeActions, actionEl => {
         userSettingsInstance.set(actionEl.id, actionEl.value, false);
     });
+
+    userSettingsInstance.enableGaplessPlayback(context.querySelector('.chkEnableGaplessPlayback').checked);
+    userSettingsInstance.enableSilenceDetection(context.querySelector('.chkEnableSilenceDetection').checked);
 
     return apiClient.updateUserConfiguration(user.Id, user.Configuration);
 }
