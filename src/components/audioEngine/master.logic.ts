@@ -1,6 +1,6 @@
 import { getSavedVisualizerSettings, setVisualizerSettings, visualizerSettings } from 'components/visualizer/visualizers.logic';
 import * as userSettings from '../../scripts/settings/userSettings';
-import { setXDuration } from './crossfader.logic';
+import { setXDuration, hijackMediaElementForCrossfade, timeRunningOut } from 'plugins/crossfadingPlayer/plugin';
 
 type MasterAudioTypes = {
     mixerNode?: GainNode;
@@ -131,4 +131,3 @@ export function createGainNode(elem: HTMLMediaElement) {
     createBuffer(source, audioNodeBus[0] );
     audioNodeBus[0].connect(masterAudioOutput.mixerNode);
 }
-
