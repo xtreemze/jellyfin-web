@@ -1523,6 +1523,9 @@ function renderChildren(page, item) {
             }, {
                 name: globalize.translate('Books'),
                 type: 'Book'
+            }, {
+                name: globalize.translate('Collections'),
+                type: 'BoxSet'
             }];
             renderCollectionItems(page, item, collectionItemTypes, result.Items);
         }
