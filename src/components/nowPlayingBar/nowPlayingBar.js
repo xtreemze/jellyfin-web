@@ -18,6 +18,7 @@ import itemShortcuts from '../shortcuts';
 import './nowPlayingBar.scss';
 import '../../elements/emby-slider/emby-slider';
 import { destroyWaveSurferInstance, waveSurferInitialization } from 'components/visualizer/WaveSurfer';
+import { getImageUrl } from 'apps/stable/features/playback/utils/image';
 
 let currentPlayer;
 let currentPlayerSupportedCommands = [];
@@ -483,61 +484,6 @@ function setLyricButtonActiveStatus() {
     lyricButton.classList.toggle('buttonActive', isLyricPageActive);
 }
 
-function seriesImageUrl(item, options) {
-    if (!item) {
-        throw new Error('item cannot be null!');
-    }
-
-    if (item.Type !== 'Episode') {
-        return null;
-    }
-
-    options = options || {};
-    options.type = options.type || 'Primary';
-
-    if (options.type === 'Primary' && item.SeriesPrimaryImageTag) {
-        options.tag = item.SeriesPrimaryImageTag;
-
-        return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.SeriesId, options);
-    }
-
-    if (options.type === 'Thumb') {
-        if (item.SeriesThumbImageTag) {
-            options.tag = item.SeriesThumbImageTag;
-
-            return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.SeriesId, options);
-        }
-        if (item.ParentThumbImageTag) {
-            options.tag = item.ParentThumbImageTag;
-
-            return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.ParentThumbItemId, options);
-        }
-    }
-
-    return null;
-}
-
-function imageUrl(item, options) {
-    if (!item) {
-        throw new Error('item cannot be null!');
-    }
-
-    options = options || {};
-    options.type = options.type || 'Primary';
-
-    if (item.ImageTags?.[options.type]) {
-        options.tag = item.ImageTags[options.type];
-        return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.PrimaryImageItemId || item.Id, options);
-    }
-
-    if (item.AlbumId && item.AlbumPrimaryImageTag) {
-        options.tag = item.AlbumPrimaryImageTag;
-        return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.AlbumId, options);
-    }
-
-    return null;
-}
-
 function updateNowPlayingInfo(state) {
     const nowPlayingItem = state.NowPlayingItem;
 
@@ -567,11 +513,9 @@ function updateNowPlayingInfo(state) {
 
     const imgHeight = 50;
 
-    const url = nowPlayingItem ? (seriesImageUrl(nowPlayingItem, {
+    const url = nowPlayingItem ? getImageUrl(nowPlayingItem, {
         height: imgHeight
-    }) || imageUrl(nowPlayingItem, {
-        height: imgHeight
-    })) : null;
+    }) : null;
 
     if (url !== nowPlayingImageUrl) {
         if (url) {
