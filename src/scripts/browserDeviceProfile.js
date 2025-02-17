@@ -463,7 +463,8 @@ export function canPlaySecondaryAudio(videoTestElement) {
         // It doesn't work in Firefox 108 even with "media.track.enabled" enabled (it only sees the first audio track)
         && !browser.firefox
         // It seems to work on Tizen 5.5+ (2020, Chrome 69+). See https://developer.tizen.org/forums/web-application-development/video-tag-not-work-audiotracks
-        && (browser.tizenVersion >= 5.5 || !browser.tizen)
+        // There are reports that additional audio track (AudioTrack API) doesn't work on Tizen 8.
+        && (browser.tizenVersion >= 5.5 && browser.tizenVersion < 8 || !browser.tizen)
         && (browser.web0sVersion >= 4.0 || !browser.web0sVersion);
 }
 
@@ -650,7 +651,7 @@ export default function (options) {
     }
 
     if (canPlayHevc(videoTestElement, options)
-        && (browser.edgeChromium || browser.safari || browser.tizen || browser.web0s || (browser.chrome && (!browser.android || browser.versionMajor >= 105)) || (browser.opera && !browser.mobile))) {
+        && (browser.edgeChromium || browser.safari || browser.tizen || browser.web0s || (browser.chrome && (!browser.android || browser.versionMajor >= 105)) || (browser.opera && !browser.mobile) || (browser.firefox && browser.versionMajor >= 134))) {
         // Chromium used to support HEVC on Android but not via MSE
         hlsInFmp4VideoCodecs.push('hevc');
     }
@@ -1027,6 +1028,48 @@ export default function (options) {
         });
 
         profile.TranscodingProfiles.push(...flacTranscodingProfiles);
+    }
+
+    if (safariSupportsOpus) {
+        const opusConditions = [
+            // Safari doesn't support opus with more than 2 channels
+            {
+                Condition: 'LessThanEqual',
+                Property: 'AudioChannels',
+                Value: '2',
+                IsRequired: false
+            }
+        ];
+
+        profile.CodecProfiles.push({
+            Type: 'VideoAudio',
+            Codec: 'opus',
+            Conditions: opusConditions
+        });
+
+        const opusTranscodingProfiles = [];
+
+        // Split each video transcoding profile with opus so that the containing opus is only applied to 2 channels audio
+        profile.TranscodingProfiles.forEach(transcodingProfile => {
+            if (transcodingProfile.Type !== 'Video') return;
+
+            const audioCodecs = transcodingProfile.AudioCodec.split(',');
+
+            if (!audioCodecs.includes('opus')) return;
+
+            const opusTranscodingProfile = { ...transcodingProfile };
+            opusTranscodingProfile.AudioCodec = 'opus';
+            opusTranscodingProfile.ApplyConditions = [
+                ...opusTranscodingProfile.ApplyConditions || [],
+                ...opusConditions
+            ];
+
+            opusTranscodingProfiles.push(opusTranscodingProfile);
+
+            transcodingProfile.AudioCodec = audioCodecs.filter(codec => codec != 'opus').join(',');
+        });
+
+        profile.TranscodingProfiles.push(...opusTranscodingProfiles);
     }
 
     let maxH264Level = 42;

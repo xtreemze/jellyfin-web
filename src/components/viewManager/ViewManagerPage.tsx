@@ -6,8 +6,10 @@ import globalize from 'lib/globalize';
 import type { RestoreViewFailResponse } from 'types/viewManager';
 
 import viewManager from './viewManager';
+import { AppType } from 'constants/appType';
 
 export interface ViewManagerPageProps {
+    appType?: AppType
     controller: string
     view: string
     type?: string
@@ -31,12 +33,33 @@ interface ViewOptions {
     }
 }
 
-const loadView = async (controller: string, view: string, viewOptions: ViewOptions) => {
-    const [ controllerFactory, viewHtml ] = await Promise.all([
+const importController = (
+    appType: AppType,
+    controller: string,
+    view: string
+) => {
+    if (appType === AppType.Dashboard) {
+        return Promise.all([
+            import(/* webpackChunkName: "[request]" */ `../../apps/dashboard/controllers/${controller}`),
+            import(/* webpackChunkName: "[request]" */ `../../apps/dashboard/controllers/${view}`)
+                .then(html => globalize.translateHtml(html))
+        ]);
+    }
+
+    return Promise.all([
         import(/* webpackChunkName: "[request]" */ `../../controllers/${controller}`),
         import(/* webpackChunkName: "[request]" */ `../../controllers/${view}`)
             .then(html => globalize.translateHtml(html))
     ]);
+};
+
+const loadView = async (
+    appType: AppType,
+    controller: string,
+    view: string,
+    viewOptions: ViewOptions
+) => {
+    const [ controllerFactory, viewHtml ] = await importController(appType, controller, view);
 
     viewManager.loadView({
         ...viewOptions,
@@ -50,6 +73,7 @@ const loadView = async (controller: string, view: string, viewOptions: ViewOptio
  * NOTE: Any new pages should use the generic Page component instead.
  */
 const ViewManagerPage: FunctionComponent<ViewManagerPageProps> = ({
+    appType = AppType.Stable,
     controller,
     view,
     type,
@@ -78,7 +102,7 @@ const ViewManagerPage: FunctionComponent<ViewManagerPageProps> = ({
 
             if (navigationType !== Action.Pop) {
                 console.debug('[ViewManagerPage] loading view [%s]', view);
-                return loadView(controller, view, viewOptions);
+                return loadView(appType, controller, view, viewOptions);
             }
 
             console.debug('[ViewManagerPage] restoring view [%s]', view);
@@ -86,7 +110,7 @@ const ViewManagerPage: FunctionComponent<ViewManagerPageProps> = ({
                 .catch(async (result?: RestoreViewFailResponse) => {
                     if (!result?.cancelled) {
                         console.debug('[ViewManagerPage] restore failed; loading view [%s]', view);
-                        return loadView(controller, view, viewOptions);
+                        return loadView(appType, controller, view, viewOptions);
                     }
                 });
         };

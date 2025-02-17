@@ -304,11 +304,15 @@ export default function (view) {
     }
 
     function slideDownToShow(elem) {
+        clearHideAnimationEventListeners(elem);
+        elem.classList.remove('hide');
         elem.classList.remove('osdHeader-hidden');
     }
 
     function slideUpToHide(elem) {
+        clearHideAnimationEventListeners(elem);
         elem.classList.add('osdHeader-hidden');
+        elem.addEventListener(transitionEndEventName, onHideAnimationComplete);
     }
 
     function clearHideAnimationEventListeners(elem) {
@@ -317,7 +321,7 @@ export default function (view) {
 
     function onHideAnimationComplete(e) {
         const elem = e.target;
-        if (elem != osdBottomElement) return;
+        if (elem !== osdBottomElement && elem !== headerElement) return;
         elem.classList.add('hide');
         elem.removeEventListener(transitionEndEventName, onHideAnimationComplete);
     }
@@ -338,8 +342,17 @@ export default function (view) {
                 _focus(focusElement);
             }
             toggleSubtitleSync();
-        } else if (currentVisibleMenu === 'osd' && focusElement && !layoutManager.mobile) {
-            _focus(focusElement);
+        } else if (currentVisibleMenu === 'osd' && !layoutManager.mobile) {
+            // If no focus element is provided, try to keep current focus if it's valid,
+            // otherwise default to pause button
+            if (!focusElement) {
+                const currentFocus = document.activeElement;
+                if (!currentFocus || !focusManager.isCurrentlyFocusable(currentFocus)) {
+                    focusElement = osdBottomElement.querySelector('.btnPause');
+                }
+            }
+
+            if (focusElement) _focus(focusElement);
         }
     }
 
@@ -354,7 +367,8 @@ export default function (view) {
             toggleSubtitleSync('hide');
 
             // Firefox does not blur by itself
-            if (document.activeElement) {
+            if (osdBottomElement.contains(document.activeElement)
+                || headerElement.contains(document.activeElement)) {
                 document.activeElement.blur();
             }
         }
@@ -1232,13 +1246,17 @@ export default function (view) {
                 case 'ArrowLeft':
                 case 'ArrowRight':
                     if (!e.shiftKey) {
+                        e.preventDefault();
                         showOsd(nowPlayingPositionSlider);
                         nowPlayingPositionSlider.dispatchEvent(new KeyboardEvent(e.type, e));
                     }
                     return;
                 case 'Enter':
-                    playbackManager.playPause(currentPlayer);
-                    showOsd(btnPlayPause);
+                    if (e.target.tagName !== 'BUTTON') {
+                        e.preventDefault();
+                        playbackManager.playPause(currentPlayer);
+                        showOsd(btnPlayPause);
+                    }
                     return;
             }
         }

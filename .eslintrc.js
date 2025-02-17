@@ -65,7 +65,6 @@ module.exports = {
         'prefer-const': ['error', { 'destructuring': 'all' }],
         'prefer-promise-reject-errors': ['warn', { 'allowEmptyReject': true }],
         '@typescript-eslint/prefer-for-of': ['error'],
-        '@typescript-eslint/prefer-optional-chain': ['error'],
         'radix': ['error'],
         'yoda': 'error',
 
@@ -229,15 +228,12 @@ module.exports = {
             },
             env: {
                 node: false,
-                amd: true,
                 browser: true,
                 es6: true,
                 es2017: true,
                 es2020: true
             },
             globals: {
-                // Browser globals
-                'MediaMetadata': 'readonly',
                 // Tizen globals
                 'tizen': 'readonly',
                 'webapis': 'readonly',
@@ -250,19 +246,9 @@ module.exports = {
                 'ApiClient': 'writable',
                 'Events': 'writable',
                 'chrome': 'writable',
-                'DlnaProfilePage': 'writable',
-                'DashboardPage': 'writable',
                 'Emby': 'readonly',
-                'Globalize': 'writable',
                 'Hls': 'writable',
                 'LibraryMenu': 'writable',
-                'LinkParser': 'writable',
-                'LiveTvHelpers': 'writable',
-                'Loading': 'writable',
-                'MetadataEditor': 'writable',
-                'ServerNotifications': 'writable',
-                'TaskButton': 'writable',
-                'UserParentalControlPage': 'writable',
                 'Windows': 'readonly',
                 // Build time definitions
                 __COMMIT_SHA__: 'readonly',

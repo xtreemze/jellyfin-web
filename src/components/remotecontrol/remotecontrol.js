@@ -1,10 +1,13 @@
 import escapeHtml from 'escape-html';
+
+import { getImageUrl } from 'apps/stable/features/playback/utils/image';
+import { getItemTextLines } from 'apps/stable/features/playback/utils/itemText';
+
 import datetime from '../../scripts/datetime';
 import { clearBackdrop, setBackdrops } from '../backdrop/backdrop';
 import listView from '../listview/listview';
 import imageLoader from '../images/imageLoader';
 import { playbackManager } from '../playback/playbackmanager';
-import nowPlayingHelper from '../playback/nowplayinghelper';
 import Events from '../../utils/events.ts';
 import { appHost } from '../apphost';
 import globalize from '../../lib/globalize';
@@ -86,59 +89,11 @@ function showSubtitleMenu(context, player, button) {
     });
 }
 
-function getNowPlayingNameHtml(nowPlayingItem, includeNonNameInfo) {
-    return nowPlayingHelper.getNowPlayingNames(nowPlayingItem, includeNonNameInfo).map(function (i) {
-        return escapeHtml(i.text);
-    }).join('<br/>');
-}
-
-function seriesImageUrl(item, options) {
-    if (item.Type !== 'Episode') {
-        return null;
-    }
-
-    options = options || {};
-    options.type = options.type || 'Primary';
-    if (options.type === 'Primary' && item.SeriesPrimaryImageTag) {
-        options.tag = item.SeriesPrimaryImageTag;
-        return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.SeriesId, options);
-    }
-
-    if (options.type === 'Thumb') {
-        if (item.SeriesThumbImageTag) {
-            options.tag = item.SeriesThumbImageTag;
-            return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.SeriesId, options);
-        }
-
-        if (item.ParentThumbImageTag) {
-            options.tag = item.ParentThumbImageTag;
-            return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.ParentThumbItemId, options);
-        }
-    }
-
-    return null;
-}
-
-function imageUrl(item, options) {
-    options = options || {};
-    options.type = options.type || 'Primary';
-
-    if (item.ImageTags?.[options.type]) {
-        options.tag = item.ImageTags[options.type];
-        return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.PrimaryImageItemId || item.Id, options);
-    }
-
-    if (item.AlbumId && item.AlbumPrimaryImageTag) {
-        options.tag = item.AlbumPrimaryImageTag;
-        return ServerConnections.getApiClient(item.ServerId).getScaledImageUrl(item.AlbumId, options);
-    }
-
-    return null;
-}
-
 function updateNowPlayingInfo(context, state, serverId) {
     const item = state.NowPlayingItem;
-    const displayName = item ? getNowPlayingNameHtml(item).replace('<br/>', ' - ') : '';
+    const displayName = item ?
+        getItemTextLines(item).map(escapeHtml).join(' - ') :
+        '';
     if (item) {
         const nowPlayingServerId = (item.ServerId || serverId);
         if (item.Type == 'AudioBook' || item.Type == 'Audio' || item.MediaStreams[0].Type == 'Audio') {
@@ -194,9 +149,7 @@ function updateNowPlayingInfo(context, state, serverId) {
             context.querySelector('.nowPlayingPageTitle').classList.add('hide');
         }
 
-        const url = seriesImageUrl(item, {
-            maxHeight: 1080
-        }) || imageUrl(item, {
+        const url = getImageUrl(item, {
             maxHeight: 1080
         });
 
