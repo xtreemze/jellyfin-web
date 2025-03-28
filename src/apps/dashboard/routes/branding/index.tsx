@@ -8,8 +8,8 @@ import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import React, { useCallback, useEffect, useState } from 'react';
-import { type ActionFunctionArgs, Form, useActionData } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { type ActionFunctionArgs, Form, useActionData, useNavigation } from 'react-router-dom';
 
 import { getBrandingOptionsQuery, QUERY_KEY, useBrandingOptions } from 'apps/dashboard/features/branding/api/useBrandingOptions';
 import Loading from 'components/loading/LoadingComponent';
@@ -60,22 +60,15 @@ export const loader = () => {
 };
 
 export const Component = () => {
+    const navigation = useNavigation();
     const actionData = useActionData() as ActionData | undefined;
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
+    const isSubmitting = navigation.state === 'submitting';
 
     const {
         data: defaultBrandingOptions,
         isPending
     } = useBrandingOptions();
     const [ brandingOptions, setBrandingOptions ] = useState(defaultBrandingOptions || {});
-
-    useEffect(() => {
-        setIsSubmitting(false);
-    }, [ actionData ]);
-
-    const onSubmit = useCallback(() => {
-        setIsSubmitting(true);
-    }, []);
 
     const setSplashscreenEnabled = useCallback((_: React.ChangeEvent<HTMLInputElement>, isEnabled: boolean) => {
         setBrandingOptions({
@@ -98,13 +91,11 @@ export const Component = () => {
     return (
         <Page
             id='brandingPage'
+            title={globalize.translate('HeaderBranding')}
             className='mainAnimatedPage type-interior'
         >
             <Box className='content-primary'>
-                <Form
-                    method='POST'
-                    onSubmit={onSubmit}
-                >
+                <Form method='POST'>
                     <Stack spacing={3}>
                         <Typography variant='h1'>
                             {globalize.translate('HeaderBranding')}
@@ -132,14 +123,16 @@ export const Component = () => {
                             multiline
                             minRows={5}
                             maxRows={5}
-                            InputProps={{
-                                className: 'textarea-mono'
-                            }}
                             name={BrandingOption.LoginDisclaimer}
                             label={globalize.translate('LabelLoginDisclaimer')}
                             helperText={globalize.translate('LabelLoginDisclaimerHelp')}
                             value={brandingOptions?.LoginDisclaimer}
                             onChange={setBrandingOption}
+                            slotProps={{
+                                input: {
+                                    className: 'textarea-mono'
+                                }
+                            }}
                         />
 
                         <TextField
@@ -147,14 +140,16 @@ export const Component = () => {
                             multiline
                             minRows={5}
                             maxRows={20}
-                            InputProps={{
-                                className: 'textarea-mono'
-                            }}
                             name={BrandingOption.CustomCss}
                             label={globalize.translate('LabelCustomCss')}
                             helperText={globalize.translate('LabelCustomCssHelp')}
                             value={brandingOptions?.CustomCss}
                             onChange={setBrandingOption}
+                            slotProps={{
+                                input: {
+                                    className: 'textarea-mono'
+                                }
+                            }}
                         />
 
                         <Button

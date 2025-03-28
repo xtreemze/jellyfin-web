@@ -908,6 +908,7 @@ function renderOverview(page, item) {
     const overviewElements = page.querySelectorAll('.overview');
 
     if (overviewElements.length > 0) {
+        // eslint-disable-next-line sonarjs/disabled-auto-escaping
         const overview = DOMPurify.sanitize(markdownIt({ html: true }).render(item.Overview || ''));
 
         if (overview) {
@@ -1409,6 +1410,7 @@ function renderChildren(page, item) {
         if (item.Type == 'MusicAlbum') {
             let showArtist = false;
             for (const track of result.Items) {
+                // eslint-disable-next-line sonarjs/no-alphabetical-sort
                 if (!isEqual(track.ArtistItems.map(x => x.Id).sort(), track.AlbumArtists.map(x => x.Id).sort())) {
                     showArtist = true;
                     break;
@@ -2024,7 +2026,7 @@ export default function (view, params) {
     function onCancelSeriesTimerClick() {
         import('../../components/recordingcreator/recordinghelper').then(({ default: recordingHelper }) => {
             recordingHelper.cancelSeriesTimerWithConfirmation(currentItem.Id, currentItem.ServerId).then(function () {
-                Dashboard.navigate('livetv.html');
+                Dashboard.navigate('livetv');
             });
         });
     }

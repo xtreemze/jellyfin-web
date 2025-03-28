@@ -1,35 +1,30 @@
-import escapeHtml from "escape-html";
+import escapeHtml from 'escape-html';
 
-import { getImageUrl } from "apps/stable/features/playback/utils/image";
-import { getItemTextLines } from "apps/stable/features/playback/utils/itemText";
+import { getImageUrl } from 'apps/stable/features/playback/utils/image';
+import { getItemTextLines } from 'apps/stable/features/playback/utils/itemText';
 
-import datetime from "../../scripts/datetime";
-import { clearBackdrop, setBackdrops } from "../backdrop/backdrop";
-import listView from "../listview/listview";
-import imageLoader from "../images/imageLoader";
-import { playbackManager } from "../playback/playbackmanager";
-import Events from "../../utils/events.ts";
-import { appHost } from "../apphost";
-import globalize from "../../lib/globalize";
-import layoutManager from "../layoutManager";
-import * as userSettings from "../../scripts/settings/userSettings";
-import itemContextMenu from "../itemContextMenu";
-import "../cardbuilder/card.scss";
-import "../../elements/emby-button/emby-button";
-import "../../elements/emby-button/paper-icon-button-light";
-import "../../elements/emby-itemscontainer/emby-itemscontainer";
-import "./remotecontrol.scss";
-import "../../elements/emby-ratingbutton/emby-ratingbutton";
-import "../../elements/emby-slider/emby-slider";
-import ServerConnections from "../ServerConnections";
-import toast from "../toast/toast";
-import { appRouter } from "../router/appRouter";
-import { getDefaultBackgroundClass } from "../cardbuilder/cardBuilderUtils";
-import {
-    renderDiscImage,
-    renderLogo,
-    renderYear,
-} from "controllers/itemDetails";
+import datetime from '../../scripts/datetime';
+import { clearBackdrop, setBackdrops } from '../backdrop/backdrop';
+import listView from '../listview/listview';
+import imageLoader from '../images/imageLoader';
+import { playbackManager } from '../playback/playbackmanager';
+import Events from '../../utils/events.ts';
+import { appHost } from '../apphost';
+import globalize from '../../lib/globalize';
+import layoutManager from '../layoutManager';
+import * as userSettings from '../../scripts/settings/userSettings';
+import itemContextMenu from '../itemContextMenu';
+import '../cardbuilder/card.scss';
+import '../../elements/emby-button/emby-button';
+import '../../elements/emby-button/paper-icon-button-light';
+import '../../elements/emby-itemscontainer/emby-itemscontainer';
+import './remotecontrol.scss';
+import '../../elements/emby-ratingbutton/emby-ratingbutton';
+import '../../elements/emby-slider/emby-slider';
+import ServerConnections from '../ServerConnections';
+import toast from '../toast/toast';
+import { appRouter } from '../router/appRouter';
+import { getDefaultBackgroundClass } from '../cardbuilder/cardBuilderUtils';
 
 let showMuteButton = true;
 let showVolumeSlider = true;
@@ -98,9 +93,9 @@ function showSubtitleMenu(context, player, button) {
 
 function updateNowPlayingInfo(context, state, serverId) {
     const item = state.NowPlayingItem;
-    const displayName = item
-        ? getItemTextLines(item).map(escapeHtml).join(" - ")
-        : "";
+    const displayName = item ?
+        getItemTextLines(item).map(escapeHtml).join(' - ') :
+        '';
     if (item) {
         const nowPlayingServerId = item.ServerId || serverId;
         if (
@@ -181,7 +176,7 @@ function updateNowPlayingInfo(context, state, serverId) {
         }
 
         const url = getImageUrl(item, {
-            maxHeight: 1080,
+            maxHeight: 300
         });
 
         let contextButton = context.querySelector(".btnToggleContextMenu");

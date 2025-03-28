@@ -16,4 +16,8 @@ config.json
 # vim
 *.sw?
 
-.DS_Store
+# direnv
+.direnv/
+
+# environment related
+.envrc

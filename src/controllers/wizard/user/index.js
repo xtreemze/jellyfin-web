@@ -11,7 +11,7 @@ function getApiClient() {
 }
 
 function nextWizardPage() {
-    Dashboard.navigate('wizardlibrary.html')
+    Dashboard.navigate('wizardlibrary')
         .catch(err => {
             console.error('[Wizard > User] error navigating to library setup', err);
         });
@@ -37,7 +37,7 @@ function submit(form) {
         .ajax({
             type: 'POST',
             data: JSON.stringify({
-                Name: form.querySelector('#txtUsername').value,
+                Name: form.querySelector('#txtUsername').value.trim(),
                 Password: form.querySelector('#txtManualPassword').value
             }),
             url: apiClient.getUrl('Startup/User'),
