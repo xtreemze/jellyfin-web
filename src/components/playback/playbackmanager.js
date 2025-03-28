@@ -3,6 +3,7 @@ import { getMediaInfoApi } from '@jellyfin/sdk/lib/utils/api/media-info-api';
 import { MediaType } from '@jellyfin/sdk/lib/generated-client/models/media-type';
 import merge from 'lodash-es/merge';
 import Screenfull from 'screenfull';
+
 import Events from '../../utils/events.ts';
 import datetime from '../../scripts/datetime';
 import appSettings from '../../scripts/settings/appSettings';

@@ -4,7 +4,7 @@ import { appRouter, isLyricsPage } from 'components/router/appRouter';
 
 import datetime from '../../scripts/datetime';
 import Events from '../../utils/events.ts';
-import browser from 'scripts/browser';
+import browser from '../../scripts/browser';
 import imageLoader from '../images/imageLoader';
 import layoutManager from '../layoutManager';
 import { playbackManager } from '../playback/playbackmanager';
