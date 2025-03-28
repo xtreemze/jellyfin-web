@@ -25,6 +25,7 @@ import ServerConnections from '../ServerConnections';
 import toast from '../toast/toast';
 import { appRouter } from '../router/appRouter';
 import { getDefaultBackgroundClass } from '../cardbuilder/cardBuilderUtils';
+import { renderDiscImage, renderLogo, renderYear } from 'controllers/itemDetails';
 
 let showMuteButton = true;
 let showVolumeSlider = true;
@@ -35,7 +36,7 @@ function showAudioMenu(context, player, button) {
     const menuItems = streams.map(function (s) {
         const menuItem = {
             name: s.DisplayTitle,
-            id: s.Index,
+            id: s.Index
         };
 
         if (s.Index == currentIndex) {
@@ -45,13 +46,13 @@ function showAudioMenu(context, player, button) {
         return menuItem;
     });
 
-    import("../actionSheet/actionSheet").then((actionsheet) => {
+    import('../actionSheet/actionSheet').then((actionsheet) => {
         actionsheet.show({
             items: menuItems,
             positionTo: button,
             callback: function (id) {
                 playbackManager.setAudioStreamIndex(parseInt(id, 10), player);
-            },
+            }
         });
     });
 }
@@ -62,7 +63,7 @@ function showSubtitleMenu(context, player, button) {
     const menuItems = streams.map(function (s) {
         const menuItem = {
             name: s.DisplayTitle,
-            id: s.Index,
+            id: s.Index
         };
 
         if (s.Index == currentIndex) {
