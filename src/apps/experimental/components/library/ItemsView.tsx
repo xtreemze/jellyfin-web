@@ -177,14 +177,8 @@ const ItemsView: FC<ItemsViewProps> = ({
         }
 
         return cardOptions;
-    }, [
-        libraryViewSettings.ShowTitle,
-        libraryViewSettings.ImageType,
-        libraryViewSettings.ShowYear,
-        libraryViewSettings.CardLayout,
-        collectionType,
-        viewType
-    ]);
+    }, [libraryViewSettings.ImageType, libraryViewSettings.ShowTitle, libraryViewSettings.ShowYear,
+        libraryViewSettings.CardLayout, collectionType, __legacyApiClient__, viewType]);
 
     const getItems = useCallback(() => {
         if (!itemsResult?.Items?.length) {
