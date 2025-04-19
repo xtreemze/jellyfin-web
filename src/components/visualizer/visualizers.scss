@@ -189,7 +189,7 @@ body.transition canvas#butterchurn,
 canvas#butterchurn {
     z-index: 0;
     position: fixed;
-    filter: opacity(0.7) brightness(0.9) blur(12px);
+    filter: opacity(0.7) brightness(0.5) blur(12px);
     transition: filter 1.4s ease-in-out;
 }
 
@@ -203,7 +203,7 @@ canvas#frequencyAnalyzer {
 }
 
 body:not(.transition).mouseIdle canvas#butterchurn {
-    filter: opacity(0.7) brightness(0.9) blur(0.2px);
+    filter: opacity(0.7) brightness(0.5) blur(6px);
     transition: filter 6s ease-in-out;
     transition-delay: 5s;
 }
@@ -307,7 +307,7 @@ body.transition .discImage {
     }
 
     canvas#butterchurn body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
-        filter: opacity(0.9) brightness(0.7) blur(13px);
+        filter: opacity(0.7) brightness(0.5) blur(13px);
         transition: filter 6s ease-in-out;
         transition-delay: 5s;
     }
@@ -500,6 +500,7 @@ body.transition .discImage {
         left: calc(65vw + 2rem);
         top: auto;
         width: auto;
+        filter: brightness(0.75);
     }
 
     .discImage {

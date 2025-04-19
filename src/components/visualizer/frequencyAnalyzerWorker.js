@@ -24,8 +24,8 @@ globalThis.onmessage = function (event) {
     ctx.scale(dpr, dpr);
     const previousBarHeights = new Float32Array(fftSize / 2);
     const sampleRate = 44100; // Default sample rate, adjust as needed
-    const nyquist = sampleRate / 2;
-    const MIN_FREQUENCY = 40;
+    const nyquist = sampleRate * 2;
+    const MIN_FREQUENCY = 60;
     const MAX_FREQUENCY = nyquist;
 
     const clippingDecibel = 12;

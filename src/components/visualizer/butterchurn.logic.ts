@@ -36,8 +36,8 @@ export function initializeButterChurn(canvas: HTMLCanvasElement) {
     butterchurnInstance.visualizer = butterchurn.createVisualizer(masterAudioOutput.audioContext, canvas, {
         width: window.innerWidth,
         height: window.innerHeight,
-        pixelRatio: window.devicePixelRatio || 1,
-        textureRatio: 1
+        pixelRatio: window.devicePixelRatio * 2 || 1,
+        textureRatio: 2
     });
 
     // Connect your audio source (e.g., mixerNode) to the visualizer
