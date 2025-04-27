@@ -174,44 +174,43 @@ button.button-submit.btnSave {
 
 body:not(.transition).mouseIdle .backdropContainer {
     transition: filter 4s ease-in-out;
-    filter: blur(0.2px) brightness(0.95);
+    filter: contrast(0.9) saturate(0.4) brightness(0.9) opacity(1) blur(3px);
     transition-delay: 5s;
 }
 
 body:not(.mouseIdle) .backdropContainer,
 body.transition .backdropContainer,
 body.songEnd .backdropContainer {
+    filter: contrast(0.9) saturate(0.4) brightness(0.5) opacity(1) blur(6px);
     transition: filter 1s ease-in-out;
-    filter: blur(5px) brightness(0.5);
 }
 
 body.transition canvas#butterchurn,
 canvas#butterchurn {
     z-index: 0;
     position: fixed;
-    filter: opacity(0.7) brightness(0.5) blur(12px);
+    filter: contrast(0.8) saturate(0.3) brightness(0.4) opacity(0.6) blur(12px);
     transition: filter 1.4s ease-in-out;
 }
 
-body.transition canvas#frequencyAnalyzer,
-canvas#frequencyAnalyzer {
-    position: fixed;
-    opacity: 0.2;
-    mix-blend-mode: difference;
-    transition: opacity 1.4s ease-in-out;
+body.transition canvas#frequency-analyzer,
+canvas#frequency-analyzer {
+    // mix-blend-mode: difference;
+    filter: saturate(0.8) brightness(0.5) contrast(0.4) opacity(0.2) blur(2px);
+    transition: filter 1.4s ease-in-out;
     z-index: 0;
 }
 
 body:not(.transition).mouseIdle canvas#butterchurn {
-    filter: opacity(0.7) brightness(0.5) blur(6px);
+    filter: contrast(0.8) saturate(0.3) brightness(0.5) opacity(0.5) blur(6px);
     transition: filter 6s ease-in-out;
     transition-delay: 5s;
 }
 
-body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
-    opacity: 0.5;
-    mix-blend-mode: normal;
-    transition: opacity 6s ease-in-out;
+body:not(.transition).mouseIdle canvas#frequency-analyzer {
+    // mix-blend-mode: normal;
+    filter: saturate(0.8) brightness(0.5) contrast(0.4) opacity(0.2) blur(2px);
+    transition: filter 6s ease-in-out;
     transition-delay: 5s;
 }
 
@@ -306,8 +305,8 @@ body.transition .discImage {
         max-width: unset;
     }
 
-    canvas#butterchurn body:not(.transition).mouseIdle canvas#frequencyAnalyzer {
-        filter: opacity(0.7) brightness(0.5) blur(13px);
+    canvas#butterchurn body:not(.transition).mouseIdle {
+        filter: contrast(0.8) saturate(0.3) brightness(0.5) opacity(0.6) blur(6px);
         transition: filter 6s ease-in-out;
         transition-delay: 5s;
     }
@@ -355,8 +354,8 @@ body.transition .discImage {
 
     .backgroundContainer.withBackdrop,
     body.transition .backgroundContainer.withBackdrop {
-        opacity: 0.7;
-        transition: opacity 1.4s ease-in-out;
+        filter: contrast(1) saturate(0.4) brightness(0.5) opacity(0.7) blur(6px);
+        transition: filter 1.4s ease-in-out;
     }
 
     #playlist div>div.listViewUserDataButtons,
@@ -486,8 +485,8 @@ body.transition .discImage {
     }
 
     body:not(.transition).mouseIdle .backgroundContainer.withBackdrop {
-        opacity: 0.5;
-        transition: opacity 12s ease-in-out;
+        filter: contrast(0.9) saturate(0.4) brightness(0.5) opacity(0.5) blur(6px);
+        transition: filter 12s ease-in-out;
         transition-delay: 5s;
     }
 
@@ -506,9 +505,9 @@ body.transition .discImage {
     .discImage {
         left: calc(21rem - 35vh);
         bottom: calc(38.3rem - 35vh);
-        width: 80vh;
-        height: 80vh;
-        background-size: 80vh;
+        width: 60vh;
+        height: 60vh;
+        background-size: 60vh;
     }
 
     .nowPlayingInfoContainer {
@@ -546,12 +545,12 @@ body.transition .discImage {
     }
 
     .nowPlayingInfoContainer>.nowPlayingPageImageContainer {
-        z-index: 1;
-        bottom: 7rem;
-        width: 43vw;
+        bottom: 10rem;
         left: auto;
-        right: 37vw;
         position: fixed;
+        right: 50vw;
+        width: 38vw;
+        z-index: 1;
     }
 
     .nowPlayingPageImage {

@@ -133,6 +133,7 @@ const FrequencyAnalyzer: React.FC<FrequencyAnalyzersProps> = ({
     return (
         <canvas
             ref={canvasRef}
+            id='frequency-analyzer'
             style={{
                 position: 'fixed',
                 top: 0,
