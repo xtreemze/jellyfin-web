@@ -11,7 +11,7 @@ type MasterAudioTypes = {
     volume: number;
 };
 
-const dbBoost = 16;
+const dbBoost = 0;
 
 /**
  * Applies a decibel reduction to the original volume.
@@ -38,9 +38,9 @@ export const masterAudioOutput: MasterAudioTypes = {
 
 /**
  * Unbind callback function.
- * @type {Function}
+ * Explicitly typed as a function with no parameters returning void.
  */
-export let unbindCallback = () => {
+export let unbindCallback: () => void = () => {
     return;
 };
 
@@ -48,11 +48,10 @@ export let unbindCallback = () => {
  * Gets the crossfade duration from user settings.
  * @returns {number} The crossfade duration.
  */
-function getCrossfadeDuration() {
+function getCrossfadeDuration(): number {
     return userSettings.crossfadeDuration(undefined);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 /**
  * Initializes the master audio output.
  * @param {Function} unbind - The unbind callback function.
@@ -79,7 +78,18 @@ export function initializeMasterAudio(unbind: () => void) {
     if (!masterAudioOutput.mixerNode) {
         masterAudioOutput.mixerNode = audioCtx.createGain();
 
-        masterAudioOutput.mixerNode.connect(audioCtx.destination);
+        // insert a  “brick-wall” limiter before destination
+        const limiter = audioCtx.createDynamicsCompressor();
+        // peaks above –1 dB will be instantly limited
+        limiter.threshold.setValueAtTime(-1, audioCtx.currentTime);
+        limiter.knee.setValueAtTime(0, audioCtx.currentTime);
+        limiter.ratio.setValueAtTime(20, audioCtx.currentTime);
+        limiter.attack.setValueAtTime(0.003, audioCtx.currentTime);
+        limiter.release.setValueAtTime(0.25, audioCtx.currentTime);
+
+        // route: mixer → limiter → speakers
+        masterAudioOutput.mixerNode.connect(limiter);
+        limiter.connect(audioCtx.destination);
 
         masterAudioOutput.mixerNode.gain
             .setValueAtTime((masterAudioOutput.volume / 100) * masterAudioOutput.makeupGain, audioCtx.currentTime);
@@ -99,12 +109,10 @@ export const delayNodeBus: DelayNodes = [];
  */
 function createBuffer(input: MediaElementAudioSourceNode, output: GainNode) {
     if (!masterAudioOutput.audioContext) return;
-    const delayedAudible = masterAudioOutput.audioContext.createDelay();
+    const delayedAudible = masterAudioOutput.audioContext.createDelay(0.05);
 
     if (visualizerSettings.waveSurfer.enabled) {
         delayedAudible.delayTime.value = 0.01;
-    } else {
-        delayedAudible.delayTime.value = 0.05;
     }
 
     delayNodeBus.unshift(delayedAudible);
