@@ -75,20 +75,20 @@ function showSubtitleMenu(context, player, button) {
     });
     menuItems.unshift({
         id: -1,
-        name: globalize.translate("Off"),
-        selected: currentIndex == null,
+        name: globalize.translate('Off'),
+        selected: currentIndex == null
     });
 
-    import("../actionSheet/actionSheet").then((actionsheet) => {
+    import('../actionSheet/actionSheet').then((actionsheet) => {
         actionsheet.show({
             items: menuItems,
             positionTo: button,
             callback: function (id) {
                 playbackManager.setSubtitleStreamIndex(
                     parseInt(id, 10),
-                    player,
+                    player
                 );
-            },
+            }
         });
     });
 }
@@ -101,18 +101,18 @@ function updateNowPlayingInfo(context, state, serverId) {
     if (item) {
         const nowPlayingServerId = item.ServerId || serverId;
         if (
-            item.Type == "AudioBook" ||
-            item.Type == "Audio" ||
-            item.MediaStreams[0].Type == "Audio"
+            item.Type == 'AudioBook'
+            || item.Type == 'Audio'
+            || item.MediaStreams[0].Type == 'Audio'
         ) {
-            let artistsSeries = "";
-            let albumName = "";
+            let artistsSeries = '';
+            let albumName = '';
             if (item.Artists != null) {
                 if (item.ArtistItems != null) {
                     for (const artist of item.ArtistItems) {
                         artistsSeries += `<a class="button-link" is="emby-linkbutton" href="#/details?id=${artist.Id}&serverId=${nowPlayingServerId}">${escapeHtml(artist.Name)}</a>`;
                         if (artist !== item.ArtistItems.slice(-1)[0]) {
-                            artistsSeries += ", ";
+                            artistsSeries += ', ';
                         }
                     }
                 } else if (item.Artists) {
@@ -122,74 +122,74 @@ function updateNowPlayingInfo(context, state, serverId) {
                     for (const artist of item.Artists) {
                         artistsSeries += `<a>${escapeHtml(artist)}</a>`;
                         if (artist !== item.Artists.slice(-1)[0]) {
-                            artistsSeries += ", ";
+                            artistsSeries += ', ';
                         }
                     }
                 }
             }
             if (item.Album != null) {
                 albumName =
-                    '<a class="button-link" is="emby-linkbutton" href="#/details?id=' +
-                    item.AlbumId +
-                    `&serverId=${nowPlayingServerId}">` +
-                    escapeHtml(item.Album) +
-                    "</a>";
+                    '<a class="button-link" is="emby-linkbutton" href="#/details?id='
+                    + item.AlbumId
+                    + `&serverId=${nowPlayingServerId}">`
+                    + escapeHtml(item.Album)
+                    + '</a>';
             }
-            context.querySelector(".nowPlayingAlbum").innerHTML = albumName;
-            context.querySelector(".nowPlayingArtist").innerHTML =
+            context.querySelector('.nowPlayingAlbum').innerHTML = albumName;
+            context.querySelector('.nowPlayingArtist').innerHTML =
                 artistsSeries;
-            context.querySelector(".nowPlayingSongName").innerText = item.Name;
-        } else if (item.Type == "Episode") {
+            context.querySelector('.nowPlayingSongName').innerText = item.Name;
+        } else if (item.Type == 'Episode') {
             if (item.SeasonName != null) {
                 const seasonName = item.SeasonName;
-                context.querySelector(".nowPlayingSeason").innerHTML =
-                    '<a class="button-link" is="emby-linkbutton" href="#/details?id=' +
-                    item.SeasonId +
-                    `&serverId=${nowPlayingServerId}">${escapeHtml(seasonName)}</a>`;
+                context.querySelector('.nowPlayingSeason').innerHTML =
+                    '<a class="button-link" is="emby-linkbutton" href="#/details?id='
+                    + item.SeasonId
+                    + `&serverId=${nowPlayingServerId}">${escapeHtml(seasonName)}</a>`;
             }
             if (item.SeriesName != null) {
                 const seriesName = item.SeriesName;
                 if (item.SeriesId != null) {
-                    context.querySelector(".nowPlayingSerie").innerHTML =
-                        '<a class="button-link" is="emby-linkbutton" href="#/details?id=' +
-                        item.SeriesId +
-                        `&serverId=${nowPlayingServerId}">${escapeHtml(seriesName)}</a>`;
+                    context.querySelector('.nowPlayingSerie').innerHTML =
+                        '<a class="button-link" is="emby-linkbutton" href="#/details?id='
+                        + item.SeriesId
+                        + `&serverId=${nowPlayingServerId}">${escapeHtml(seriesName)}</a>`;
                 } else {
-                    context.querySelector(".nowPlayingSerie").innerText =
+                    context.querySelector('.nowPlayingSerie').innerText =
                         seriesName;
                 }
             }
-            context.querySelector(".nowPlayingEpisode").innerText = item.Name;
+            context.querySelector('.nowPlayingEpisode').innerText = item.Name;
         } else {
-            context.querySelector(".nowPlayingPageTitle").innerHTML =
+            context.querySelector('.nowPlayingPageTitle').innerHTML =
                 displayName;
         }
 
         if (
-            displayName.length > 0 &&
-            item.Type != "Audio" &&
-            item.Type != "Episode"
+            displayName.length > 0
+            && item.Type != 'Audio'
+            && item.Type != 'Episode'
         ) {
             context
-                .querySelector(".nowPlayingPageTitle")
-                .classList.remove("hide");
+                .querySelector('.nowPlayingPageTitle')
+                .classList.remove('hide');
         } else {
-            context.querySelector(".nowPlayingPageTitle").classList.add("hide");
+            context.querySelector('.nowPlayingPageTitle').classList.add('hide');
         }
 
         const url = getImageUrl(item, {
             maxHeight: 300
         });
 
-        let contextButton = context.querySelector(".btnToggleContextMenu");
+        let contextButton = context.querySelector('.btnToggleContextMenu');
         // We remove the previous event listener by replacing the item in each update event
         const autoFocusContextButton = document.activeElement === contextButton;
         const contextButtonClone = contextButton.cloneNode(true);
         contextButton.parentNode.replaceChild(
             contextButtonClone,
-            contextButton,
+            contextButton
         );
-        contextButton = context.querySelector(".btnToggleContextMenu");
+        contextButton = context.querySelector('.btnToggleContextMenu');
         if (autoFocusContextButton) {
             contextButton.focus();
         }
@@ -199,24 +199,24 @@ function updateNowPlayingInfo(context, state, serverId) {
             stopPlayback: true,
             clearQueue: true,
             openAlbum: false,
-            positionTo: contextButton,
+            positionTo: contextButton
         };
         const apiClient = ServerConnections.getApiClient(item.ServerId);
         apiClient
             .getItem(apiClient.getCurrentUserId(), item.Id)
             .then(function (fullItem) {
                 apiClient.getCurrentUser().then(function (user) {
-                    contextButton.addEventListener("click", function () {
+                    contextButton.addEventListener('click', function () {
                         itemContextMenu
                             .show(
                                 Object.assign(
                                     {
                                         item: fullItem,
                                         user: user,
-                                        isMobile: layoutManager.mobile,
+                                        isMobile: layoutManager.mobile
                                     },
-                                    options,
-                                ),
+                                    options
+                                )
                             )
                             .catch(() => {
                                 /* no-op */
@@ -225,96 +225,96 @@ function updateNowPlayingInfo(context, state, serverId) {
                 });
             });
         setImageUrl(context, state, url);
-        renderLogo(document.querySelector("#nowPlayingPage"), item, apiClient);
-        renderYear(document.querySelector("#nowPlayingPage"), item, apiClient);
+        renderLogo(document.querySelector('#nowPlayingPage'), item, apiClient);
+        renderYear(document.querySelector('#nowPlayingPage'), item, apiClient);
         renderDiscImage(
-            document.querySelector("#nowPlayingPage"),
+            document.querySelector('#nowPlayingPage'),
             item,
-            apiClient,
+            apiClient
         );
         setBackdrops([item]);
         apiClient
             .getItem(apiClient.getCurrentUserId(), item.Id)
             .then(function (fullItem) {
                 const userData = fullItem.UserData || {};
-                const likes = userData.Likes == null ? "" : userData.Likes;
+                const likes = userData.Likes == null ? '' : userData.Likes;
                 context.querySelector(
-                    ".nowPlayingPageUserDataButtonsTitle",
+                    '.nowPlayingPageUserDataButtonsTitle'
                 ).innerHTML =
-                    '<button is="emby-ratingbutton" type="button" class="paper-icon-button-light" data-id="' +
-                    fullItem.Id +
-                    '" data-serverid="' +
-                    fullItem.ServerId +
-                    '" data-itemtype="' +
-                    fullItem.Type +
-                    '" data-likes="' +
-                    likes +
-                    '" data-isfavorite="' +
-                    userData.IsFavorite +
-                    '"><span class="material-icons favorite" aria-hidden="true"></span></button>';
+                    '<button is="emby-ratingbutton" type="button" class="paper-icon-button-light" data-id="'
+                    + fullItem.Id
+                    + '" data-serverid="'
+                    + fullItem.ServerId
+                    + '" data-itemtype="'
+                    + fullItem.Type
+                    + '" data-likes="'
+                    + likes
+                    + '" data-isfavorite="'
+                    + userData.IsFavorite
+                    + '"><span class="material-icons favorite" aria-hidden="true"></span></button>';
                 context.querySelector(
-                    ".nowPlayingPageUserDataButtons",
+                    '.nowPlayingPageUserDataButtons'
                 ).innerHTML =
-                    '<button is="emby-ratingbutton" type="button" class="paper-icon-button-light" data-id="' +
-                    fullItem.Id +
-                    '" data-serverid="' +
-                    fullItem.ServerId +
-                    '" data-itemtype="' +
-                    fullItem.Type +
-                    '" data-likes="' +
-                    likes +
-                    '" data-isfavorite="' +
-                    userData.IsFavorite +
-                    '"><span class="material-icons favorite" aria-hidden="true"></span></button>';
+                    '<button is="emby-ratingbutton" type="button" class="paper-icon-button-light" data-id="'
+                    + fullItem.Id
+                    + '" data-serverid="'
+                    + fullItem.ServerId
+                    + '" data-itemtype="'
+                    + fullItem.Type
+                    + '" data-likes="'
+                    + likes
+                    + '" data-isfavorite="'
+                    + userData.IsFavorite
+                    + '"><span class="material-icons favorite" aria-hidden="true"></span></button>';
             });
     } else {
         clearBackdrop();
-        context.querySelector(".nowPlayingPageUserDataButtons").innerHTML = "";
+        context.querySelector('.nowPlayingPageUserDataButtons').innerHTML = '';
     }
 }
 
 function setImageUrl(context, state, url) {
     const item = state.NowPlayingItem;
-    const imgContainer = context.querySelector(".nowPlayingPageImageContainer");
+    const imgContainer = context.querySelector('.nowPlayingPageImageContainer');
 
     if (url) {
         imgContainer.innerHTML =
             '<img class="nowPlayingPageImage" src="' + url + '" />';
 
         context
-            .querySelector(".nowPlayingPageImage")
+            .querySelector('.nowPlayingPageImage')
             .classList.toggle(
-                "nowPlayingPageImageAudio",
-                item.Type === "Audio",
+                'nowPlayingPageImageAudio',
+                item.Type === 'Audio'
             );
         context
-            .querySelector(".nowPlayingPageImage")
+            .querySelector('.nowPlayingPageImage')
             .classList.toggle(
-                "nowPlayingPageImagePoster",
-                item.Type !== "Audio",
+                'nowPlayingPageImagePoster',
+                item.Type !== 'Audio'
             );
     } else {
         imgContainer.innerHTML =
-            '<div class="nowPlayingPageImageContainerNoAlbum"><button data-action="link" class="cardImageContainer coveredImage ' +
-            getDefaultBackgroundClass(item.Name) +
-            ' cardContent cardContent-shadow itemAction"><span class="cardImageIcon material-icons album" aria-hidden="true"></span></button></div>';
+            '<div class="nowPlayingPageImageContainerNoAlbum"><button data-action="link" class="cardImageContainer coveredImage '
+            + getDefaultBackgroundClass(item.Name)
+            + ' cardContent cardContent-shadow itemAction"><span class="cardImageIcon material-icons album" aria-hidden="true"></span></button></div>';
     }
 }
 
 function buttonVisible(btn, enabled) {
     if (enabled) {
-        btn.classList.remove("hide");
+        btn.classList.remove('hide');
     } else {
-        btn.classList.add("hide");
+        btn.classList.add('hide');
     }
 }
 
 function updateSupportedCommands(context, commands) {
-    const all = context.querySelectorAll(".btnCommand");
+    const all = context.querySelectorAll('.btnCommand');
 
     for (let i = 0, length = all.length; i < length; i++) {
         const enableButton =
-            commands.indexOf(all[i].getAttribute("data-command")) !== -1;
+            commands.indexOf(all[i].getAttribute('data-command')) !== -1;
         all[i].disabled = !enableButton;
     }
 }
@@ -322,14 +322,14 @@ function updateSupportedCommands(context, commands) {
 export default function () {
     function toggleRepeat() {
         switch (playbackManager.getRepeatMode()) {
-            case "RepeatAll":
-                playbackManager.setRepeatMode("RepeatOne");
+            case 'RepeatAll':
+                playbackManager.setRepeatMode('RepeatOne');
                 break;
-            case "RepeatOne":
-                playbackManager.setRepeatMode("RepeatNone");
+            case 'RepeatOne':
+                playbackManager.setRepeatMode('RepeatNone');
                 break;
-            case "RepeatNone":
-                playbackManager.setRepeatMode("RepeatAll");
+            case 'RepeatNone':
+                playbackManager.setRepeatMode('RepeatAll');
         }
     }
 
@@ -341,114 +341,114 @@ export default function () {
         currentPlayerSupportedCommands = supportedCommands;
         const playState = state.PlayState || {};
         const isSupportedCommands =
-            supportedCommands.includes("DisplayMessage") ||
-            supportedCommands.includes("SendString") ||
-            supportedCommands.includes("Select");
+            supportedCommands.includes('DisplayMessage')
+            || supportedCommands.includes('SendString')
+            || supportedCommands.includes('Select');
         buttonVisible(
-            context.querySelector(".btnToggleFullscreen"),
-            item &&
-                item.MediaType == "Video" &&
-                supportedCommands.includes("ToggleFullscreen"),
+            context.querySelector('.btnToggleFullscreen'),
+            item
+                && item.MediaType == 'Video'
+                && supportedCommands.includes('ToggleFullscreen')
         );
         updateAudioTracksDisplay(player, context);
         updateSubtitleTracksDisplay(player, context);
 
         if (
-            supportedCommands.includes("DisplayMessage") &&
-            !currentPlayer.isLocalPlayer
+            supportedCommands.includes('DisplayMessage')
+            && !currentPlayer.isLocalPlayer
         ) {
             context
-                .querySelector(".sendMessageSection")
-                .classList.remove("hide");
+                .querySelector('.sendMessageSection')
+                .classList.remove('hide');
         } else {
-            context.querySelector(".sendMessageSection").classList.add("hide");
+            context.querySelector('.sendMessageSection').classList.add('hide');
         }
 
         if (
-            supportedCommands.includes("SendString") &&
-            !currentPlayer.isLocalPlayer
+            supportedCommands.includes('SendString')
+            && !currentPlayer.isLocalPlayer
         ) {
-            context.querySelector(".sendTextSection").classList.remove("hide");
+            context.querySelector('.sendTextSection').classList.remove('hide');
         } else {
-            context.querySelector(".sendTextSection").classList.add("hide");
+            context.querySelector('.sendTextSection').classList.add('hide');
         }
 
         if (
-            supportedCommands.includes("Select") &&
-            !currentPlayer.isLocalPlayer
+            supportedCommands.includes('Select')
+            && !currentPlayer.isLocalPlayer
         ) {
             context
-                .querySelector(".navigationSection")
-                .classList.remove("hide");
+                .querySelector('.navigationSection')
+                .classList.remove('hide');
         } else {
-            context.querySelector(".navigationSection").classList.add("hide");
+            context.querySelector('.navigationSection').classList.add('hide');
         }
 
         if (isSupportedCommands && !currentPlayer.isLocalPlayer) {
             context
-                .querySelector(".remoteControlSection")
-                .classList.remove("hide");
+                .querySelector('.remoteControlSection')
+                .classList.remove('hide');
         } else {
             context
-                .querySelector(".remoteControlSection")
-                .classList.add("hide");
+                .querySelector('.remoteControlSection')
+                .classList.add('hide');
         }
 
         buttonVisible(
-            context.querySelector(".btnLyrics"),
-            item?.Type === "Audio" && !layoutManager.mobile,
+            context.querySelector('.btnLyrics'),
+            item?.Type === 'Audio' && !layoutManager.mobile
         );
-        buttonVisible(context.querySelector(".btnStop"), item != null);
-        buttonVisible(context.querySelector(".btnNextTrack"), item != null);
-        buttonVisible(context.querySelector(".btnPreviousTrack"), item != null);
+        buttonVisible(context.querySelector('.btnStop'), item != null);
+        buttonVisible(context.querySelector('.btnNextTrack'), item != null);
+        buttonVisible(context.querySelector('.btnPreviousTrack'), item != null);
         if (layoutManager.mobile) {
             const playingVideo =
                 playbackManager.isPlayingVideo() && item !== null;
             const playingAudio =
                 !playbackManager.isPlayingVideo() && item !== null;
-            const playingAudioBook = playingAudio && item.Type == "AudioBook";
+            const playingAudioBook = playingAudio && item.Type == 'AudioBook';
             buttonVisible(
-                context.querySelector(".btnRepeat"),
-                playingAudio && !playingAudioBook,
+                context.querySelector('.btnRepeat'),
+                playingAudio && !playingAudioBook
             );
             buttonVisible(
-                context.querySelector(".btnShuffleQueue"),
-                playingAudio && !playingAudioBook,
+                context.querySelector('.btnShuffleQueue'),
+                playingAudio && !playingAudioBook
             );
             buttonVisible(
-                context.querySelector(".btnRewind"),
-                playingVideo || playingAudioBook,
+                context.querySelector('.btnRewind'),
+                playingVideo || playingAudioBook
             );
             buttonVisible(
-                context.querySelector(".btnFastForward"),
-                playingVideo || playingAudioBook,
+                context.querySelector('.btnFastForward'),
+                playingVideo || playingAudioBook
             );
             buttonVisible(
                 context.querySelector(
-                    ".nowPlayingSecondaryButtons .btnShuffleQueue",
+                    '.nowPlayingSecondaryButtons .btnShuffleQueue'
                 ),
-                playingVideo,
+                playingVideo
             );
             buttonVisible(
-                context.querySelector(".nowPlayingSecondaryButtons .btnRepeat"),
-                playingVideo,
+                context.querySelector('.nowPlayingSecondaryButtons .btnRepeat'),
+                playingVideo
             );
         } else {
-            buttonVisible(context.querySelector(".btnRewind"), item != null);
+            buttonVisible(context.querySelector('.btnRewind'), item != null);
             buttonVisible(
-                context.querySelector(".btnFastForward"),
-                item != null,
+                context.querySelector('.btnFastForward'),
+                item != null
             );
         }
         const positionSlider = context.querySelector(
-            ".nowPlayingPositionSlider",
+            '.nowPlayingPositionSlider'
         );
 
         if (positionSlider && item && item.RunTimeTicks) {
             positionSlider.setKeyboardSteps(
                 (userSettings.skipBackLength() * 1000000) / item.RunTimeTicks,
-                (userSettings.skipForwardLength() * 1000000) /
-                    item.RunTimeTicks,
+                (userSettings.skipForwardLength() * 1000000)
+                    / item.RunTimeTicks
             );
         }
 
@@ -462,18 +462,18 @@ export default function () {
         updatePlayPauseState(playState.IsPaused, item != null);
         updateTimeDisplay(
             playState.PositionTicks,
-            item ? item.RunTimeTicks : null,
+            item ? item.RunTimeTicks : null
         );
         updatePlayerVolumeState(
             context,
             playState.IsMuted,
-            playState.VolumeLevel,
+            playState.VolumeLevel
         );
 
-        if (item && item.MediaType == "Video") {
-            context.classList.remove("hideVideoButtons");
+        if (item && item.MediaType == 'Video') {
+            context.classList.remove('hideVideoButtons');
         } else {
-            context.classList.add("hideVideoButtons");
+            context.classList.add('hideVideoButtons');
         }
 
         updateRepeatModeDisplay(playbackManager.getRepeatMode());
@@ -484,39 +484,39 @@ export default function () {
     function updateAudioTracksDisplay(player, context) {
         const supportedCommands = currentPlayerSupportedCommands;
         buttonVisible(
-            context.querySelector(".btnAudioTracks"),
-            playbackManager.audioTracks(player).length > 1 &&
-                supportedCommands.indexOf("SetAudioStreamIndex") != -1,
+            context.querySelector('.btnAudioTracks'),
+            playbackManager.audioTracks(player).length > 1
+                && supportedCommands.indexOf('SetAudioStreamIndex') != -1
         );
     }
 
     function updateSubtitleTracksDisplay(player, context) {
         const supportedCommands = currentPlayerSupportedCommands;
         buttonVisible(
-            context.querySelector(".btnSubtitles"),
-            playbackManager.subtitleTracks(player).length &&
-                supportedCommands.indexOf("SetSubtitleStreamIndex") != -1,
+            context.querySelector('.btnSubtitles'),
+            playbackManager.subtitleTracks(player).length
+                && supportedCommands.indexOf('SetSubtitleStreamIndex') != -1
         );
     }
 
     function updateRepeatModeDisplay(repeatMode) {
         const context = dlg;
         const toggleRepeatButtons = context.querySelectorAll(
-            ".repeatToggleButton",
+            '.repeatToggleButton'
         );
-        const cssClass = "buttonActive";
+        const cssClass = 'buttonActive';
         let innHtml =
             '<span class="material-icons repeat" aria-hidden="true"></span>';
         let repeatOn = true;
 
         switch (repeatMode) {
-            case "RepeatAll":
+            case 'RepeatAll':
                 break;
-            case "RepeatOne":
+            case 'RepeatOne':
                 innHtml =
                     '<span class="material-icons repeat_one" aria-hidden="true"></span>';
                 break;
-            case "RepeatNone":
+            case 'RepeatNone':
             default:
                 repeatOn = false;
                 break;
@@ -532,51 +532,51 @@ export default function () {
         const view = context;
         const supportedCommands = currentPlayerSupportedCommands;
 
-        if (supportedCommands.indexOf("Mute") === -1) {
+        if (supportedCommands.indexOf('Mute') === -1) {
             showMuteButton = true;
         }
 
-        if (supportedCommands.indexOf("SetVolume") === -1) {
+        if (supportedCommands.indexOf('SetVolume') === -1) {
             showVolumeSlider = true;
         }
 
         if (
-            currentPlayer.isLocalPlayer &&
-            appHost.supports("physicalvolumecontrol")
+            currentPlayer.isLocalPlayer
+            && appHost.supports('physicalvolumecontrol')
         ) {
             showMuteButton = true;
             showVolumeSlider = true;
         }
 
-        const buttonMute = view.querySelector(".buttonMute");
-        const buttonMuteIcon = buttonMute.querySelector(".material-icons");
+        const buttonMute = view.querySelector('.buttonMute');
+        const buttonMuteIcon = buttonMute.querySelector('.material-icons');
 
-        buttonMuteIcon.classList.remove("volume_off", "volume_up");
+        buttonMuteIcon.classList.remove('volume_off', 'volume_up');
 
         if (isMuted) {
-            buttonMute.setAttribute("title", globalize.translate("Unmute"));
-            buttonMuteIcon.classList.add("volume_off");
+            buttonMute.setAttribute('title', globalize.translate('Unmute'));
+            buttonMuteIcon.classList.add('volume_off');
         } else {
-            buttonMute.setAttribute("title", globalize.translate("Mute"));
-            buttonMuteIcon.classList.add("volume_up");
+            buttonMute.setAttribute('title', globalize.translate('Mute'));
+            buttonMuteIcon.classList.add('volume_up');
         }
 
         if (!showMuteButton && !showVolumeSlider) {
-            context.querySelector(".volumecontrol").classList.add("hide");
+            context.querySelector('.volumecontrol').classList.add('hide');
         } else {
-            buttonMute.classList.toggle("hide", !showMuteButton);
+            buttonMute.classList.toggle('hide', !showMuteButton);
 
             const nowPlayingVolumeSlider = context.querySelector(
-                ".nowPlayingVolumeSlider",
+                '.nowPlayingVolumeSlider'
             );
             const nowPlayingVolumeSliderContainer = context.querySelector(
-                ".nowPlayingVolumeSliderContainer",
+                '.nowPlayingVolumeSliderContainer'
             );
 
             if (nowPlayingVolumeSlider) {
                 nowPlayingVolumeSliderContainer.classList.toggle(
-                    "hide",
-                    !showVolumeSlider,
+                    'hide',
+                    !showVolumeSlider
                 );
 
                 if (!nowPlayingVolumeSlider.dragging) {
@@ -588,24 +588,24 @@ export default function () {
 
     function updatePlayPauseState(isPaused, isActive) {
         const context = dlg;
-        const btnPlayPause = context.querySelector(".btnPlayPause");
-        const btnPlayPauseIcon = btnPlayPause.querySelector(".material-icons");
+        const btnPlayPause = context.querySelector('.btnPlayPause');
+        const btnPlayPauseIcon = btnPlayPause.querySelector('.material-icons');
 
         btnPlayPauseIcon.classList.remove(
-            "play_circle_filled",
-            "pause_circle_filled",
+            'play_circle_filled',
+            'pause_circle_filled'
         );
         btnPlayPauseIcon.classList.add(
-            isPaused ? "play_circle_filled" : "pause_circle_filled",
+            isPaused ? 'play_circle_filled' : 'pause_circle_filled'
         );
 
         const playlistIndicator = context.querySelector(
-            ".playlistIndexIndicatorImage",
+            '.playlistIndexIndicatorImage'
         );
         if (playlistIndicator) {
             playlistIndicator.classList.toggle(
-                "playlistIndexIndicatorPausedImage",
-                isPaused,
+                'playlistIndexIndicatorPausedImage',
+                isPaused
             );
         }
 
@@ -615,7 +615,7 @@ export default function () {
     function updateTimeDisplay(positionTicks, runtimeTicks) {
         const context = dlg;
         const positionSlider = context.querySelector(
-            ".nowPlayingPositionSlider",
+            '.nowPlayingPositionSlider'
         );
 
         if (positionSlider && !positionSlider.dragging) {
@@ -628,16 +628,16 @@ export default function () {
             }
         }
 
-        context.querySelector(".positionTime").innerHTML = Number.isFinite(
-            positionTicks,
-        )
-            ? datetime.getDisplayRunningTime(positionTicks)
-            : "--:--";
-        context.querySelector(".runtime").innerHTML = Number.isFinite(
-            runtimeTicks,
-        )
-            ? datetime.getDisplayRunningTime(runtimeTicks)
-            : "--:--";
+        context.querySelector('.positionTime').innerHTML = Number.isFinite(
+            positionTicks
+        ) ?
+            datetime.getDisplayRunningTime(positionTicks) :
+            '--:--';
+        context.querySelector('.runtime').innerHTML = Number.isFinite(
+            runtimeTicks
+        ) ?
+            datetime.getDisplayRunningTime(runtimeTicks) :
+            '--:--';
     }
 
     function getPlaylistItems(player) {
@@ -650,17 +650,17 @@ export default function () {
                 return;
             }
 
-            let html = "";
+            let html = '';
             let favoritesEnabled = true;
             if (layoutManager.mobile) {
                 if (items.length > 0) {
                     context
-                        .querySelector(".btnTogglePlaylist")
-                        .classList.remove("hide");
+                        .querySelector('.btnTogglePlaylist')
+                        .classList.remove('hide');
                 } else {
                     context
-                        .querySelector(".btnTogglePlaylist")
-                        .classList.add("hide");
+                        .querySelector('.btnTogglePlaylist')
+                        .classList.add('hide');
                 }
                 favoritesEnabled = false;
             }
@@ -668,28 +668,28 @@ export default function () {
             html += listView.getListViewHtml({
                 items: items,
                 smallIcon: true,
-                action: "setplaylistindex",
+                action: 'setplaylistindex',
                 enableUserDataButtons: favoritesEnabled,
                 rightButtons: [
                     {
-                        icon: "remove_circle_outline",
-                        title: globalize.translate("ButtonRemove"),
-                        id: "remove",
-                    },
+                        icon: 'remove_circle_outline',
+                        title: globalize.translate('ButtonRemove'),
+                        id: 'remove'
+                    }
                 ],
-                dragHandle: true,
+                dragHandle: true
             });
 
-            const itemsContainer = context.querySelector(".playlist");
+            const itemsContainer = context.querySelector('.playlist');
             let focusedItemPlaylistId =
-                itemsContainer.querySelector("button:focus");
+                itemsContainer.querySelector('button:focus');
             itemsContainer.innerHTML = html;
             if (focusedItemPlaylistId !== null) {
                 focusedItemPlaylistId = focusedItemPlaylistId.getAttribute(
-                    "data-playlistitemid",
+                    'data-playlistitemid'
                 );
                 const newFocusedItem = itemsContainer.querySelector(
-                    `button[data-playlistitemid="${focusedItemPlaylistId}"]`,
+                    `button[data-playlistitemid="${focusedItemPlaylistId}"]`
                 );
                 if (newFocusedItem !== null) {
                     newFocusedItem.focus();
@@ -701,15 +701,15 @@ export default function () {
 
             if (playlistItemId) {
                 const img = itemsContainer.querySelector(
-                    `.listItem[data-playlistItemId="${playlistItemId}"] .listItemImage`,
+                    `.listItem[data-playlistItemId="${playlistItemId}"] .listItemImage`
                 );
 
                 if (img) {
-                    img.classList.remove("lazy");
-                    img.classList.add("playlistIndexIndicatorImage");
+                    img.classList.remove('lazy');
+                    img.classList.add('playlistIndexIndicatorImage');
                     img.classList.toggle(
-                        "playlistIndexIndicatorPausedImage",
-                        playbackManager.paused(),
+                        'playlistIndexIndicatorPausedImage',
+                        playbackManager.paused()
                     );
                 }
             }
@@ -719,7 +719,7 @@ export default function () {
     }
 
     function onPlaybackStart(e, state) {
-        console.debug("remotecontrol event: " + e.type);
+        console.debug('remotecontrol event: ' + e.type);
         const player = this;
         onStateChanged.call(player, e, state);
     }
@@ -731,15 +731,15 @@ export default function () {
     function onShuffleQueueModeChange(updateView = true) {
         const shuffleMode = playbackManager.getQueueShuffleMode(this);
         const context = dlg;
-        const cssClass = "buttonActive";
-        const shuffleButtons = context.querySelectorAll(".btnShuffleQueue");
+        const cssClass = 'buttonActive';
+        const shuffleButtons = context.querySelectorAll('.btnShuffleQueue');
 
         for (const shuffleButton of shuffleButtons) {
             switch (shuffleMode) {
-                case "Shuffle":
+                case 'Shuffle':
                     shuffleButton.classList.add(cssClass);
                     break;
-                case "Sorted":
+                case 'Sorted':
                 default:
                     shuffleButton.classList.remove(cssClass);
                     break;
@@ -762,9 +762,9 @@ export default function () {
 
             for (let i = 0, length = playlistItemIds.length; i < length; i++) {
                 const listItem = context.querySelector(
-                    '.listItem[data-playlistItemId="' +
-                        playlistItemIds[i] +
-                        '"]',
+                    '.listItem[data-playlistItemId="'
+                        + playlistItemIds[i]
+                        + '"]'
                 );
 
                 if (listItem) {
@@ -777,7 +777,7 @@ export default function () {
     }
 
     function onPlaybackStopped(e, state) {
-        console.debug("remotecontrol event: " + e.type);
+        console.debug('remotecontrol event: ' + e.type);
         const player = this;
 
         if (!state.NextMediaType) {
@@ -805,7 +805,7 @@ export default function () {
             currentRuntimeTicks = playbackManager.duration(player);
             updateTimeDisplay(
                 playbackManager.currentTime(player) * 10000,
-                currentRuntimeTicks,
+                currentRuntimeTicks
             );
         }
     }
@@ -819,22 +819,22 @@ export default function () {
         const player = currentPlayer;
 
         if (player) {
-            Events.off(player, "playbackstart", onPlaybackStart);
-            Events.off(player, "statechange", onStateChanged);
-            Events.off(player, "repeatmodechange", onRepeatModeChange);
+            Events.off(player, 'playbackstart', onPlaybackStart);
+            Events.off(player, 'statechange', onStateChanged);
+            Events.off(player, 'repeatmodechange', onRepeatModeChange);
             Events.off(
                 player,
-                "shufflequeuemodechange",
-                onShuffleQueueModeChange,
+                'shufflequeuemodechange',
+                onShuffleQueueModeChange
             );
-            Events.off(player, "playlistitemremove", onPlaylistItemRemoved);
-            Events.off(player, "playlistitemmove", onPlaylistUpdate);
-            Events.off(player, "playlistitemadd", onPlaylistUpdate);
-            Events.off(player, "playbackstop", onPlaybackStopped);
-            Events.off(player, "volumechange", onVolumeChanged);
-            Events.off(player, "pause", onPlayPauseStateChanged);
-            Events.off(player, "unpause", onPlayPauseStateChanged);
-            Events.off(player, "timeupdate", onTimeUpdate);
+            Events.off(player, 'playlistitemremove', onPlaylistItemRemoved);
+            Events.off(player, 'playlistitemmove', onPlaylistUpdate);
+            Events.off(player, 'playlistitemadd', onPlaylistUpdate);
+            Events.off(player, 'playbackstop', onPlaybackStopped);
+            Events.off(player, 'volumechange', onVolumeChanged);
+            Events.off(player, 'pause', onPlayPauseStateChanged);
+            Events.off(player, 'unpause', onPlayPauseStateChanged);
+            Events.off(player, 'timeupdate', onTimeUpdate);
             currentPlayer = null;
         }
     }
@@ -848,26 +848,26 @@ export default function () {
             onStateChanged.call(
                 player,
                 {
-                    type: "init",
+                    type: 'init'
                 },
-                state,
+                state
             );
-            Events.on(player, "playbackstart", onPlaybackStart);
-            Events.on(player, "statechange", onStateChanged);
-            Events.on(player, "repeatmodechange", onRepeatModeChange);
+            Events.on(player, 'playbackstart', onPlaybackStart);
+            Events.on(player, 'statechange', onStateChanged);
+            Events.on(player, 'repeatmodechange', onRepeatModeChange);
             Events.on(
                 player,
-                "shufflequeuemodechange",
-                onShuffleQueueModeChange,
+                'shufflequeuemodechange',
+                onShuffleQueueModeChange
             );
-            Events.on(player, "playlistitemremove", onPlaylistItemRemoved);
-            Events.on(player, "playlistitemmove", onPlaylistUpdate);
-            Events.on(player, "playlistitemadd", onPlaylistUpdate);
-            Events.on(player, "playbackstop", onPlaybackStopped);
-            Events.on(player, "volumechange", onVolumeChanged);
-            Events.on(player, "pause", onPlayPauseStateChanged);
-            Events.on(player, "unpause", onPlayPauseStateChanged);
-            Events.on(player, "timeupdate", onTimeUpdate);
+            Events.on(player, 'playlistitemremove', onPlaylistItemRemoved);
+            Events.on(player, 'playlistitemmove', onPlaylistUpdate);
+            Events.on(player, 'playlistitemadd', onPlaylistUpdate);
+            Events.on(player, 'playbackstop', onPlaybackStopped);
+            Events.on(player, 'volumechange', onVolumeChanged);
+            Events.on(player, 'pause', onPlayPauseStateChanged);
+            Events.on(player, 'unpause', onPlayPauseStateChanged);
+            Events.on(player, 'timeupdate', onTimeUpdate);
             const playerInfo = playbackManager.getPlayerInfo();
             const supportedCommands = playerInfo.supportedCommands;
             currentPlayerSupportedCommands = supportedCommands;
@@ -877,14 +877,14 @@ export default function () {
 
     function onBtnCommandClick() {
         if (currentPlayer) {
-            if (this.classList.contains("repeatToggleButton")) {
+            if (this.classList.contains('repeatToggleButton')) {
                 toggleRepeat();
             } else {
                 playbackManager.sendCommand(
                     {
-                        Name: this.getAttribute("data-command"),
+                        Name: this.getAttribute('data-command')
                     },
-                    currentPlayer,
+                    currentPlayer
                 );
             }
         }
@@ -899,12 +899,12 @@ export default function () {
     }
 
     function savePlaylist() {
-        import("../playlisteditor/playlisteditor")
+        import('../playlisteditor/playlisteditor')
             .then(({ default: PlaylistEditor }) => {
                 getSaveablePlaylistItems().then(function (items) {
-                    const serverId = items.length
-                        ? items[0].ServerId
-                        : ApiClient.serverId();
+                    const serverId = items.length ?
+                        items[0].ServerId :
+                        ApiClient.serverId();
                     const playlistEditor = new PlaylistEditor();
                     playlistEditor
                         .show({
@@ -913,7 +913,7 @@ export default function () {
                             }),
                             serverId: serverId,
                             enableAddToPlayQueue: false,
-                            defaultValue: "new",
+                            defaultValue: 'new'
                         })
                         .catch(() => {
                             // Dialog closed
@@ -922,88 +922,88 @@ export default function () {
             })
             .catch((err) => {
                 console.error(
-                    "[savePlaylist] failed to load playlist editor",
-                    err,
+                    '[savePlaylist] failed to load playlist editor',
+                    err
                 );
             });
     }
 
     function bindEvents(context) {
-        const btnCommand = context.querySelectorAll(".btnCommand");
+        const btnCommand = context.querySelectorAll('.btnCommand');
         const positionSlider = context.querySelector(
-            ".nowPlayingPositionSlider",
+            '.nowPlayingPositionSlider'
         );
 
         for (let i = 0, length = btnCommand.length; i < length; i++) {
-            btnCommand[i].addEventListener("click", onBtnCommandClick);
+            btnCommand[i].addEventListener('click', onBtnCommandClick);
         }
 
         context
-            .querySelector(".btnToggleFullscreen")
-            .addEventListener("click", function () {
+            .querySelector('.btnToggleFullscreen')
+            .addEventListener('click', function () {
                 if (currentPlayer) {
                     playbackManager.toggleFullscreen(currentPlayer);
                 }
             });
         context
-            .querySelector(".btnAudioTracks")
-            .addEventListener("click", function (e) {
+            .querySelector('.btnAudioTracks')
+            .addEventListener('click', function (e) {
                 if (currentPlayer && lastPlayerState?.NowPlayingItem) {
                     showAudioMenu(context, currentPlayer, e.target);
                 }
             });
         context
-            .querySelector(".btnSubtitles")
-            .addEventListener("click", function (e) {
+            .querySelector('.btnSubtitles')
+            .addEventListener('click', function (e) {
                 if (currentPlayer && lastPlayerState?.NowPlayingItem) {
                     showSubtitleMenu(context, currentPlayer, e.target);
                 }
             });
         context
-            .querySelector(".btnStop")
-            .addEventListener("click", function () {
+            .querySelector('.btnStop')
+            .addEventListener('click', function () {
                 if (currentPlayer) {
                     playbackManager.stop(currentPlayer);
                 }
             });
         context
-            .querySelector(".btnPlayPause")
-            .addEventListener("click", function () {
+            .querySelector('.btnPlayPause')
+            .addEventListener('click', function () {
                 if (currentPlayer) {
                     playbackManager.playPause(currentPlayer);
                 }
             });
         context
-            .querySelector(".btnNextTrack")
-            .addEventListener("click", function () {
+            .querySelector('.btnNextTrack')
+            .addEventListener('click', function () {
                 if (currentPlayer) {
                     playbackManager.nextTrack(currentPlayer);
                 }
             });
         context
-            .querySelector(".btnRewind")
-            .addEventListener("click", function () {
+            .querySelector('.btnRewind')
+            .addEventListener('click', function () {
                 if (currentPlayer) {
                     playbackManager.rewind(currentPlayer);
                 }
             });
         context
-            .querySelector(".btnFastForward")
-            .addEventListener("click", function () {
+            .querySelector('.btnFastForward')
+            .addEventListener('click', function () {
                 if (currentPlayer) {
                     playbackManager.fastForward(currentPlayer);
                 }
             });
         context
-            .querySelector(".btnLyrics")
-            .addEventListener("click", function () {
-                appRouter.show("lyrics");
+            .querySelector('.btnLyrics')
+            .addEventListener('click', function () {
+                appRouter.show('lyrics');
             });
 
         for (const shuffleButton of context.querySelectorAll(
-            ".btnShuffleQueue",
+            '.btnShuffleQueue'
         )) {
-            shuffleButton.addEventListener("click", function () {
+            shuffleButton.addEventListener('click', function () {
                 if (currentPlayer) {
                     playbackManager.toggleQueueShuffleMode(currentPlayer);
                 }
@@ -1011,8 +1011,8 @@ export default function () {
         }
 
         context
-            .querySelector(".btnPreviousTrack")
-            .addEventListener("click", function (e) {
+            .querySelector('.btnPreviousTrack')
+            .addEventListener('click', function (e) {
                 if (currentPlayer) {
                     if (playbackManager.isPlayingAudio(currentPlayer)) {
                         // Cancel this event if doubleclick is fired. The actual previousTrack will be processed by the 'dblclick' event
@@ -1025,10 +1025,10 @@ export default function () {
                         // currentTime is in msec.
 
                         if (
-                            playbackManager.currentTime(currentPlayer) >=
-                                5 * 1000 ||
-                            playbackManager.getCurrentPlaylistIndex(
-                                currentPlayer,
+                            playbackManager.currentTime(currentPlayer)
+                                >= 5 * 1000
+                            || playbackManager.getCurrentPlaylistIndex(
+                                currentPlayer
                             ) <= 0
                         ) {
                             playbackManager.seekPercent(0, currentPlayer);
@@ -1043,13 +1043,13 @@ export default function () {
             });
 
         context
-            .querySelector(".btnPreviousTrack")
-            .addEventListener("dblclick", function () {
+            .querySelector('.btnPreviousTrack')
+            .addEventListener('dblclick', function () {
                 if (currentPlayer) {
                     playbackManager.previousTrack(currentPlayer);
                 }
             });
-        positionSlider.addEventListener("change", function () {
+        positionSlider.addEventListener('change', function () {
             const value = this.value;
 
             if (currentPlayer) {
@@ -1062,7 +1062,7 @@ export default function () {
             const state = lastPlayerState;
 
             if (!state?.NowPlayingItem || !currentRuntimeTicks) {
-                return "--:--";
+                return '--:--';
             }
 
             let ticks = currentRuntimeTicks;
@@ -1072,71 +1072,71 @@ export default function () {
         };
 
         context
-            .querySelector(".nowPlayingVolumeSlider")
-            .addEventListener("input", (e) => {
+            .querySelector('.nowPlayingVolumeSlider')
+            .addEventListener('input', (e) => {
                 playbackManager.setVolume(e.target.value, currentPlayer);
             });
 
         context
-            .querySelector(".buttonMute")
-            .addEventListener("click", function () {
+            .querySelector('.buttonMute')
+            .addEventListener('click', function () {
                 playbackManager.toggleMute(currentPlayer);
             });
-        const playlistContainer = context.querySelector(".playlist");
-        playlistContainer.addEventListener("action-remove", function (e) {
+        const playlistContainer = context.querySelector('.playlist');
+        playlistContainer.addEventListener('action-remove', function (e) {
             playbackManager.removeFromPlaylist(
                 [e.detail.playlistItemId],
-                currentPlayer,
+                currentPlayer
             );
         });
-        playlistContainer.addEventListener("itemdrop", function (e) {
+        playlistContainer.addEventListener('itemdrop', function (e) {
             const newIndex = e.detail.newIndex;
             const playlistItemId = e.detail.playlistItemId;
             playbackManager.movePlaylistItem(
                 playlistItemId,
                 newIndex,
-                currentPlayer,
+                currentPlayer
             );
         });
         context
-            .querySelector(".btnSavePlaylist")
-            .addEventListener("click", savePlaylist);
+            .querySelector('.btnSavePlaylist')
+            .addEventListener('click', savePlaylist);
         context
-            .querySelector(".btnTogglePlaylist")
-            .addEventListener("click", function () {
+            .querySelector('.btnTogglePlaylist')
+            .addEventListener('click', function () {
                 if (
                     context
-                        .querySelector(".playlist")
-                        .classList.contains("hide")
+                        .querySelector('.playlist')
+                        .classList.contains('hide')
                 ) {
-                    context.querySelector(".playlist").classList.remove("hide");
+                    context.querySelector('.playlist').classList.remove('hide');
                     context
-                        .querySelector(".btnSavePlaylist")
-                        .classList.remove("hide");
+                        .querySelector('.btnSavePlaylist')
+                        .classList.remove('hide');
                     context
-                        .querySelector(".volumecontrol")
-                        .classList.add("hide");
+                        .querySelector('.volumecontrol')
+                        .classList.add('hide');
                     if (layoutManager.mobile) {
                         context
-                            .querySelector(".playlistSectionButton")
+                            .querySelector('.playlistSectionButton')
                             .classList.remove(
-                                "playlistSectionButtonTransparent",
+                                'playlistSectionButtonTransparent'
                             );
                     }
                 } else {
-                    context.querySelector(".playlist").classList.add("hide");
+                    context.querySelector('.playlist').classList.add('hide');
                     context
-                        .querySelector(".btnSavePlaylist")
-                        .classList.add("hide");
+                        .querySelector('.btnSavePlaylist')
+                        .classList.add('hide');
                     if (showMuteButton || showVolumeSlider) {
                         context
-                            .querySelector(".volumecontrol")
-                            .classList.remove("hide");
+                            .querySelector('.volumecontrol')
+                            .classList.remove('hide');
                     }
                     if (layoutManager.mobile) {
                         context
-                            .querySelector(".playlistSectionButton")
-                            .classList.add("playlistSectionButtonTransparent");
+                            .querySelector('.playlistSectionButton')
+                            .classList.add('playlistSectionButtonTransparent');
                     }
                 }
             });
@@ -1150,17 +1150,17 @@ export default function () {
         const form = e.target;
         playbackManager.sendCommand(
             {
-                Name: "DisplayMessage",
+                Name: 'DisplayMessage',
                 Arguments: {
-                    Header: form.querySelector("#txtMessageTitle").value,
-                    Text: form.querySelector("#txtMessageText", form).value,
-                },
+                    Header: form.querySelector('#txtMessageTitle').value,
+                    Text: form.querySelector('#txtMessageText', form).value
+                }
             },
-            currentPlayer,
+            currentPlayer
         );
-        form.querySelector("input").value = "";
+        form.querySelector('input').value = '';
 
-        toast(globalize.translate("MessageSent"));
+        toast(globalize.translate('MessageSent'));
 
         e.preventDefault();
         e.stopPropagation();
@@ -1171,16 +1171,16 @@ export default function () {
         const form = e.target;
         playbackManager.sendCommand(
             {
-                Name: "SendString",
+                Name: 'SendString',
                 Arguments: {
-                    String: form.querySelector("#txtTypeText", form).value,
-                },
+                    String: form.querySelector('#txtTypeText', form).value
+                }
             },
-            currentPlayer,
+            currentPlayer
         );
-        form.querySelector("input").value = "";
+        form.querySelector('input').value = '';
 
-        toast(globalize.translate("TextSent"));
+        toast(globalize.translate('TextSent'));
 
         e.preventDefault();
         e.stopPropagation();
@@ -1190,63 +1190,63 @@ export default function () {
     function init(ownerView, context) {
         let volumecontrolHtml =
             '<div class="volumecontrol flex align-items-center flex-wrap-wrap justify-content-center">';
-        volumecontrolHtml += `<button is="paper-icon-button-light" class="buttonMute autoSize" title=${globalize.translate("Mute")}><span class="xlargePaperIconButton material-icons volume_up" aria-hidden="true"></span></button>`;
-        volumecontrolHtml +=
-            '<div class="sliderContainer nowPlayingVolumeSliderContainer"><input is="emby-slider" type="range" step="1" min="0" max="100" value="0" class="nowPlayingVolumeSlider"/></div>';
-        volumecontrolHtml += "</div>";
-        const optionsSection = context.querySelector(".playlistSectionButton");
+        volumecontrolHtml += `<button is="paper-icon-button-light" class="buttonMute autoSize" title=${globalize.translate('Mute')}><span class="xlargePaperIconButton material-icons volume_up" aria-hidden="true"></span></button>`;
+        volumecontrolHtml
+            += '<div class="sliderContainer nowPlayingVolumeSliderContainer"><input is="emby-slider" type="range" step="1" min="0" max="100" value="0" class="nowPlayingVolumeSlider"/></div>';
+        volumecontrolHtml += '</div>';
+        const optionsSection = context.querySelector('.playlistSectionButton');
         if (!layoutManager.mobile) {
             context
-                .querySelector(".nowPlayingSecondaryButtons")
-                .insertAdjacentHTML("beforeend", volumecontrolHtml);
+                .querySelector('.nowPlayingSecondaryButtons')
+                .insertAdjacentHTML('beforeend', volumecontrolHtml);
             optionsSection.classList.remove(
-                "align-items-center",
-                "justify-content-center",
+                'align-items-center',
+                'justify-content-center'
             );
             optionsSection.classList.add(
-                "align-items-right",
-                "justify-content-flex-end",
+                'align-items-right',
+                'justify-content-flex-end'
             );
-            context.querySelector(".playlist").classList.remove("hide");
-            context.querySelector(".btnSavePlaylist").classList.remove("hide");
-            context.classList.add("padded-bottom");
+            context.querySelector('.playlist').classList.remove('hide');
+            context.querySelector('.btnSavePlaylist').classList.remove('hide');
+            context.classList.add('padded-bottom');
         } else {
             optionsSection
-                .querySelector(".btnTogglePlaylist")
-                .insertAdjacentHTML("afterend", volumecontrolHtml);
-            optionsSection.classList.add("playlistSectionButtonTransparent");
+                .querySelector('.btnTogglePlaylist')
+                .insertAdjacentHTML('afterend', volumecontrolHtml);
+            optionsSection.classList.add('playlistSectionButtonTransparent');
             context
-                .querySelector(".btnTogglePlaylist")
-                .classList.remove("hide");
+                .querySelector('.btnTogglePlaylist')
+                .classList.remove('hide');
             context
-                .querySelector(".playlistSectionButton")
-                .classList.remove("justify-content-center");
+                .querySelector('.playlistSectionButton')
+                .classList.remove('justify-content-center');
             context
-                .querySelector(".playlistSectionButton")
-                .classList.add("justify-content-space-between");
+                .querySelector('.playlistSectionButton')
+                .classList.add('justify-content-space-between');
         }
 
         bindEvents(context);
         context
-            .querySelector(".sendMessageForm")
-            .addEventListener("submit", onMessageSubmit);
+            .querySelector('.sendMessageForm')
+            .addEventListener('submit', onMessageSubmit);
         context
-            .querySelector(".typeTextForm")
-            .addEventListener("submit", onSendStringSubmit);
-        Events.on(playbackManager, "playerchange", onPlayerChange);
+            .querySelector('.typeTextForm')
+            .addEventListener('submit', onSendStringSubmit);
+        Events.on(playbackManager, 'playerchange', onPlayerChange);
 
         if (layoutManager.tv) {
             const positionSlider = context.querySelector(
-                ".nowPlayingPositionSlider",
+                '.nowPlayingPositionSlider'
             );
-            positionSlider.classList.add("focusable");
+            positionSlider.classList.add('focusable');
             positionSlider.enableKeyboardDragging();
         }
     }
 
     function onDialogClosed() {
         releaseCurrentPlayer();
-        Events.off(playbackManager, "playerchange", onPlayerChange);
+        Events.off(playbackManager, 'playerchange', onPlayerChange);
         lastPlayerState = null;
     }
 

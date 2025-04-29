@@ -68,7 +68,7 @@ export const Component = () => {
                         flexGrow: 1
                     }}
                 >
-                <Visualizers />
+                    <Visualizers />
                     <AppBody>
                         <Outlet />
                     </AppBody>

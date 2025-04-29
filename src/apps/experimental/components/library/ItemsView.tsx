@@ -177,8 +177,14 @@ const ItemsView: FC<ItemsViewProps> = ({
         }
 
         return cardOptions;
-    }, [libraryViewSettings.ImageType, libraryViewSettings.ShowTitle, libraryViewSettings.ShowYear,
-        libraryViewSettings.CardLayout, collectionType, __legacyApiClient__, viewType]);
+    }, [
+        libraryViewSettings.ShowTitle,
+        libraryViewSettings.ImageType,
+        libraryViewSettings.ShowYear,
+        libraryViewSettings.CardLayout,
+        collectionType,
+        viewType
+    ]);
 
     const getItems = useCallback(() => {
         if (!itemsResult?.Items?.length) {
@@ -235,6 +241,7 @@ const ItemsView: FC<ItemsViewProps> = ({
                     flexWrap: 'wrap'
                 }}
             >
+
                 <LibraryViewMenu />
 
                 {isBtnPlayAllEnabled && (
@@ -255,7 +262,9 @@ const ItemsView: FC<ItemsViewProps> = ({
                         libraryViewSettings={libraryViewSettings}
                     />
                 )}
-                {isBtnQueueEnabled && item && playbackManager.canQueue(item) && (
+                {isBtnQueueEnabled
+                    && item
+                    && playbackManager.canQueue(item) && (
                     <QueueButton
                         item={item}
                         items={items}
