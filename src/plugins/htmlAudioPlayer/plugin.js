@@ -8,7 +8,6 @@ import profileBuilder from '../../scripts/browserDeviceProfile';
 import { getIncludeCorsCredentials } from '../../scripts/settings/webSettings';
 import { PluginType } from '../../types/plugin';
 import Events from '../../utils/events';
-import { MediaError } from 'types/mediaError';
 import { audioNodeBus, createGainNode, initializeMasterAudio, masterAudioOutput } from 'components/audioEngine/master.logic';
 import { hijackMediaElementForCrossfade, xDuration } from 'components/audioEngine/crossfader.logic';
 import { scrollToActivePlaylistItem, triggerSongInfoDisplay } from 'components/sitbackMode/sitback.logic';
