@@ -1,3 +1,6 @@
+import { AppFeature } from 'constants/appFeature';
+import { MediaError } from 'types/mediaError';
+
 import browser from '../../scripts/browser';
 import { appHost } from '../../components/apphost';
 import * as htmlMediaHelper from '../../components/htmlMediaHelper';

@@ -2,6 +2,7 @@ import escapeHtml from 'escape-html';
 
 import { getImageUrl } from 'apps/stable/features/playback/utils/image';
 import { getItemTextLines } from 'apps/stable/features/playback/utils/itemText';
+import { AppFeature } from 'constants/appFeature';
 
 import datetime from '../../scripts/datetime';
 import { clearBackdrop, setBackdrops } from '../backdrop/backdrop';

@@ -1,6 +1,7 @@
 import { getImageUrl } from 'apps/stable/features/playback/utils/image';
 import { getItemTextLines } from 'apps/stable/features/playback/utils/itemText';
 import { appRouter, isLyricsPage } from 'components/router/appRouter';
+import { AppFeature } from 'constants/appFeature';
 import { ServerConnections } from 'lib/jellyfin-apiclient';
 
 import datetime from '../../scripts/datetime';
@@ -257,7 +258,7 @@ function bindEvents(elem) {
 
     toggleRepeatButtonIcon = toggleRepeatButton.querySelector('.material-icons');
 
-    volumeSliderContainer.classList.toggle('hide', appHost.supports('physicalvolumecontrol'));
+    volumeSliderContainer.classList.toggle('hide', appHost.supports(AppFeature.PhysicalVolumeControl));
 
     volumeSlider.addEventListener('input', (e) => {
         if (currentPlayer) {
