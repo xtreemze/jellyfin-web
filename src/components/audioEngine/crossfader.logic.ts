@@ -152,6 +152,6 @@ export function timeRunningOut(player: any) {
     const currentTime = player.currentTime();
 
     if (!masterAudioOutput.audioContext || !xDuration.enabled || xDuration.busy || currentTime < xDuration.fadeOut * 1000) return false;
-    return (player.duration() - currentTime) <= (xDuration.fadeOut * 1000);
+    return (player.duration() - currentTime) <= (xDuration.fadeOut * 1500);
 }
 
