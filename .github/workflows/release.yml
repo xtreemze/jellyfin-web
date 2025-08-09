@@ -1,0 +1,44 @@
+name: Release (tag → ZIP asset)
+
+on:
+  push:
+    tags: [ "v*.*.*" ]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+          PUBLIC_URL: /${{ github.event.repository.name }}/
+        run: |
+          if npm run | grep -q "build:production"; then npm run build:production; else npm run build; fi
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+
+      - name: Package dist
+        run: |
+          mkdir -p out
+          (cd dist && zip -r ../out/jellyfin-web-${{ github.ref_name }}.zip .)
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/*.zip
+          draft: false
+          prerelease: false
