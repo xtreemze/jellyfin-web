@@ -109,7 +109,7 @@ export const delayNodeBus: DelayNodes = [];
  */
 function createBuffer(input: MediaElementAudioSourceNode, output: GainNode) {
     if (!masterAudioOutput.audioContext) return;
-    const delayedAudible = masterAudioOutput.audioContext.createDelay(0.05);
+    const delayedAudible = masterAudioOutput.audioContext.createDelay(0.5);
 
     if (visualizerSettings.waveSurfer.enabled) {
         delayedAudible.delayTime.value = 0.01;
