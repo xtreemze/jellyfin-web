@@ -112,7 +112,7 @@ function createBuffer(input: MediaElementAudioSourceNode, output: GainNode) {
     const delayedAudible = masterAudioOutput.audioContext.createDelay(0.5);
 
     if (visualizerSettings.waveSurfer.enabled) {
-        delayedAudible.delayTime.value = 0.01;
+        delayedAudible.delayTime.value = 0.05;
     }
 
     delayNodeBus.unshift(delayedAudible);
