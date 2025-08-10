@@ -258,7 +258,7 @@ function bindEvents(elem) {
 
     toggleRepeatButtonIcon = toggleRepeatButton.querySelector('.material-icons');
 
-    volumeSliderContainer.classList.toggle('hide', appHost.supports(AppFeature.PhysicalVolumeControl));
+    // volumeSliderContainer.classList.toggle('hide', appHost.supports(AppFeature.PhysicalVolumeControl));
 
     volumeSlider.addEventListener('input', (e) => {
         if (currentPlayer) {
@@ -455,16 +455,16 @@ function updatePlayerVolumeState(isMuted, volumeLevel) {
         showVolumeSlider = true;
     }
 
-    if (currentPlayer.isLocalPlayer && appHost.supports(AppFeature.PhysicalVolumeControl)) {
-        showMuteButton = false;
-        showVolumeSlider = false;
-    }
+    // if (currentPlayer.isLocalPlayer && appHost.supports(AppFeature.PhysicalVolumeControl)) {
+        // showMuteButton = false;
+        // showVolumeSlider = false;
+    // }
 
-    muteButton.classList.toggle('hide', !showMuteButton);
+    // muteButton.classList.toggle('hide', !showMuteButton);
 
     // See bindEvents for why this is necessary
     if (volumeSlider) {
-        volumeSliderContainer.classList.toggle('hide', !showVolumeSlider);
+        // volumeSliderContainer.classList.toggle('hide', !showVolumeSlider);
 
         if (!volumeSlider.dragging) {
             volumeSlider.value = volumeLevel || 0;
