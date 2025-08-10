@@ -27,7 +27,7 @@ export function setXDuration(crossfadeDuration: number) {
     }
 
     xDuration.enabled = true;
-    xDuration.fadeOut = crossfadeDuration * 2;
+    xDuration.fadeOut = crossfadeDuration;
     xDuration.disableFade = false;
     xDuration.sustain = crossfadeDuration / 4;
 }
