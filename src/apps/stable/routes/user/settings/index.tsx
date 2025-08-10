@@ -15,6 +15,7 @@ import globalize from 'lib/globalize';
 import browser from 'scripts/browser';
 import Dashboard from 'utils/dashboard';
 import shell from 'scripts/shell';
+import keyboardNavigation from 'scripts/keyboardNavigation';
 
 const UserSettingsPage: FC = () => {
     const { user: currentUser } = useApi();
@@ -45,6 +46,9 @@ const UserSettingsPage: FC = () => {
             <Loading />
         );
     }
+
+    // gamepad toggle unavailable on EdgeUWP, and smoothscroll unavailable on non-TV layout
+    const isControlsPageEmpty = !keyboardNavigation.canEnableGamepad() && !layoutManager.tv;
 
     return (
         <Page
@@ -186,6 +190,27 @@ const UserSettingsPage: FC = () => {
                             </div>
                         </LinkButton>
 
+                        {appHost.supports(AppFeature.DownloadManagement) && (
+                            <LinkButton
+                                onClick={shell.openDownloadManager}
+                                className='downloadManager listItem-border'
+                                style={{
+                                    display: 'block',
+                                    margin: 0,
+                                    padding: 0
+                                }}
+                            >
+                                <div className='listItem'>
+                                    <span className='material-icons listItemIcon listItemIcon-transparent download' aria-hidden='true' />
+                                    <div className='listItemBody'>
+                                        <div className='listItemBodyText'>
+                                            {globalize.translate('DownloadManager')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </LinkButton>
+                        )}
+
                         {appHost.supports(AppFeature.ClientSettings) && (
                             <LinkButton
                                 onClick={shell.openClientSettings}
@@ -207,7 +232,7 @@ const UserSettingsPage: FC = () => {
                             </LinkButton>
                         )}
 
-                        {isLoggedInUser && !browser.mobile && (
+                        {isLoggedInUser && !browser.mobile && !isControlsPageEmpty && (
                             <LinkButton
                                 href={`#/mypreferencescontrols?userId=${userId}`}
                                 className='lnkControlsPreferences listItem-border'

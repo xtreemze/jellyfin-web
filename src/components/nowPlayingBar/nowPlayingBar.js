@@ -11,7 +11,7 @@ import imageLoader from '../images/imageLoader';
 import layoutManager from '../layoutManager';
 import { playbackManager } from '../playback/playbackmanager';
 import { appHost } from '../apphost';
-import dom from '../../scripts/dom';
+import dom from '../../utils/dom';
 import globalize from 'lib/globalize';
 import itemContextMenu from '../itemContextMenu';
 import '../../elements/emby-button/paper-icon-button-light';
@@ -455,9 +455,9 @@ function updatePlayerVolumeState(isMuted, volumeLevel) {
         showVolumeSlider = true;
     }
 
-    if (currentPlayer.isLocalPlayer && appHost.supports('physicalvolumecontrol')) {
-        showMuteButton = true;
-        showVolumeSlider = true;
+    if (currentPlayer.isLocalPlayer && appHost.supports(AppFeature.PhysicalVolumeControl)) {
+        showMuteButton = false;
+        showVolumeSlider = false;
     }
 
     muteButton.classList.toggle('hide', !showMuteButton);

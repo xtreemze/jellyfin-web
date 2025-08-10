@@ -316,7 +316,7 @@ function getAudioStreamUrl(item, transcodingProfile, directPlayContainers, apiCl
         AudioCodec: transcodingProfile.AudioCodec,
         MaxAudioSampleRate: maxValues.maxAudioSampleRate,
         MaxAudioBitDepth: maxValues.maxAudioBitDepth,
-        api_key: apiClient.accessToken(),
+        ApiKey: apiClient.accessToken(),
         PlaySessionId: startingPlaySession,
         StartTimeTicks: startPosition || 0,
         EnableRedirection: true,
@@ -1845,7 +1845,7 @@ export class PlaybackManager {
                         ArtistIds: firstItem.Id,
                         Filters: 'IsNotFolder',
                         Recursive: true,
-                        SortBy: options.shuffle ? 'Random' : 'SortName',
+                        SortBy: options.shuffle ? 'Random' : 'Album,ParentIndexNumber,IndexNumber,SortName',
                         MediaTypes: 'Audio'
                     }, queryOptions));
                 case 'PhotoAlbum':
@@ -1871,6 +1871,14 @@ export class PlaybackManager {
                     return getItemsForPlayback(serverId, mergePlaybackQueries({
                         GenreIds: firstItem.Id,
                         ParentId: firstItem.ParentId,
+                        Filters: 'IsNotFolder',
+                        Recursive: true,
+                        SortBy: options.shuffle ? 'Random' : 'SortName',
+                        MediaTypes: 'Video'
+                    }, queryOptions));
+                case 'Studio':
+                    return getItemsForPlayback(serverId, mergePlaybackQueries({
+                        StudioIds: firstItem.Id,
                         Filters: 'IsNotFolder',
                         Recursive: true,
                         SortBy: options.shuffle ? 'Random' : 'SortName',
@@ -1926,7 +1934,11 @@ export class PlaybackManager {
                 if (options.shuffle) {
                     sortBy = 'Random';
                 } else if (firstItem.Type !== 'BoxSet') {
-                    sortBy = 'SortName';
+                    if (firstItem.CollectionType === 'music' || firstItem.MediaType === 'Audio') {
+                        sortBy = 'Album,ParentIndexNumber,IndexNumber,SortName';
+                    } else {
+                        sortBy = 'SortName';
+                    }
                 }
 
                 return getItemsForPlayback(serverId, mergePlaybackQueries({
@@ -2823,7 +2835,7 @@ export class PlaybackManager {
                         Static: true,
                         mediaSourceId: mediaSource.Id,
                         deviceId: apiClient.deviceId(),
-                        api_key: apiClient.accessToken()
+                        ApiKey: apiClient.accessToken()
                     };
 
                     if (mediaSource.ETag) {

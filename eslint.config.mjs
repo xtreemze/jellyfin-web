@@ -150,6 +150,11 @@ export default tseslint.config(
                             allowTypeImports: true
                         },
                         {
+                            name: '@mui/icons-material',
+                            message: 'Use direct file imports for tree-shaking',
+                            allowTypeImports: true
+                        },
+                        {
                             name: '@mui/material',
                             message: 'Use direct file imports for tree-shaking',
                             allowTypeImports: true
@@ -346,13 +351,12 @@ export default tseslint.config(
                     leadingUnderscore: 'allowSingleOrDouble',
                     trailingUnderscore: 'allowSingleOrDouble'
                 },
-                // Ignore numbers, locale strings (en-us), aria/data attributes, CSS selectors,
-                // and api_key parameter
+                // Ignore numbers, locale strings (en-us), aria/data attributes and CSS selectors
                 {
                     selector: [ 'objectLiteralProperty', 'typeProperty' ],
                     format: null,
                     filter: {
-                        regex: '[ &\\-]|^([0-9]+)$|^api_key$',
+                        regex: '[ &\\-]|^([0-9]+)$',
                         match: true
                     }
                 }
