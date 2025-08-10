@@ -32,13 +32,25 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=4096
           # If served at https://<user>.github.io/<repo>/
           PUBLIC_URL: /${{ github.event.repository.name }}/
-          # If you use Vite instead, swap for: VITE_BASE: /${{ github.event.repository.name }}/
+          # If you use Vite instead, swap for:
+          # VITE_BASE: /${{ github.event.repository.name }}/
         run: |
           if npm run | grep -q "build:production"; then npm run build:production; else npm run build; fi
-          # SPA hard-refresh support + disable Jekyll processing
           cp dist/index.html dist/404.html
           touch dist/.nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          path
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
