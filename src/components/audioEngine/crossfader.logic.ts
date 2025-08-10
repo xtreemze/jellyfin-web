@@ -20,16 +20,16 @@ export function setXDuration(crossfadeDuration: number) {
 
     if (crossfadeDuration < 0.51) {
         xDuration.enabled = true;
-        xDuration.fadeOut = crossfadeDuration * 2;
+        xDuration.fadeOut = crossfadeDuration;
         xDuration.disableFade = true;
-        xDuration.sustain = crossfadeDuration;
+        xDuration.sustain = crossfadeDuration / 2;
         return;
     }
 
     xDuration.enabled = true;
     xDuration.fadeOut = crossfadeDuration * 2;
     xDuration.disableFade = false;
-    xDuration.sustain = crossfadeDuration / 2;
+    xDuration.sustain = crossfadeDuration / 4;
 }
 
 /**
