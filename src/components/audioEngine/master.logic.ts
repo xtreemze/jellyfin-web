@@ -11,7 +11,7 @@ type MasterAudioTypes = {
     volume: number;
 };
 
-const dbBoost = 0;
+const dbBoost = 2;
 
 /**
  * Applies a decibel reduction to the original volume.
