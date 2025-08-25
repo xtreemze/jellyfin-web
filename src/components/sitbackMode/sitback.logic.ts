@@ -83,3 +83,42 @@ export function triggerSongInfoDisplay() {
         endTransition();
     }, (sitbackSettings.songInfoDisplayDurationInSeconds * 1000));
 }
+
+// Mirror desktop's Butterchurn blur easing on touch devices
+if ('ontouchstart' in window) {
+    let lastInput = Date.now();
+    let isIdle = false;
+
+    const showCursor = () => {
+        if (isIdle) {
+            isIdle = false;
+            document.body.classList.remove('mouseIdle');
+        }
+    };
+
+    const hideCursor = () => {
+        if (!isIdle) {
+            isIdle = true;
+            document.body.classList.add('mouseIdle');
+            scrollToActivePlaylistItem();
+        }
+    };
+
+    const pointerActivity = () => {
+        lastInput = Date.now();
+        showCursor();
+    };
+
+    const moveEvent = ('PointerEvent' in window) ? 'pointermove' : 'mousemove';
+    const downEvent = ('PointerEvent' in window) ? 'pointerdown' : 'mousedown';
+
+    document.addEventListener(moveEvent, pointerActivity, { passive: true });
+    document.addEventListener(downEvent, pointerActivity, { passive: true });
+
+    setInterval(() => {
+        if (!isIdle && Date.now() - lastInput >= 5000) {
+            hideCursor();
+        }
+    }, 1000);
+}
+
