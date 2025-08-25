@@ -86,12 +86,6 @@ function onPointerMove(e) {
     showCursor();
 }
 
-function onPointerDown() {
-    lastMouseInputTime = new Date().getTime();
-    notifyApp();
-    showCursor();
-}
-
 function onPointerEnter(e) {
     const pointerType = e.pointerType || (layoutManager.mobile ? 'touch' : 'mouse');
 
@@ -146,21 +140,14 @@ function initMouse() {
     dom.removeEventListener(document, (window.PointerEvent ? 'pointermove' : 'mousemove'), onPointerMove, {
         passive: true
     });
-    /* eslint-disable-next-line compat/compat */
-    dom.removeEventListener(document, (window.PointerEvent ? 'pointerdown' : 'mousedown'), onPointerDown, {
-        passive: true
-    });
 
-    startMouseInterval();
+    if (!layoutManager.mobile) {
+        startMouseInterval();
 
-    /* eslint-disable-next-line compat/compat */
-    dom.addEventListener(document, (window.PointerEvent ? 'pointermove' : 'mousemove'), onPointerMove, {
-        passive: true
-    });
-    /* eslint-disable-next-line compat/compat */
-    dom.addEventListener(document, (window.PointerEvent ? 'pointerdown' : 'mousedown'), onPointerDown, {
-        passive: true
-    });
+        dom.addEventListener(document, (window.PointerEvent ? 'pointermove' : 'mousemove'), onPointerMove, {
+            passive: true
+        });
+    }
 
     /* eslint-disable-next-line compat/compat */
     dom.removeEventListener(document, (window.PointerEvent ? 'pointerenter' : 'mouseenter'), onPointerEnter, {
