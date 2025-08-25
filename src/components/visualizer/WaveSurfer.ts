@@ -41,6 +41,35 @@ const purgatory: WaveSurfer[] = [];
 
 let lastTouchMoveTime = 0;
 
+const waveformCache = new Map<string, { peaks: number[][]; duration: number }>();
+
+function preloadWaveform(url: string) {
+    if (!visualizerSettings.waveSurfer.enabled || waveformCache.has(url)) return;
+
+    const container = document.createElement('div');
+    container.style.display = 'none';
+    document.body.appendChild(container);
+
+    const ws = WaveSurfer.create({
+        ...surferOptions,
+        container,
+        url,
+        interact: false,
+        autoplay: false
+    });
+
+    ws.once('ready', (duration) => {
+        waveformCache.set(url, { peaks: ws.exportPeaks(), duration });
+        ws.destroy();
+        container.remove();
+    });
+
+    ws.once('error', () => {
+        ws.destroy();
+        container.remove();
+    });
+}
+
 function findElements() {
     inputSurfer = document.getElementById('inputSurfer');
     simpleSlider = document.getElementById('simpleSlider');
@@ -71,13 +100,14 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
         return;
     }
 
+    const cache = waveformCache.get(mediaElement.src);
     const newSong = isNewSong(newSongDuration);
 
     waveSurferInstance = WaveSurfer.create({ ...surferOptions,
         media: mediaElement,
         container: container,
-        peaks: newSong ? undefined : savedPeaks,
-        duration: newSong ? undefined : savedDuration
+        peaks: cache ? cache.peaks : newSong ? undefined : savedPeaks,
+        duration: cache ? cache.duration : newSong ? undefined : savedDuration
     });
 
     waveSurferInstance.on('zoom', (minPxPerSec)=>{
@@ -89,8 +119,10 @@ function waveSurferInitialization(container: string, legacy: WaveSurferLegacy, n
 
     waveSurferInstance.once('ready', (duration) => {
         setVisibility();
-        savedDuration = duration;
-        if (newSong) {
+        savedDuration = cache?.duration || duration;
+        if (cache) {
+            savedPeaks = cache.peaks;
+        } else if (newSong) {
             savedPeaks = waveSurferInstance.exportPeaks();
         } else {
             const newPeaks = waveSurferInstance.exportPeaks();
@@ -250,5 +282,6 @@ export {
     waveSurferInitialization,
     waveSurferInstance,
     destroyWaveSurferInstance,
-    currentZoom
+    currentZoom,
+    preloadWaveform
 };
