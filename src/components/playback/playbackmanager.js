@@ -29,6 +29,7 @@ import { MediaError } from 'types/mediaError';
 import { getMediaError } from 'utils/mediaError';
 import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
 import { hijackMediaElementForCrossfade, timeRunningOut, xDuration } from 'components/audioEngine/crossfader.logic';
+import { prefetchNextItemImages } from 'components/sitbackMode/sitback.logic';
 import { toApi } from 'utils/jellyfin-apiclient/compat';
 import { bindSkipSegment } from './skipsegment.ts';
 
@@ -2906,6 +2907,8 @@ export class PlaybackManager {
               // Update to point to the new upcoming track
               link.href = mediaUrl;
             }
+
+            prefetchNextItemImages(self._playQueueManager);
 
             const backdropUrl = getItemBackdropImageUrl(apiClient, item, {}, true);
             if (backdropUrl) {
