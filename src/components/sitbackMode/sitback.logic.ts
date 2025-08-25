@@ -1,5 +1,8 @@
 import layoutManager from '../layoutManager';
 import inputManager from '../../scripts/inputManager';
+import { ImageType } from '@jellyfin/sdk/lib/generated-client/models/image-type';
+import { getImageUrl } from 'apps/stable/features/playback/utils/image';
+import { ServerConnections } from 'lib/jellyfin-apiclient';
 
 const sitbackSettings = {
     songInfoDisplayDurationInSeconds: 5
@@ -85,6 +88,56 @@ export function triggerSongInfoDisplay() {
     setTimeout(()=>{
         endTransition();
     }, (sitbackSettings.songInfoDisplayDurationInSeconds * 1000));
+}
+
+export function prefetchNextItemImages(playQueueManager: any) {
+    const playlist = playQueueManager.getPlaylist();
+    const currentIndex = playQueueManager.getCurrentPlaylistIndex();
+
+    for (let i = 1; i <= 2; i++) {
+        const item = playlist[currentIndex + i];
+        if (!item) {
+            break;
+        }
+
+        const apiClient = ServerConnections.getApiClient(item.ServerId);
+
+        const primaryUrl = getImageUrl(item, { height: 50 });
+        if (primaryUrl && typeof Image !== 'undefined') {
+            const img = new Image();
+            img.src = primaryUrl;
+        }
+
+        if (item.AlbumId) {
+            const discOptions: any = { type: ImageType.Disc };
+            if (typeof window !== 'undefined') {
+                discOptions.maxWidth = window.innerHeight * 0.8;
+            }
+            const discUrl = apiClient.getScaledImageUrl(item.AlbumId, discOptions);
+            if (discUrl && typeof Image !== 'undefined') {
+                const img = new Image();
+                img.src = discUrl;
+            }
+        }
+
+        let logoUrl;
+        if (item.ImageTags?.[ImageType.Logo]) {
+            logoUrl = apiClient.getScaledImageUrl(item.Id, {
+                type: ImageType.Logo,
+                tag: item.ImageTags[ImageType.Logo]
+            });
+        } else if (item.ParentLogoImageTag) {
+            logoUrl = apiClient.getScaledImageUrl(item.ParentLogoItemId, {
+                type: ImageType.Logo,
+                tag: item.ParentLogoImageTag
+            });
+        }
+
+        if (logoUrl && typeof Image !== 'undefined') {
+            const img = new Image();
+            img.src = logoUrl;
+        }
+    }
 }
 
 // Enable mouse idle tracking on mobile to ease Butterchurn blur
