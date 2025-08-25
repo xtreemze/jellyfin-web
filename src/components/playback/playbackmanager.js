@@ -4,6 +4,7 @@ import { getMediaInfoApi } from '@jellyfin/sdk/lib/utils/api/media-info-api';
 import { MediaType } from '@jellyfin/sdk/lib/generated-client/models/media-type';
 import merge from 'lodash-es/merge';
 import Screenfull from 'screenfull';
+
 import Events from '../../utils/events.ts';
 import datetime from '../../scripts/datetime';
 import appSettings from '../../scripts/settings/appSettings';
@@ -27,8 +28,6 @@ import { AppFeature } from 'constants/appFeature';
 import { ServerConnections } from 'lib/jellyfin-apiclient';
 import { MediaError } from 'types/mediaError';
 import { getMediaError } from 'utils/mediaError';
-import { destroyWaveSurferInstance } from 'components/visualizer/WaveSurfer';
-import { hijackMediaElementForCrossfade, timeRunningOut, xDuration } from 'components/audioEngine/crossfader.logic';
 import { toApi } from 'utils/jellyfin-apiclient/compat';
 import { bindSkipSegment } from './skipsegment.ts';
 
@@ -2072,8 +2071,6 @@ export class PlaybackManager {
         self.getItemsForPlayback = getItemsForPlayback;
 
         self.play = async function (options) {
-            hijackMediaElementForCrossfade();
-
             normalizePlayOptions(options);
 
             if (self._currentPlayer) {
@@ -2318,14 +2315,12 @@ export class PlaybackManager {
                 introPlayOptions.items = items;
                 introPlayOptions.startIndex = playStartIndex;
 
-                setTimeout(() => {
-                    return playInternal(items[playStartIndex], introPlayOptions, function () {
-                        self._playQueueManager.setPlaylist(items);
+                return playInternal(items[playStartIndex], introPlayOptions, function () {
+                    self._playQueueManager.setPlaylist(items);
 
-                        setPlaylistState(items[playStartIndex].PlaylistItemId, playStartIndex);
-                        loading.hide();
-                    });
-                }, Math.max(xDuration.sustain * 1000), 1);
+                    setPlaylistState(items[playStartIndex].PlaylistItemId, playStartIndex);
+                    loading.hide();
+                });
             });
         }
 
@@ -2365,11 +2360,8 @@ export class PlaybackManager {
                 .catch(onInterceptorRejection)
                 .then(() => detectBitrate(apiClient, item, mediaType))
                 .then((bitrate) => {
-                    const elapsedTime = performance.now() - xDuration.t0; // Calculate the elapsed time
-                    setTimeout(() => {
-                        return playAfterBitrateDetect(bitrate, item, playOptions, onPlaybackStartedFn, prevSource)
-                            .catch(onPlaybackRejection);
-                    }, Math.max(1, xDuration.sustain * 1000 - elapsedTime));
+                    return playAfterBitrateDetect(bitrate, item, playOptions, onPlaybackStartedFn, prevSource)
+                        .catch(onPlaybackRejection);
                 })
                 .catch(() => {
                     if (playOptions.fullscreen) {
@@ -2891,22 +2883,6 @@ export class PlaybackManager {
                 title: item.Name
             };
 
-            // This inserts a header link to preload the next audio track in accordance with browser availability
-            if (type === "Audio") {
-              let link = document.getElementById("next-audio-prefetch");
-
-              if (!link) {
-                link = document.createElement("link");
-                link.id = "next-audio-prefetch";
-                link.rel = "prefetch";
-                link.as = "audio";
-                document.head.appendChild(link);
-              }
-
-              // Update to point to the new upcoming track
-              link.href = mediaUrl;
-            }
-
             const backdropUrl = getItemBackdropImageUrl(apiClient, item, {}, true);
             if (backdropUrl) {
                 resultInfo.backdropUrl = backdropUrl;
@@ -3023,8 +2999,6 @@ export class PlaybackManager {
         };
 
         self.setCurrentPlaylistItem = function (playlistItemId, player) {
-            hijackMediaElementForCrossfade();
-
             player = player || self._currentPlayer;
             if (player && !enableLocalPlaylistManagement(player)) {
                 return player.setCurrentPlaylistItem(playlistItemId);
@@ -3132,8 +3106,6 @@ export class PlaybackManager {
         }
 
         self.nextTrack = function (player) {
-            hijackMediaElementForCrossfade();
-
             player = player || self._currentPlayer;
             if (player && !enableLocalPlaylistManagement(player)) {
                 return player.nextTrack();
@@ -3408,7 +3380,6 @@ export class PlaybackManager {
          * @param {MediaError} error.type
          */
         function onPlaybackError(e, error) {
-            destroyWaveSurferInstance();
             const player = this;
             error = error || {};
 
@@ -3564,10 +3535,6 @@ export class PlaybackManager {
 
         function onPlaybackTimeUpdate() {
             const player = this;
-            if (timeRunningOut(player)) {
-                self.nextTrack();
-            }
-
             sendProgressUpdate(player, 'timeupdate');
         }
 
