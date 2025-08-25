@@ -84,7 +84,7 @@ export function triggerSongInfoDisplay() {
     }, (sitbackSettings.songInfoDisplayDurationInSeconds * 1000));
 }
 
-// Enable lighter Butterchurn blur after inactivity on touch devices
+// Mirror desktop's Butterchurn blur easing on touch devices
 if ('ontouchstart' in window) {
     let lastInput = Date.now();
     let isIdle = false;
@@ -121,3 +121,4 @@ if ('ontouchstart' in window) {
         }
     }, 1000);
 }
+
