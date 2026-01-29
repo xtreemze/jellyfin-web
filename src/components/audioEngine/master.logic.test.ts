@@ -290,35 +290,31 @@ describe('master.logic - Audio Engine', () => {
             initializeMasterAudio(vi.fn());
         });
 
-        // These tests check for limiterNode which is not exposed on masterAudioOutput
-        // Skipping until limiterNode is properly exposed in the audio engine implementation
-        const shouldSkip = true;
-
-        it.skipIf(shouldSkip)('should set threshold to -1 dB', () => {
+        it('should set threshold to -1 dB', () => {
             const limiter = (masterAudioOutput as any).limiterNode;
             expect(limiter).toBeDefined();
             expect(limiter.threshold.setValueAtTime).toHaveBeenCalledWith(-1, expect.any(Number));
         });
 
-        it.skipIf(shouldSkip)('should set knee to 0 (hard knee)', () => {
+        it('should set knee to 0 (hard knee)', () => {
             const limiter = (masterAudioOutput as any).limiterNode;
             expect(limiter).toBeDefined();
             expect(limiter.knee.setValueAtTime).toHaveBeenCalledWith(0, expect.any(Number));
         });
 
-        it.skipIf(shouldSkip)('should set ratio to 20:1 (limiting)', () => {
+        it('should set ratio to 20:1 (limiting)', () => {
             const limiter = (masterAudioOutput as any).limiterNode;
             expect(limiter).toBeDefined();
             expect(limiter.ratio.setValueAtTime).toHaveBeenCalledWith(20, expect.any(Number));
         });
 
-        it.skipIf(shouldSkip)('should set attack to 3ms', () => {
+        it('should set attack to 3ms', () => {
             const limiter = (masterAudioOutput as any).limiterNode;
             expect(limiter).toBeDefined();
             expect(limiter.attack.setValueAtTime).toHaveBeenCalledWith(0.003, expect.any(Number));
         });
 
-        it.skipIf(shouldSkip)('should set release to 250ms', () => {
+        it('should set release to 250ms', () => {
             const limiter = (masterAudioOutput as any).limiterNode;
             expect(limiter).toBeDefined();
             expect(limiter.release.setValueAtTime).toHaveBeenCalledWith(0.25, expect.any(Number));

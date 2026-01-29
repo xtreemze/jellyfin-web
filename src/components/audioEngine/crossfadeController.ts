@@ -66,13 +66,14 @@ function safeCleanupElement(element: HTMLMediaElement): void {
 
     try {
         removeAudioNodeBundle(element);
-        element.remove();
+        if (element.parentNode) {
+            element.remove();
+        }
     } catch (error) {
-        logger.warn(
-            '[Crossfade] Error during element cleanup',
-            { component: 'CrossfadeController' },
-            error as Error
-        );
+        logger.warn('[Crossfade] Error during element cleanup', {
+            component: 'CrossfadeController',
+            error: error instanceof Error ? error.message : String(error)
+        });
     }
 }
 

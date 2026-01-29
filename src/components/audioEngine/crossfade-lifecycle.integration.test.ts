@@ -510,7 +510,7 @@ describe('Crossfade Lifecycle Integration Tests', () => {
         });
 
         // Skipping - mixerNode.gain.setTargetAtTime mock not implemented
-        it.skip('should handle rapid setting changes', () => {
+        it('should handle rapid setting changes', () => {
             initializeMasterAudio(mockUnbind);
             usePreferencesStore.getState().setCrossfadeDuration(5);
             expect(getCrossfadeFadeOut(5)).toBe(10);
@@ -765,7 +765,6 @@ describe('Preload Network Timeout', () => {
     let mockAudioContext: any;
 
     beforeEach(() => {
-        vi.useFakeTimers();
         originalAudioContext = (window as any).AudioContext;
         mockAudioContext = createMockAudioContext();
         mockAudioContext.state = 'running';
@@ -789,29 +788,22 @@ describe('Preload Network Timeout', () => {
     });
 
     afterEach(() => {
-        syncManager.stopSync();
-        vi.advanceTimersByTime(200);
-        vi.useRealTimers();
+        try {
+            resetPreloadedTrack();
+        } catch (e) {}
         document.body.innerHTML = '';
         (window as any).AudioContext = originalAudioContext;
-        resetPreloadedTrack();
     });
 
-    it.skip('should timeout slow preloads', async () => {
+    it('should timeout slow preloads', async () => {
         initializeMasterAudio(mockUnbind);
-        const element = document.createElement('audio') as unknown as HTMLAudioElement;
-        Object.defineProperty(element, 'buffered', {
-            value: { length: 0 },
-            writable: true
-        });
-        document.body.appendChild(element);
 
         const result = await preloadNextTrack({
             itemId: 'test-item',
             url: 'http://example.com/slow-song.mp3',
             volume: 100,
             muted: false,
-            timeoutMs: 1000,
+            timeoutMs: 10,
             purpose: 'crossfade'
         });
 
@@ -819,25 +811,20 @@ describe('Preload Network Timeout', () => {
         expect(document.querySelector('[data-crossfade-preload="true"]')).toBeNull();
     });
 
-    it.skip('should clear preload state on timeout', async () => {
+    it('should clear preload state on timeout', async () => {
         initializeMasterAudio(mockUnbind);
-        const element = document.createElement('audio') as unknown as HTMLAudioElement;
-        Object.defineProperty(element, 'buffered', {
-            value: { length: 0 },
-            writable: true
-        });
-        document.body.appendChild(element);
 
-        await preloadNextTrack({
+        const preloadPromise = preloadNextTrack({
             itemId: 'test-item-2',
             url: 'http://example.com/another-song.mp3',
             volume: 100,
             muted: false,
-            timeoutMs: 500,
+            timeoutMs: 10,
             purpose: 'crossfade'
         });
 
-        vi.advanceTimersByTime(600);
+        const result = await preloadPromise;
+        expect(result).toBe(false);
 
         const preloadElement = document.querySelector('[data-crossfade-preload="true"]');
         expect(preloadElement).toBeNull();
@@ -870,9 +857,13 @@ describe('Double Cleanup Prevention', () => {
         syncManager.stopSync();
         vi.advanceTimersByTime(200);
         vi.useRealTimers();
+        try {
+            resetPreloadedTrack();
+        } catch (e) {
+            // ignore cleanup errors
+        }
         document.body.innerHTML = '';
         (window as any).AudioContext = originalAudioContext;
-        resetPreloadedTrack();
     });
 
     it('should not double-cleanup element', () => {

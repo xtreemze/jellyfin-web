@@ -8,6 +8,7 @@ import { dBToLinear, safeConnect } from './audioUtils';
 type MasterAudioTypes = {
     mixerNode?: GainNode;
     biquadNode?: AudioNode;
+    limiterNode?: AudioNode;
     buffered?: DelayNode;
     makeupGain: number;
     muted: boolean;
@@ -46,6 +47,7 @@ function applyDbReduction(originalVolume: number, reductionDb: number) {
 const _masterAudioState = {
     mixerNode: undefined as GainNode | undefined,
     biquadNode: undefined as AudioNode | undefined,
+    limiterNode: undefined as AudioNode | undefined,
     audioContext: undefined as AudioContext | undefined,
     buffered: undefined as DelayNode | undefined
 };
@@ -68,6 +70,13 @@ export const masterAudioOutput = {
     },
     set biquadNode(v: AudioNode | undefined) {
         _masterAudioState.biquadNode = v;
+    },
+
+    get limiterNode() {
+        return _masterAudioState.limiterNode;
+    },
+    set limiterNode(v: AudioNode | undefined) {
+        _masterAudioState.limiterNode = v;
     },
 
     get audioContext() {
@@ -288,6 +297,7 @@ export function initializeMasterAudio(unbind: () => void) {
 
         safeConnect(masterAudioOutput.mixerNode, masterAudioOutput.biquadNode);
         safeConnect(masterAudioOutput.biquadNode, limiter);
+        masterAudioOutput.limiterNode = limiter;
         limiter.connect(audioCtx.destination);
     }
 }
