@@ -42,6 +42,13 @@ export interface TrackInfo {
     volume: number;
     muted: boolean;
     normalizationGainDb?: number;
+    // Artist navigation context
+    artistId?: string;
+    artistName?: string;
+    artistServerId?: string;
+    albumArtistId?: string;
+    albumArtistName?: string;
+    albumArtistServerId?: string;
 }
 
 let preloadState: PreloadState = {

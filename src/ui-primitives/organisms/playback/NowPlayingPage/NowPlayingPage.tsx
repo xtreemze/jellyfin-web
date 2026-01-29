@@ -13,6 +13,7 @@ import { type ReactElement, useCallback, useEffect } from 'react';
 import { useAudioStore } from 'store/audioStore';
 import { useUIStateStore } from 'store/uiStateStore';
 import { useVisualizerStore } from 'store/visualizerStore';
+import { useArtistNavigationStore } from 'store/artistNavigationStore';
 import { SeekSlider } from '../../../molecules/SeekSlider';
 import { AlbumArt } from '../../AlbumArt';
 import { Backdrop } from '../../Backdrop';
@@ -42,9 +43,17 @@ export function NowPlayingPage({ isMobile = false }: NowPlayingPageProps): React
     const audioState = useAudioStore();
     const uiState = useUIStateStore();
     const visualizerState = useVisualizerStore();
+    const currentArtist = useArtistNavigationStore((state) => state.currentArtist);
 
     const { currentTrack, isPlaying, currentTime, duration } = audioState;
     const { setIdle } = uiState;
+
+    const handleArtistClick = useCallback((): void => {
+        if (!currentArtist) return;
+        // TODO: Navigate to artist page using router
+        // For now, just log the artist info
+        console.log('Navigate to artist:', currentArtist);
+    }, [currentArtist]);
 
     useEffect((): (() => void) => {
         let timeoutId: ReturnType<typeof setTimeout>;
@@ -124,6 +133,7 @@ export function NowPlayingPage({ isMobile = false }: NowPlayingPageProps): React
                         title={currentTrack?.name ?? null}
                         artist={currentTrack?.artist ?? null}
                         album={currentTrack?.album ?? null}
+                        onArtistClick={handleArtistClick}
                         size="lg"
                     />
                 </div>

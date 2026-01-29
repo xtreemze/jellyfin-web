@@ -1,11 +1,12 @@
 import { useMediaStore, usePlayerStore, useQueueStore } from '../../store';
+import { updateArtistNavigation } from '../../store/artistNavigationStore';
 import { logger } from '../../utils/logger';
 import { handlePlaybackTimeUpdate, handleTrackStart } from './crossfadePreloadManager';
 
 let currentTimeCheckInterval: ReturnType<typeof setInterval> | null = null;
 const TIME_UPDATE_INTERVAL = 500;
 
-interface TrackInfo {
+export interface TrackInfoLocal {
     itemId: string;
     url: string;
     imageUrl?: string;
@@ -16,12 +17,19 @@ interface TrackInfo {
     volume: number;
     muted: boolean;
     normalizationGainDb?: number;
+    // Artist navigation context
+    artistId?: string;
+    artistName?: string;
+    artistServerId?: string;
+    albumArtistId?: string;
+    albumArtistName?: string;
+    albumArtistServerId?: string;
 }
 
 // Subscriptions
 let unsubs: (() => void)[] = [];
 
-export function getNextTrackInfo(): TrackInfo | null {
+export function getNextTrackInfo(): TrackInfoLocal | null {
     const queueStore = useQueueStore.getState();
     const mediaStore = useMediaStore.getState();
     const currentItem = mediaStore.currentItem;
@@ -46,7 +54,7 @@ export function getNextTrackInfo(): TrackInfo | null {
     return buildTrackInfo(nextQueueItem.item);
 }
 
-function getCurrentTrackInfo(): TrackInfo | null {
+function getCurrentTrackInfo(): TrackInfoLocal | null {
     const state = useMediaStore.getState();
     const currentItem = state.currentItem;
     const streamInfo = state.streamInfo;
@@ -78,10 +86,14 @@ function getTrackBackdropUrl(item: any): string | undefined {
     return undefined;
 }
 
-export function buildTrackInfo(item: any): TrackInfo | null {
+export function buildTrackInfo(item: any): TrackInfoLocal | null {
     if (!item) return null;
 
     if (!item.streamInfo) return null;
+
+    // Extract artist context with ServerId
+    const artistContext = item.artistContext;
+    const albumArtistContext = item.albumArtistContext;
 
     return {
         itemId: item.id,
@@ -93,7 +105,14 @@ export function buildTrackInfo(item: any): TrackInfo | null {
         crossOrigin: 'anonymous',
         volume: 100,
         muted: false,
-        normalizationGainDb: item.streamInfo.normalizationGainDb
+        normalizationGainDb: item.streamInfo.normalizationGainDb,
+        // Artist navigation context
+        artistId: artistContext?.id,
+        artistName: artistContext?.name || item.artist,
+        artistServerId: artistContext?.serverId || item.serverId,
+        albumArtistId: albumArtistContext?.id,
+        albumArtistName: albumArtistContext?.name || item.albumArtist,
+        albumArtistServerId: albumArtistContext?.serverId || item.serverId
     };
 }
 
@@ -130,6 +149,8 @@ export function initializeCrossfadePreloadHandler(): void {
             if (status === 'playing') {
                 const trackInfo = getCurrentTrackInfo();
                 if (trackInfo) {
+                    // Update artist navigation context
+                    updateArtistNavigation(trackInfo);
                     handleTrackStart(trackInfo, getNextTrackInfo);
                     startProgressTracking();
                 }

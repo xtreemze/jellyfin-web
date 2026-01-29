@@ -6,6 +6,13 @@
 
 export type MediaType = 'Audio' | 'Video' | 'Photo' | 'Book' | 'Unknown';
 
+export interface ArtistContext {
+    id: string;
+    name: string;
+    serverId: string;
+    imageUrl?: string;
+}
+
 export interface PlayableItem {
     id: string;
     name: string;
@@ -20,6 +27,10 @@ export interface PlayableItem {
     albumArtist?: string;
     genre?: string[];
     year?: number;
+
+    // Artist navigation context
+    artistContext?: ArtistContext;
+    albumArtistContext?: ArtistContext;
 
     // Media info
     duration?: number; // in seconds
